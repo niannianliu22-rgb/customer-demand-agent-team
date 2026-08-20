@@ -1,0 +1,20 @@
+# ACTIVE quality-inspection aliases confirmed by business.
+aliases_version: "1.0"
+business_rules_version: "14.0"
+rule_id: RULE-024
+source: manual_business_confirmation
+status: ACTIVE
+restriction: Apply only exact listed raw values. Do not split by 高级/普通 or paper semantics.
+entries:
+  - raw_value: "质检"
+    canonical_task_type: "质检"
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "毕业论文质检"
+    canonical_task_type: "质检"
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "论文质检"
+    canonical_task_type: "质检"
+    source: manual_business_confirmation
+    status: ACTIVE

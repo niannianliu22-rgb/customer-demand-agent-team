@@ -1,0 +1,103 @@
+# ACTIVE task_type classification rules
+rules_version: "17.0"
+source: manual_business_confirmation
+status: ACTIVE
+rules:
+  - rule_id: RULE-019
+    rule_name: dissertation_proofreading_classification
+    scope: task_type_single_task_classification
+    priority_order:
+      - explicit_dissertation_semantics
+      - parsed_word_count_gt_10000
+      - ordinary_proofreading
+    explicit_dissertation_markers:
+      - 大论文润色
+      - 毕业论文润色
+      - Dissertation润色
+    explicit_dissertation_target: 毕业论文润色
+    word_count_rule:
+      applies_when: raw_value_is_proofreading_service
+      comparison: "> 10000"
+      target: 毕业论文润色
+      equal_to_10000_uses_word_count_rule: false
+    ordinary_proofreading_target: 润色-proofreading
+    restriction: Do not infer beyond these confirmed conditions.
+    source: manual_business_confirmation
+    status: ACTIVE
+    created_at: "2026-08-20"
+
+  - rule_id: RULE-020
+    rule_name: remaining_risk_high_confidence_task_type_aliases
+    dictionary_path: config/dimensions/task_type/risk_high_confirmed_aliases.yaml
+    restriction: Apply only exact listed raw values; do not process REVIEW_REQUIRED values.
+    source: manual_business_confirmation
+    status: ACTIVE
+    created_at: "2026-08-20"
+
+  - rule_id: RULE-021
+    rule_name: resit_is_independent_official_task_type
+    dictionary_path: config/dimensions/task_type/resit_aliases.yaml
+    canonical_task_type: 补考
+    deprecated_predecessor: "RULE-017 resit -> 考试"
+    restriction: Apply only explicit resit values in the alias dictionary; explicit 重写 values use RULE-022. 补考 and 考试 must remain distinct.
+    source: manual_business_confirmation
+    status: ACTIVE
+    created_at: "2026-08-20"
+
+  - rule_id: RULE-022
+    rule_name: rewrite_is_resit_not_essay
+    dictionary_path: config/dimensions/task_type/rewrite_aliases.yaml
+    canonical_task_type: 补考
+    business_definition: >
+      重写 belongs to the 补考 business type. It is neither an independent
+      official task type nor an essay/ME subtype.
+    deprecated_predecessor: "Historical Round 1 essay重写 -> essay candidate (DEPRECATED / historical only)"
+    restriction: Apply only exact aliases in the referenced dictionary; do not infer new rewrite aliases.
+    source: manual_business_confirmation
+    status: ACTIVE
+    created_at: "2026-08-20"
+
+  - rule_id: RULE-023
+    rule_name: service_package_product_task_type_aliases
+    dictionary_path: config/dimensions/task_type/service_package_aliases.yaml
+    restriction: Apply only exact aliases in the referenced dictionary; do not infer new service-package/product aliases.
+    source: manual_business_confirmation
+    status: ACTIVE
+    created_at: "2026-08-20"
+
+  - rule_id: RULE-024
+    rule_name: quality_inspection_task_type_aliases
+    dictionary_path: config/dimensions/task_type/quality_inspection_aliases.yaml
+    canonical_task_type: 质检
+    restriction: Apply only exact aliases in the referenced dictionary; do not split by 高级/普通 or paper semantics.
+    source: manual_business_confirmation
+    status: ACTIVE
+    created_at: "2026-08-20"
+
+  - rule_id: RULE-025
+    rule_name: dissertation_partial_package_product_classification
+    dictionary_path: config/dimensions/task_type/dissertation_partial_package_aliases.yaml
+    canonical_task_type: 毕业论文半包
+    restriction: Apply only exact aliases in the referenced dictionary; product scope overrides LR/ME/literature/PPT surface semantics.
+    source: manual_business_confirmation
+    status: ACTIVE
+    created_at: "2026-08-20"
+
+  - rule_id: RULE-026
+    rule_name: historical_pure_word_count_to_essay
+    dictionary_path: config/dimensions/task_type/pure_word_count_essay_aliases.yaml
+    canonical_task_type: essay
+    priority_order: [explicit_task_semantics, special_business_rule, pure_word_count_to_essay]
+    restriction: Current historical data only; do not apply to a value with explicit task semantics.
+    source: manual_business_confirmation
+    status: ACTIVE
+    created_at: "2026-08-20"
+
+  - rule_id: RULE-027
+    rule_name: final_other_task_type_aliases_and_task_type_only_exclusions
+    alias_dictionary_path: config/dimensions/task_type/final_other_confirmed_aliases.yaml
+    exclusion_dictionary_path: config/dimensions/task_type/final_other_task_type_exclusions.yaml
+    restriction: Apply only exact listed values; exclusion applies only to task_type aggregation and trend analysis.
+    source: manual_business_confirmation
+    status: ACTIVE
+    created_at: "2026-08-20"

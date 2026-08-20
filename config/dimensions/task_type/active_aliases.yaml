@@ -1,0 +1,212 @@
+# ACTIVE task_type aliases confirmed in the PROPOSED_MEDIUM final review.
+aliases_version: "1.0"
+business_rules_version: "8.0"
+source: manual_business_confirmation
+status: ACTIVE
+dictionary_scope: RUN-202608-DEMAND-001 PROPOSED_MEDIUM approved values only
+entries:
+  - raw_value: "大论文"
+    canonical_task_type: "Dissertation"
+    rule_id: RULE-018
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "大论文数据处理"
+    canonical_task_type: "Dissertation"
+    rule_id: RULE-018
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "大论文数据相关"
+    canonical_task_type: "Dissertation"
+    rule_id: RULE-018
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "大论文部分"
+    canonical_task_type: "Dissertation"
+    rule_id: RULE-018
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "1.5w词大论文"
+    canonical_task_type: "Dissertation"
+    rule_id: RULE-018
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "1w词大论文续写"
+    canonical_task_type: "Dissertation"
+    rule_id: RULE-018
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "4000词部分大论文"
+    canonical_task_type: "Dissertation"
+    rule_id: RULE-018
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "大论文LR和ME6000词"
+    canonical_task_type: "Dissertation"
+    rule_id: RULE-018
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "大论文me部分"
+    canonical_task_type: "Dissertation"
+    rule_id: RULE-018
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "大论文浅润"
+    canonical_task_type: "Dissertation"
+    rule_id: RULE-018
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "大论文续写"
+    canonical_task_type: "Dissertation"
+    rule_id: RULE-018
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "大论文质检"
+    canonical_task_type: "Dissertation"
+    rule_id: RULE-018
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "大论文辅导"
+    canonical_task_type: "毕业论文辅导"
+    rule_id: RULE-018
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "大论文辅导试听"
+    canonical_task_type: "Dissertation"
+    rule_id: RULE-018
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "大论文降重"
+    canonical_task_type: "Dissertation"
+    rule_id: RULE-018
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "论文"
+    canonical_task_type: "Paper"
+    rule_id: RULE-018
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "15000词论文"
+    canonical_task_type: "Paper"
+    rule_id: RULE-018
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "1W词论文"
+    canonical_task_type: "Paper"
+    rule_id: RULE-018
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "期末论文"
+    canonical_task_type: "Paper"
+    rule_id: RULE-018
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "作业"
+    canonical_task_type: "作业"
+    rule_id: RULE-018
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "小组作业"
+    canonical_task_type: "小组作业"
+    rule_id: RULE-018
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "期末作业"
+    canonical_task_type: "作业"
+    rule_id: RULE-018
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "实验"
+    canonical_task_type: "code/experiment"
+    rule_id: RULE-018
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "网课"
+    canonical_task_type: "course work"
+    rule_id: RULE-018
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "pre"
+    canonical_task_type: "presentation"
+    rule_id: RULE-018
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "ppt演讲稿"
+    canonical_task_type: "presentation"
+    rule_id: RULE-018
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "10分钟pre"
+    canonical_task_type: "presentation"
+    rule_id: RULE-018
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "PRE"
+    canonical_task_type: "presentation"
+    rule_id: RULE-018
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "毕业设计"
+    canonical_task_type: "project"
+    rule_id: RULE-018
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "辅导"
+    canonical_task_type: "tutoring"
+    rule_id: RULE-018
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "考前辅导"
+    canonical_task_type: "tutoring"
+    rule_id: RULE-018
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "1.5h考试"
+    canonical_task_type: "考试"
+    rule_id: RULE-018
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "1h考试"
+    canonical_task_type: "考试"
+    rule_id: RULE-018
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "3h考试"
+    canonical_task_type: "考试"
+    rule_id: RULE-018
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "48h考试"
+    canonical_task_type: "考试"
+    rule_id: RULE-018
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "听力考试1.25h"
+    canonical_task_type: "考试"
+    rule_id: RULE-018
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "期末考试"
+    canonical_task_type: "考试"
+    rule_id: RULE-018
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "线上考试"
+    canonical_task_type: "考试"
+    rule_id: RULE-018
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "线下考"
+    canonical_task_type: "考试"
+    rule_id: RULE-018
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "线性代数考试"
+    canonical_task_type: "考试"
+    rule_id: RULE-018
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "考试辅导"
+    canonical_task_type: "考试"
+    rule_id: RULE-018
+    source: manual_business_confirmation
+    status: ACTIVE

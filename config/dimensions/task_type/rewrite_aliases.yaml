@@ -1,0 +1,22 @@
+# ACTIVE rewrite aliases confirmed by business.
+aliases_version: "1.0"
+business_rules_version: "12.0"
+rule_id: RULE-022
+source: manual_business_confirmation
+status: ACTIVE
+restriction: >
+  Apply only the exact listed raw values. 重写 is a resit business type, not an
+  independent official task type and not an essay/ME subtype.
+entries:
+  - raw_value: "2500词重写"
+    canonical_task_type: "补考"
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "essay重写"
+    canonical_task_type: "补考"
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "me重写"
+    canonical_task_type: "补考"
+    source: manual_business_confirmation
+    status: ACTIVE

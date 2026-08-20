@@ -1,0 +1,211 @@
+﻿raw_value,record_count,proposed_official_task_type,official_task_type_id,classification,confidence,evidence,source_ids,years,departments,approval_status
+选课,87,选课,10,EXACT_MATCH,HIGH,与公司官方订单类型完全一致（忽略大小写与空格）。,source_003|source_005|source_006,2024|2025,学管部|顾问部,CANDIDATE_ONLY
+essay,81,essay,1,EXACT_MATCH,HIGH,与公司官方订单类型完全一致（忽略大小写与空格）。,source_001|source_003|source_004|source_005|source_006,2023|2024|2025,学管部|顾问部,CANDIDATE_ONLY
+毕业论文,59,Dissertation,4,PROPOSED_HIGH,HIGH,中文“毕业论文”与官方 Dissertation 语义直接对应；服务包信息保留在原值。,source_001|source_002|source_003|source_004|source_005|source_006,2023|2024|2025,学管部|顾问部,CANDIDATE_ONLY
+补考,53,,,REVIEW_REQUIRED,LOW,官方范围区分“补考/重写-内部”与“补考/重写-外接”；原始记录未给出该归属。,source_001|source_002|source_003|source_004|source_005|source_006,2023|2024|2025,学管部|顾问部,CANDIDATE_ONLY
+考试,45,考试,9,EXACT_MATCH,HIGH,与公司官方订单类型完全一致（忽略大小写与空格）。,source_001|source_002|source_003|source_004|source_005|source_006,2023|2024|2025,学管部|顾问部,CANDIDATE_ONLY
+辅导,32,tutoring,3,PROPOSED_MEDIUM,MEDIUM,辅导语义可对应 tutoring，但官方还含提分/陪跑/包过/语言班等细分类型。,source_001|source_002|source_003|source_004|source_005|source_006,2023|2024|2025,学管部|顾问部,CANDIDATE_ONLY
+包课,30,包课,5,EXACT_MATCH,HIGH,与公司官方订单类型完全一致（忽略大小写与空格）。,source_001|source_002|source_003|source_004|source_005|source_006,2023|2024|2025,学管部|顾问部,CANDIDATE_ONLY
+作业,28,assignment,7,PROPOSED_MEDIUM,MEDIUM,作业可能是 assignment、essay、report 等；官方 assignment 是候选而非已确认映射。,source_001|source_002|source_005,2023|2025,学管部|顾问部,CANDIDATE_ONLY
+学年包,21,学年包,MANUAL-TASK-TYPE-001,EXACT_MATCH,HIGH,人工业务确认：学年包是独立官方订单类型；不得归并至辅导年包。,source_001|source_002|source_003|source_005|source_006,2023|2024|2025,学管部|顾问部,CANDIDATE_ONLY
+预存,19,,,NON_TASK,HIGH,预存、充值、定金或补款为交易动作，不是公司官方订单类型。,source_002|source_003|source_004|source_005|source_006,2023|2024|2025,学管部|顾问部,CANDIDATE_ONLY
+做题,18,做题,10,EXACT_MATCH,HIGH,与公司官方订单类型完全一致（忽略大小写与空格）。,source_001|source_002|source_003|source_004|source_005,2023|2024|2025,学管部|顾问部,CANDIDATE_ONLY
+大论文,13,Dissertation,4,PROPOSED_MEDIUM,MEDIUM,“大论文”通常指 Dissertation，但服务/组成部分语义不总是单一官方类型。,source_001|source_002|source_003|source_005,2023|2024|2025,学管部|顾问部,CANDIDATE_ONLY
+大论文润色,11,润色-proofreading,8,PROPOSED_HIGH,HIGH,包含明确润色服务语义，对应官方 润色-proofreading。,source_003|source_004|source_005|source_006,2024|2025,学管部|顾问部,CANDIDATE_ONLY
+毕业论文润色,10,润色-proofreading,8,PROPOSED_HIGH,HIGH,包含明确润色服务语义，对应官方 润色-proofreading。,source_001|source_003|source_005|source_006,2023|2024|2025,学管部|顾问部,CANDIDATE_ONLY
+润色,10,润色-proofreading,8,PROPOSED_HIGH,HIGH,包含明确润色服务语义，对应官方 润色-proofreading。,source_001|source_003|source_005,2023|2024|2025,学管部,CANDIDATE_ONLY
+毕业无忧,9,,,REVIEW_REQUIRED,LOW,服务包名称未在官方订单类型中出现同名唯一项，不能自行选择陪跑课、包过辅导或辅导年包。,source_001|source_002,2023,学管部|顾问部,CANDIDATE_ONLY
+quiz,7,,,REVIEW_REQUIRED,LOW,官方仅有组合类型 online test-exam/quiz；单独 quiz 不应自动合并。,source_001|source_002,2023,学管部|顾问部,CANDIDATE_ONLY
+补考essay,7,,,REVIEW_REQUIRED,LOW,官方范围区分“补考/重写-内部”与“补考/重写-外接”；原始记录未给出该归属。,source_003|source_005,2024|2025,学管部,CANDIDATE_ONLY
+report,6,report,6,EXACT_MATCH,HIGH,与公司官方订单类型完全一致（忽略大小写与空格）。,source_001|source_002|source_004|source_005|source_006,2023|2024|2025,学管部|顾问部,CANDIDATE_ONLY
+毕业论文part,6,Dissertation-part,13,PROPOSED_HIGH,HIGH,明确包含毕业论文与 part，直接对应官方 Dissertation-part。,source_003,2024,学管部,CANDIDATE_ONLY
+/,5,,,UNKNOWN,UNKNOWN,空值或“/”未表达任务类型。,source_001|source_003,2023|2024,学管部,CANDIDATE_ONLY
+150词,5,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_002,2023,顾问部,CANDIDATE_ONLY
+svip,5,,,REVIEW_REQUIRED,LOW,服务包名称未在官方订单类型中出现同名唯一项，不能自行选择陪跑课、包过辅导或辅导年包。,source_003|source_004|source_005,2024|2025,学管部|顾问部,CANDIDATE_ONLY
+毕业论文全包,5,Dissertation,4,PROPOSED_HIGH,HIGH,中文“毕业论文”与官方 Dissertation 语义直接对应；服务包信息保留在原值。,source_003,2024,学管部,CANDIDATE_ONLY
+论文,5,Paper,30,PROPOSED_MEDIUM,MEDIUM,可对应官方 Paper，但“论文”可能指学位论文或课程论文，需人工确认。,source_001|source_005|source_006,2023|2025,学管部|顾问部,CANDIDATE_ONLY
+2h补考,4,,,REVIEW_REQUIRED,LOW,官方范围区分“补考/重写-内部”与“补考/重写-外接”；原始记录未给出该归属。,source_002,2023,顾问部,CANDIDATE_ONLY
+5000词essay,4,essay,1,PROPOSED_HIGH,HIGH,包含明确 essay 语义；字数为描述信息。,source_002,2023,顾问部,CANDIDATE_ONLY
+小组作业,4,assignment,7,PROPOSED_MEDIUM,MEDIUM,作业可能是 assignment、essay、report 等；官方 assignment 是候选而非已确认映射。,source_002|source_005,2023|2025,学管部|顾问部,CANDIDATE_ONLY
+毕业论文辅导,4,Dissertation- tutoring,12,PROPOSED_HIGH,HIGH,明确包含毕业论文与辅导，直接对应官方 Dissertation- tutoring。,source_003|source_004|source_005|source_006,2024|2025,学管部|顾问部,CANDIDATE_ONLY
+1200词,3,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_002|source_004,2023|2024,顾问部,CANDIDATE_ONLY
+2000词,3,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_002|source_004|source_006,2023|2024|2025,顾问部,CANDIDATE_ONLY
+3000词,3,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_002,2023,顾问部,CANDIDATE_ONLY
+SVIP,3,,,REVIEW_REQUIRED,LOW,服务包名称未在官方订单类型中出现同名唯一项，不能自行选择陪跑课、包过辅导或辅导年包。,source_001|source_004|source_005,2023|2024|2025,学管部|顾问部,CANDIDATE_ONLY
+ppt,3,PPT,15,EXACT_MATCH,HIGH,与公司官方订单类型完全一致（忽略大小写与空格）。,source_001|source_005,2023|2025,学管部,CANDIDATE_ONLY
+pre,3,presentation,16,PROPOSED_MEDIUM,MEDIUM,演示语义可对应 presentation，但部分记录可能是 Group Presentation 或仅演讲稿。,source_004|source_005,2024|2025,学管部|顾问部,CANDIDATE_ONLY
+project,3,project,37,EXACT_MATCH,HIGH,与公司官方订单类型完全一致（忽略大小写与空格）。,source_003|source_004|source_005,2024|2025,学管部|顾问部,CANDIDATE_ONLY
+半包课,3,,,REVIEW_REQUIRED,LOW,服务包名称未在官方订单类型中出现同名唯一项，不能自行选择陪跑课、包过辅导或辅导年包。,source_003,2024,学管部,CANDIDATE_ONLY
+大论文数据处理,3,Dissertation,4,PROPOSED_MEDIUM,MEDIUM,“大论文”通常指 Dissertation，但服务/组成部分语义不总是单一官方类型。,source_003,2024,学管部,CANDIDATE_ONLY
+毕业论文半包,3,Dissertation,4,PROPOSED_HIGH,HIGH,中文“毕业论文”与官方 Dissertation 语义直接对应；服务包信息保留在原值。,source_003|source_005,2024|2025,学管部,CANDIDATE_ONLY
+质检,3,,,REVIEW_REQUIRED,LOW,官方区分普通质检与高级质检；原始值未注明等级。,source_003|source_006,2024|2025,学管部|顾问部,CANDIDATE_ONLY
+1000词,2,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_002|source_004,2023|2024,顾问部,CANDIDATE_ONLY
+1000词essay,2,essay,1,PROPOSED_HIGH,HIGH,包含明确 essay 语义；字数为描述信息。,source_002,2023,顾问部,CANDIDATE_ONLY
+1500词润色,2,润色-proofreading,8,PROPOSED_HIGH,HIGH,包含明确润色服务语义，对应官方 润色-proofreading。,source_002,2023,顾问部,CANDIDATE_ONLY
+3h补考,2,,,REVIEW_REQUIRED,LOW,官方范围区分“补考/重写-内部”与“补考/重写-外接”；原始记录未给出该归属。,source_002,2023,顾问部,CANDIDATE_ONLY
+800词essay,2,essay,1,PROPOSED_HIGH,HIGH,包含明确 essay 语义；字数为描述信息。,source_002,2023,顾问部,CANDIDATE_ONLY
+800词反思,2,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_002,2023,顾问部,CANDIDATE_ONLY
+VIP,2,,,REVIEW_REQUIRED,LOW,服务包名称未在官方订单类型中出现同名唯一项，不能自行选择陪跑课、包过辅导或辅导年包。,source_003|source_005,2024|2025,学管部,CANDIDATE_ONLY
+ppt演讲稿,2,presentation,16,PROPOSED_MEDIUM,MEDIUM,演示语义可对应 presentation，但部分记录可能是 Group Presentation 或仅演讲稿。,source_003,2024,学管部,CANDIDATE_ONLY
+大论文数据相关,2,Dissertation,4,PROPOSED_MEDIUM,MEDIUM,“大论文”通常指 Dissertation，但服务/组成部分语义不总是单一官方类型。,source_003,2024,学管部,CANDIDATE_ONLY
+大论文部分,2,Dissertation,4,PROPOSED_MEDIUM,MEDIUM,“大论文”通常指 Dissertation，但服务/组成部分语义不总是单一官方类型。,source_003,2024,学管部,CANDIDATE_ONLY
+安心包,2,,,REVIEW_REQUIRED,LOW,服务包名称未在官方订单类型中出现同名唯一项，不能自行选择陪跑课、包过辅导或辅导年包。,source_003|source_006,2024|2025,学管部|顾问部,CANDIDATE_ONLY
+报告,2,report,6,PROPOSED_HIGH,HIGH,“报告”与官方 report 为直接中文对应。,source_003|source_005,2024|2025,学管部,CANDIDATE_ONLY
+文献综述部分,2,,,REVIEW_REQUIRED,LOW,论文部分缩写/文献综述无法在官方 Dissertation、Dissertation-part、bibliography、framework 等之间唯一选择。,source_004,2024,顾问部,CANDIDATE_ONLY
+毕业无忧定金,2,,,NON_TASK,HIGH,预存、充值、定金或补款为交易动作，不是公司官方订单类型。,source_002,2023,顾问部,CANDIDATE_ONLY
+毕业论文质检,2,,,REVIEW_REQUIRED,LOW,官方区分普通质检与高级质检；原始值未注明等级。,source_005|source_006,2025,学管部|顾问部,CANDIDATE_ONLY
+浅润,2,润色-proofreading,8,PROPOSED_HIGH,HIGH,包含明确润色服务语义，对应官方 润色-proofreading。,source_006,2025,顾问部,CANDIDATE_ONLY
+海报,2,海报,14,EXACT_MATCH,HIGH,与公司官方订单类型完全一致（忽略大小写与空格）。,source_005,2025,学管部,CANDIDATE_ONLY
+润色＋续写,2,,,MULTI_TASK,MULTI_TASK,包含多个任务语义；不得强制压缩到单一官方订单类型。,source_005,2025,学管部,CANDIDATE_ONLY
+深度润色,2,润色-proofreading,8,PROPOSED_HIGH,HIGH,包含明确润色服务语义，对应官方 润色-proofreading。,source_001|source_003,2023|2024,学管部,CANDIDATE_ONLY
+考前辅导,2,tutoring,3,PROPOSED_MEDIUM,MEDIUM,辅导语义可对应 tutoring，但官方还含提分/陪跑/包过/语言班等细分类型。,source_006,2025,顾问部,CANDIDATE_ONLY
+补考辅导,2,,,REVIEW_REQUIRED,LOW,官方范围区分“补考/重写-内部”与“补考/重写-外接”；原始记录未给出该归属。,source_005,2025,学管部,CANDIDATE_ONLY
+论文润色,2,润色-proofreading,8,PROPOSED_HIGH,HIGH,包含明确润色服务语义，对应官方 润色-proofreading。,source_002|source_005,2023|2025,学管部|顾问部,CANDIDATE_ONLY
+,1,,,UNKNOWN,UNKNOWN,空值或“/”未表达任务类型。,source_006,2025,顾问部,CANDIDATE_ONLY
+1.2w词普通润色,1,润色-proofreading,8,PROPOSED_HIGH,HIGH,包含明确润色服务语义，对应官方 润色-proofreading。,source_002,2023,顾问部,CANDIDATE_ONLY
+1.2万词润色,1,润色-proofreading,8,PROPOSED_HIGH,HIGH,包含明确润色服务语义，对应官方 润色-proofreading。,source_006,2025,顾问部,CANDIDATE_ONLY
+1.5h考试,1,考试,9,PROPOSED_MEDIUM,MEDIUM,含考试语义，但与官方 online test-exam/quiz 的边界需人工确认。,source_002,2023,顾问部,CANDIDATE_ONLY
+1.5w词大论文,1,Dissertation,4,PROPOSED_MEDIUM,MEDIUM,“大论文”通常指 Dissertation，但服务/组成部分语义不总是单一官方类型。,source_006,2025,顾问部,CANDIDATE_ONLY
+10分钟pre,1,presentation,16,PROPOSED_MEDIUM,MEDIUM,演示语义可对应 presentation，但部分记录可能是 Group Presentation 或仅演讲稿。,source_002,2023,顾问部,CANDIDATE_ONLY
+1100词,1,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_006,2025,顾问部,CANDIDATE_ONLY
+1125词+数据分析,1,,,MULTI_TASK,MULTI_TASK,包含多个任务语义；不得强制压缩到单一官方订单类型。,source_002,2023,顾问部,CANDIDATE_ONLY
+1200-1500词,1,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_004,2024,顾问部,CANDIDATE_ONLY
+12000润色,1,润色-proofreading,8,PROPOSED_HIGH,HIGH,包含明确润色服务语义，对应官方 润色-proofreading。,source_002,2023,顾问部,CANDIDATE_ONLY
+15000词论文,1,Paper,30,PROPOSED_MEDIUM,MEDIUM,可对应官方 Paper，但“论文”可能指学位论文或课程论文，需人工确认。,source_002,2023,顾问部,CANDIDATE_ONLY
+1500词,1,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_002,2023,顾问部,CANDIDATE_ONLY
+1700词,1,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_002,2023,顾问部,CANDIDATE_ONLY
+1800词essay,1,essay,1,PROPOSED_HIGH,HIGH,包含明确 essay 语义；字数为描述信息。,source_002,2023,顾问部,CANDIDATE_ONLY
+1W词论文,1,Paper,30,PROPOSED_MEDIUM,MEDIUM,可对应官方 Paper，但“论文”可能指学位论文或课程论文，需人工确认。,source_006,2025,顾问部,CANDIDATE_ONLY
+1h考试,1,考试,9,PROPOSED_MEDIUM,MEDIUM,含考试语义，但与官方 online test-exam/quiz 的边界需人工确认。,source_002,2023,顾问部,CANDIDATE_ONLY
+1w词大论文续写,1,Dissertation,4,PROPOSED_MEDIUM,MEDIUM,“大论文”通常指 Dissertation，但服务/组成部分语义不总是单一官方类型。,source_002,2023,顾问部,CANDIDATE_ONLY
+2000词lr,1,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_002,2023,顾问部,CANDIDATE_ONLY
+200词,1,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_004,2024,顾问部,CANDIDATE_ONLY
+2500词补考,1,,,REVIEW_REQUIRED,LOW,官方范围区分“补考/重写-内部”与“补考/重写-外接”；原始记录未给出该归属。,source_006,2025,顾问部,CANDIDATE_ONLY
+2500词重写,1,,,REVIEW_REQUIRED,LOW,官方范围区分“补考/重写-内部”与“补考/重写-外接”；原始记录未给出该归属。,source_002,2023,顾问部,CANDIDATE_ONLY
+2700词essay,1,essay,1,PROPOSED_HIGH,HIGH,包含明确 essay 语义；字数为描述信息。,source_002,2023,顾问部,CANDIDATE_ONLY
+2h高级财务,1,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_002,2023,顾问部,CANDIDATE_ONLY
+3.5h补考,1,,,REVIEW_REQUIRED,LOW,官方范围区分“补考/重写-内部”与“补考/重写-外接”；原始记录未给出该归属。,source_002,2023,顾问部,CANDIDATE_ONLY
+3000词方法论,1,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_002,2023,顾问部,CANDIDATE_ONLY
+300词,1,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_006,2025,顾问部,CANDIDATE_ONLY
+3H补考,1,,,REVIEW_REQUIRED,LOW,官方范围区分“补考/重写-内部”与“补考/重写-外接”；原始记录未给出该归属。,source_002,2023,顾问部,CANDIDATE_ONLY
+3h考试,1,考试,9,PROPOSED_MEDIUM,MEDIUM,含考试语义，但与官方 online test-exam/quiz 的边界需人工确认。,source_002,2023,顾问部,CANDIDATE_ONLY
+3k词,1,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_006,2025,顾问部,CANDIDATE_ONLY
+3题,1,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_002,2023,顾问部,CANDIDATE_ONLY
+4000词,1,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_002,2023,顾问部,CANDIDATE_ONLY
+4000词部分大论文,1,Dissertation,4,PROPOSED_MEDIUM,MEDIUM,“大论文”通常指 Dissertation，但服务/组成部分语义不总是单一官方类型。,source_006,2025,顾问部,CANDIDATE_ONLY
+4500,1,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_002,2023,顾问部,CANDIDATE_ONLY
+48h考试,1,考试,9,PROPOSED_MEDIUM,MEDIUM,含考试语义，但与官方 online test-exam/quiz 的边界需人工确认。,source_004,2024,顾问部,CANDIDATE_ONLY
+5w词论文,1,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_002,2023,顾问部,CANDIDATE_ONLY
+600词,1,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_002,2023,顾问部,CANDIDATE_ONLY
+6k词补写+润色,1,,,MULTI_TASK,MULTI_TASK,包含多个任务语义；不得强制压缩到单一官方订单类型。,source_004,2024,顾问部,CANDIDATE_ONLY
+7000词论文润色,1,润色-proofreading,8,PROPOSED_HIGH,HIGH,包含明确润色服务语义，对应官方 润色-proofreading。,source_004,2024,顾问部,CANDIDATE_ONLY
+750词,1,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_002,2023,顾问部,CANDIDATE_ONLY
+900词,1,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_002,2023,顾问部,CANDIDATE_ONLY
+900词essay,1,essay,1,PROPOSED_HIGH,HIGH,包含明确 essay 语义；字数为描述信息。,source_002,2023,顾问部,CANDIDATE_ONLY
+DP,1,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_003,2024,学管部,CANDIDATE_ONLY
+LR2000词深度润色,1,润色-proofreading,8,PROPOSED_HIGH,HIGH,包含明确润色服务语义，对应官方 润色-proofreading。,source_006,2025,顾问部,CANDIDATE_ONLY
+LR修改,1,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_002,2023,顾问部,CANDIDATE_ONLY
+LR部分半包,1,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_005,2025,学管部,CANDIDATE_ONLY
+LR部分润色＋续写,1,,,MULTI_TASK,MULTI_TASK,包含多个任务语义；不得强制压缩到单一官方订单类型。,source_005,2025,学管部,CANDIDATE_ONLY
+ME,1,,,REVIEW_REQUIRED,LOW,论文部分缩写/文献综述无法在官方 Dissertation、Dissertation-part、bibliography、framework 等之间唯一选择。,source_003,2024,学管部,CANDIDATE_ONLY
+ME部分,1,,,REVIEW_REQUIRED,LOW,论文部分缩写/文献综述无法在官方 Dissertation、Dissertation-part、bibliography、framework 等之间唯一选择。,source_002,2023,顾问部,CANDIDATE_ONLY
+Matlab代码作业,1,code/experiment,17,PROPOSED_HIGH,HIGH,包含代码/编程语义，对应官方 code/experiment。,source_004,2024,顾问部,CANDIDATE_ONLY
+PRE,1,presentation,16,PROPOSED_MEDIUM,MEDIUM,演示语义可对应 presentation，但部分记录可能是 Group Presentation 或仅演讲稿。,source_005,2025,学管部,CANDIDATE_ONLY
+SVIP预存,1,,,NON_TASK,HIGH,预存、充值、定金或补款为交易动作，不是公司官方订单类型。,source_003,2024,学管部,CANDIDATE_ONLY
+assignment,1,assignment,7,EXACT_MATCH,HIGH,与公司官方订单类型完全一致（忽略大小写与空格）。,source_005,2025,学管部,CANDIDATE_ONLY
+cw做题,1,做题,10,PROPOSED_HIGH,HIGH,明确做题/试卷语义，对应官方 做题。,source_002,2023,顾问部,CANDIDATE_ONLY
+essay➕考试,1,,,MULTI_TASK,MULTI_TASK,包含多个任务语义；不得强制压缩到单一官方订单类型。,source_003,2024,学管部,CANDIDATE_ONLY
+essay补考,1,,,REVIEW_REQUIRED,LOW,官方范围区分“补考/重写-内部”与“补考/重写-外接”；原始记录未给出该归属。,source_005,2025,学管部,CANDIDATE_ONLY
+essay重写,1,,,REVIEW_REQUIRED,LOW,官方范围区分“补考/重写-内部”与“补考/重写-外接”；原始记录未给出该归属。,source_003,2024,学管部,CANDIDATE_ONLY
+lr,1,,,REVIEW_REQUIRED,LOW,论文部分缩写/文献综述无法在官方 Dissertation、Dissertation-part、bibliography、framework 等之间唯一选择。,source_001,2023,学管部,CANDIDATE_ONLY
+lr润色,1,润色-proofreading,8,PROPOSED_HIGH,HIGH,包含明确润色服务语义，对应官方 润色-proofreading。,source_002,2023,顾问部,CANDIDATE_ONLY
+me,1,,,REVIEW_REQUIRED,LOW,论文部分缩写/文献综述无法在官方 Dissertation、Dissertation-part、bibliography、framework 等之间唯一选择。,source_003,2024,学管部,CANDIDATE_ONLY
+me重写,1,,,REVIEW_REQUIRED,LOW,官方范围区分“补考/重写-内部”与“补考/重写-外接”；原始记录未给出该归属。,source_006,2025,顾问部,CANDIDATE_ONLY
+ppt+演讲稿,1,,,MULTI_TASK,MULTI_TASK,包含多个任务语义；不得强制压缩到单一官方订单类型。,source_006,2025,顾问部,CANDIDATE_ONLY
+ppt+考试,1,,,MULTI_TASK,MULTI_TASK,包含多个任务语义；不得强制压缩到单一官方订单类型。,source_003,2024,学管部,CANDIDATE_ONLY
+quiz+answer,1,,,MULTI_TASK,MULTI_TASK,包含多个任务语义；不得强制压缩到单一官方订单类型。,source_002,2023,顾问部,CANDIDATE_ONLY
+unity,1,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_005,2025,学管部,CANDIDATE_ONLY
+vip,1,,,REVIEW_REQUIRED,LOW,服务包名称未在官方订单类型中出现同名唯一项，不能自行选择陪跑课、包过辅导或辅导年包。,source_005,2025,学管部,CANDIDATE_ONLY
+vip充值,1,,,NON_TASK,HIGH,预存、充值、定金或补款为交易动作，不是公司官方订单类型。,source_005,2025,学管部,CANDIDATE_ONLY
+三千词,1,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_002,2023,顾问部,CANDIDATE_ONLY
+两个小作业,1,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_006,2025,顾问部,CANDIDATE_ONLY
+作业essay,1,essay,1,PROPOSED_HIGH,HIGH,包含明确 essay 语义；字数为描述信息。,source_005,2025,学管部,CANDIDATE_ONLY
+作业润色,1,润色-proofreading,8,PROPOSED_HIGH,HIGH,包含明确润色服务语义，对应官方 润色-proofreading。,source_002,2023,顾问部,CANDIDATE_ONLY
+八小时补考,1,,,REVIEW_REQUIRED,LOW,官方范围区分“补考/重写-内部”与“补考/重写-外接”；原始记录未给出该归属。,source_002,2023,顾问部,CANDIDATE_ONLY
+六小时补考,1,,,REVIEW_REQUIRED,LOW,官方范围区分“补考/重写-内部”与“补考/重写-外接”；原始记录未给出该归属。,source_002,2023,顾问部,CANDIDATE_ONLY
+写一个升学的kit,1,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_002,2023,顾问部,CANDIDATE_ONLY
+包课补款,1,,,NON_TASK,HIGH,预存、充值、定金或补款为交易动作，不是公司官方订单类型。,source_004,2024,顾问部,CANDIDATE_ONLY
+半包,1,,,REVIEW_REQUIRED,LOW,服务包名称未在官方订单类型中出现同名唯一项，不能自行选择陪跑课、包过辅导或辅导年包。,source_005,2025,学管部,CANDIDATE_ONLY
+卓越安心包,1,,,REVIEW_REQUIRED,LOW,服务包名称未在官方订单类型中出现同名唯一项，不能自行选择陪跑课、包过辅导或辅导年包。,source_003,2024,学管部,CANDIDATE_ONLY
+反思,1,reflect,46,PROPOSED_HIGH,HIGH,反思与官方 reflect 语义直接对应。,source_003,2024,学管部,CANDIDATE_ONLY
+听力考试1.25h,1,考试,9,PROPOSED_MEDIUM,MEDIUM,含考试语义，但与官方 online test-exam/quiz 的边界需人工确认。,source_002,2023,顾问部,CANDIDATE_ONLY
+咨询包课,1,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_002,2023,顾问部,CANDIDATE_ONLY
+地理作业1500词,1,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_002,2023,顾问部,CANDIDATE_ONLY
+大论文LR和ME6000词,1,Dissertation,4,PROPOSED_MEDIUM,MEDIUM,“大论文”通常指 Dissertation，但服务/组成部分语义不总是单一官方类型。,source_002,2023,顾问部,CANDIDATE_ONLY
+大论文me部分,1,Dissertation,4,PROPOSED_MEDIUM,MEDIUM,“大论文”通常指 Dissertation，但服务/组成部分语义不总是单一官方类型。,source_003,2024,学管部,CANDIDATE_ONLY
+大论文浅润,1,Dissertation,4,PROPOSED_MEDIUM,MEDIUM,“大论文”通常指 Dissertation，但服务/组成部分语义不总是单一官方类型。,source_006,2025,顾问部,CANDIDATE_ONLY
+大论文润色+补写,1,,,MULTI_TASK,MULTI_TASK,包含多个任务语义；不得强制压缩到单一官方订单类型。,source_004,2024,顾问部,CANDIDATE_ONLY
+大论文续写,1,Dissertation,4,PROPOSED_MEDIUM,MEDIUM,“大论文”通常指 Dissertation，但服务/组成部分语义不总是单一官方类型。,source_005,2025,学管部,CANDIDATE_ONLY
+大论文续写+润色,1,,,MULTI_TASK,MULTI_TASK,包含多个任务语义；不得强制压缩到单一官方订单类型。,source_001,2023,学管部,CANDIDATE_ONLY
+大论文质检,1,Dissertation,4,PROPOSED_MEDIUM,MEDIUM,“大论文”通常指 Dissertation，但服务/组成部分语义不总是单一官方类型。,source_005,2025,学管部,CANDIDATE_ONLY
+大论文辅导,1,Dissertation,4,PROPOSED_MEDIUM,MEDIUM,“大论文”通常指 Dissertation，但服务/组成部分语义不总是单一官方类型。,source_005,2025,学管部,CANDIDATE_ONLY
+大论文辅导试听,1,Dissertation,4,PROPOSED_MEDIUM,MEDIUM,“大论文”通常指 Dissertation，但服务/组成部分语义不总是单一官方类型。,source_005,2025,学管部,CANDIDATE_ONLY
+大论文降重,1,Dissertation,4,PROPOSED_MEDIUM,MEDIUM,“大论文”通常指 Dissertation，但服务/组成部分语义不总是单一官方类型。,source_001,2023,学管部,CANDIDATE_ONLY
+安心包三年,1,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_005,2025,学管部,CANDIDATE_ONLY
+实验,1,code/experiment,17,PROPOSED_MEDIUM,MEDIUM,实验可能对应官方 code/experiment，但未说明是否包含代码。,source_005,2025,学管部,CANDIDATE_ONLY
+实验数据+1500词report,1,,,MULTI_TASK,MULTI_TASK,包含多个任务语义；不得强制压缩到单一官方订单类型。,source_004,2024,顾问部,CANDIDATE_ONLY
+小组pre,1,Group Presentation,47,PROPOSED_HIGH,HIGH,小组展示语义对应官方 Group Presentation。,source_006,2025,顾问部,CANDIDATE_ONLY
+局部润色,1,润色-proofreading,8,PROPOSED_HIGH,HIGH,包含明确润色服务语义，对应官方 润色-proofreading。,source_003,2024,学管部,CANDIDATE_ONLY
+帮忙收集数据,1,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_002,2023,顾问部,CANDIDATE_ONLY
+总结,1,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_005,2025,学管部,CANDIDATE_ONLY
+数据收集+分析,1,,,MULTI_TASK,MULTI_TASK,包含多个任务语义；不得强制压缩到单一官方订单类型。,source_006,2025,顾问部,CANDIDATE_ONLY
+文献综述,1,,,REVIEW_REQUIRED,LOW,论文部分缩写/文献综述无法在官方 Dissertation、Dissertation-part、bibliography、framework 等之间唯一选择。,source_006,2025,顾问部,CANDIDATE_ONLY
+期末作业,1,assignment,7,PROPOSED_MEDIUM,MEDIUM,作业可能是 assignment、essay、report 等；官方 assignment 是候选而非已确认映射。,source_001,2023,学管部,CANDIDATE_ONLY
+期末考试,1,考试,9,PROPOSED_MEDIUM,MEDIUM,含考试语义，但与官方 online test-exam/quiz 的边界需人工确认。,source_002,2023,顾问部,CANDIDATE_ONLY
+期末论文,1,Paper,30,PROPOSED_MEDIUM,MEDIUM,可对应官方 Paper，但“论文”可能指学位论文或课程论文，需人工确认。,source_002,2023,顾问部,CANDIDATE_ONLY
+毕业影集,1,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_006,2025,顾问部,CANDIDATE_ONLY
+毕业论文400词,1,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_005,2025,学管部,CANDIDATE_ONLY
+毕业论文浅润,1,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_005,2025,学管部,CANDIDATE_ONLY
+毕业论文答辩PPT,1,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_005,2025,学管部,CANDIDATE_ONLY
+毕业设计,1,project,37,PROPOSED_MEDIUM,MEDIUM,毕业设计可为 project，但也可能为 Team Project，需确认。,source_001,2023,学管部,CANDIDATE_ONLY
+毕业设计辅导,1,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_002,2023,顾问部,CANDIDATE_ONLY
+毕设辅导,1,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_003,2024,学管部,CANDIDATE_ONLY
+海报+report,1,,,MULTI_TASK,MULTI_TASK,包含多个任务语义；不得强制压缩到单一官方订单类型。,source_004,2024,顾问部,CANDIDATE_ONLY
+海报800词,1,海报,14,PROPOSED_HIGH,HIGH,包含明确海报交付物语义。,source_002,2023,顾问部,CANDIDATE_ONLY
+润色+降重+续写2000词,1,,,MULTI_TASK,MULTI_TASK,包含多个任务语义；不得强制压缩到单一官方订单类型。,source_006,2025,顾问部,CANDIDATE_ONLY
+润色1500词,1,润色-proofreading,8,PROPOSED_HIGH,HIGH,包含明确润色服务语义，对应官方 润色-proofreading。,source_004,2024,顾问部,CANDIDATE_ONLY
+润色修改,1,润色-proofreading,8,PROPOSED_HIGH,HIGH,包含明确润色服务语义，对应官方 润色-proofreading。,source_005,2025,学管部,CANDIDATE_ONLY
+深润,1,润色-proofreading,8,PROPOSED_HIGH,HIGH,包含明确润色服务语义，对应官方 润色-proofreading。,source_003,2024,学管部,CANDIDATE_ONLY
+深润2000词,1,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_002,2023,顾问部,CANDIDATE_ONLY
+画图,1,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_001,2023,学管部,CANDIDATE_ONLY
+神经系统代码,1,code/experiment,17,PROPOSED_HIGH,HIGH,包含代码/编程语义，对应官方 code/experiment。,source_004,2024,顾问部,CANDIDATE_ONLY
+简历,1,CV/PS,27,PROPOSED_HIGH,HIGH,简历制作可直接落入官方 CV/PS 范围。,source_001,2023,学管部,CANDIDATE_ONLY
+简历制作,1,CV/PS,27,PROPOSED_HIGH,HIGH,简历制作可直接落入官方 CV/PS 范围。,source_002,2023,顾问部,CANDIDATE_ONLY
+线上考试,1,考试,9,PROPOSED_MEDIUM,MEDIUM,含考试语义，但与官方 online test-exam/quiz 的边界需人工确认。,source_003,2024,学管部,CANDIDATE_ONLY
+线下考,1,考试,9,PROPOSED_MEDIUM,MEDIUM,含考试语义，但与官方 online test-exam/quiz 的边界需人工确认。,source_001,2023,学管部,CANDIDATE_ONLY
+线性代数考试,1,考试,9,PROPOSED_MEDIUM,MEDIUM,含考试语义，但与官方 online test-exam/quiz 的边界需人工确认。,source_004,2024,顾问部,CANDIDATE_ONLY
+续写,1,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_001,2023,学管部,CANDIDATE_ONLY
+编程代码,1,code/experiment,17,PROPOSED_HIGH,HIGH,包含代码/编程语义，对应官方 code/experiment。,source_004,2024,顾问部,CANDIDATE_ONLY
+网站制作,1,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_004,2024,顾问部,CANDIDATE_ONLY
+网课,1,course work,36,PROPOSED_MEDIUM,MEDIUM,网课可能对应 course work，但记录不足以确认服务性质。,source_002,2023,顾问部,CANDIDATE_ONLY
+考试辅导,1,考试,9,PROPOSED_MEDIUM,MEDIUM,含考试语义，但与官方 online test-exam/quiz 的边界需人工确认。,source_002,2023,顾问部,CANDIDATE_ONLY
+考试，作业,1,,,MULTI_TASK,MULTI_TASK,包含多个任务语义；不得强制压缩到单一官方订单类型。,source_003,2024,学管部,CANDIDATE_ONLY
+补考1500词,1,,,REVIEW_REQUIRED,LOW,官方范围区分“补考/重写-内部”与“补考/重写-外接”；原始记录未给出该归属。,source_002,2023,顾问部,CANDIDATE_ONLY
+补考2h,1,,,REVIEW_REQUIRED,LOW,官方范围区分“补考/重写-内部”与“补考/重写-外接”；原始记录未给出该归属。,source_002,2023,顾问部,CANDIDATE_ONLY
+补考6000词,1,,,REVIEW_REQUIRED,LOW,官方范围区分“补考/重写-内部”与“补考/重写-外接”；原始记录未给出该归属。,source_004,2024,顾问部,CANDIDATE_ONLY
+补考90mins,1,,,REVIEW_REQUIRED,LOW,官方范围区分“补考/重写-内部”与“补考/重写-外接”；原始记录未给出该归属。,source_002,2023,顾问部,CANDIDATE_ONLY
+补考➕毕业论文,1,,,MULTI_TASK,MULTI_TASK,包含多个任务语义；不得强制压缩到单一官方订单类型。,source_004,2024,顾问部,CANDIDATE_ONLY
+补考作业+考试,1,,,MULTI_TASK,MULTI_TASK,包含多个任务语义；不得强制压缩到单一官方订单类型。,source_002,2023,顾问部,CANDIDATE_ONLY
+视频+海报,1,,,MULTI_TASK,MULTI_TASK,包含多个任务语义；不得强制压缩到单一官方订单类型。,source_004,2024,顾问部,CANDIDATE_ONLY
+计算机科学,1,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_006,2025,顾问部,CANDIDATE_ONLY
+论文质检,1,,,REVIEW_REQUIRED,LOW,官方区分普通质检与高级质检；原始值未注明等级。,source_004,2024,顾问部,CANDIDATE_ONLY
+论文辅导变为润色,1,润色-proofreading,8,PROPOSED_HIGH,HIGH,包含明确润色服务语义，对应官方 润色-proofreading。,source_003,2024,学管部,CANDIDATE_ONLY
+试卷做题,1,做题,10,PROPOSED_HIGH,HIGH,明确做题/试卷语义，对应官方 做题。,source_004,2024,顾问部,CANDIDATE_ONLY
+语言班1200词➕1.15听力考试,1,,,MULTI_TASK,MULTI_TASK,包含多个任务语义；不得强制压缩到单一官方订单类型。,source_002,2023,顾问部,CANDIDATE_ONLY
+选课+入学测试,1,,,MULTI_TASK,MULTI_TASK,包含多个任务语义；不得强制压缩到单一官方订单类型。,source_005,2025,学管部,CANDIDATE_ONLY
+选课课程内容分析,1,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_005,2025,学管部,CANDIDATE_ONLY
+采访稿,1,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_003,2024,学管部,CANDIDATE_ONLY
+重修,1,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_005,2025,学管部,CANDIDATE_ONLY
+面试,1,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_001,2023,学管部,CANDIDATE_ONLY
+预存升级学年包定金,1,,,NON_TASK,HIGH,预存、充值、定金或补款为交易动作，不是公司官方订单类型。,source_002,2023,顾问部,CANDIDATE_ONLY
+题目,1,,,REVIEW_REQUIRED,LOW,无充分证据将该原始值唯一映射到公司官方订单类型。,source_001,2023,学管部,CANDIDATE_ONLY

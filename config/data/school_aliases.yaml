@@ -1,0 +1,652 @@
+dictionary_name: school_aliases
+dictionary_version: '1.1'
+source: manual_business_confirmation
+status: ACTIVE
+business_rules_version: '3.0'
+canonical_entities:
+- canonical_name: Australian National University
+  canonical_country: 澳洲
+  aliases:
+  - 国立
+  - 澳国立
+  - 澳国立大学
+  - 澳大利亚国立
+  - 澳洲国立大学
+  source: manual_business_confirmation
+  status: ACTIVE
+- canonical_name: Carnegie Mellon University
+  canonical_country: 美国
+  aliases:
+  - cmu
+  source: manual_business_confirmation_round3
+  status: ACTIVE
+- canonical_name: City University of Hong Kong
+  canonical_country: 香港
+  aliases:
+  - 港城
+  - 港城大
+  - 香港城市大学
+  source: manual_business_confirmation
+  status: ACTIVE
+- canonical_name: City, University of London
+  canonical_country: 英国
+  aliases:
+  - 伦敦大学城市学院
+  source: safe_passed_round2
+  status: ACTIVE
+- canonical_name: Columbia University
+  canonical_country: 美国
+  aliases:
+  - 哥大
+  source: safe_passed_round2
+  status: ACTIVE
+- canonical_name: Curtin University
+  canonical_country: 澳洲
+  aliases:
+  - 科廷大学
+  source: safe_passed_round2
+  status: ACTIVE
+- canonical_name: De Montfort University
+  canonical_country: 英国
+  aliases:
+  - 德蒙
+  source: safe_passed_round2
+  status: ACTIVE
+- canonical_name: Deakin University
+  canonical_country: 澳洲
+  aliases:
+  - 迪肯
+  - 迪肯大学
+  source: safe_passed_round2
+  status: ACTIVE
+- canonical_name: Durham University
+  canonical_country: 英国
+  aliases:
+  - 杜伦
+  - 杜伦大学
+  source: safe_passed_round2
+  status: ACTIVE
+- canonical_name: Flinders University
+  canonical_country: 澳洲
+  aliases:
+  - 弗林德斯
+  source: safe_passed_round2
+  status: ACTIVE
+- canonical_name: Goldsmiths, University of London
+  canonical_country: 英国
+  aliases:
+  - 金史密斯学院
+  source: safe_passed_round2
+  status: ACTIVE
+- canonical_name: Heriot-Watt University
+  canonical_country: 英国
+  aliases:
+  - 赫瑞瓦特
+  source: safe_passed_round2
+  status: ACTIVE
+- canonical_name: Hong Kong Baptist University
+  canonical_country: 香港
+  aliases:
+  - 浸会大学
+  - 港浸会
+  - 香港浸会
+  - 香港浸会大学
+  source: safe_passed_round2
+  status: ACTIVE
+- canonical_name: Johns Hopkins University
+  canonical_country: 美国
+  aliases:
+  - JHU
+  source: safe_passed_round2
+  status: ACTIVE
+- canonical_name: Kaplan Business School
+  canonical_country: 澳洲
+  aliases:
+  - 卡普兰商学院
+  source: safe_passed_round2
+  status: ACTIVE
+- canonical_name: Keiser University
+  canonical_country: 美国
+  aliases:
+  - 凯泽大学
+  source: safe_passed_round2
+  status: ACTIVE
+- canonical_name: King's College London
+  canonical_country: 英国
+  aliases:
+  - KCL
+  - kcl
+  source: manual_business_confirmation
+  status: ACTIVE
+- canonical_name: La Trobe University
+  canonical_country: 澳洲
+  aliases:
+  - 拉筹伯
+  source: safe_passed_round2
+  status: ACTIVE
+- canonical_name: Lancaster University
+  canonical_country: 英国
+  aliases:
+  - 兰卡
+  - 兰卡斯特
+  source: safe_passed_round2
+  status: ACTIVE
+- canonical_name: Lingnan University
+  canonical_country: 香港
+  aliases:
+  - 岭南大学
+  source: safe_passed_round2
+  status: ACTIVE
+- canonical_name: London School of Economics and Political Science
+  canonical_country: 英国
+  aliases:
+  - LSE
+  source: safe_passed_round2
+  status: ACTIVE
+- canonical_name: Loughborough University
+  canonical_country: 英国
+  aliases:
+  - 拉夫堡
+  source: safe_passed_round2
+  status: ACTIVE
+- canonical_name: Manchester Metropolitan University
+  canonical_country: 英国
+  aliases:
+  - 曼彻斯特城市大学
+  source: safe_passed_round2
+  status: ACTIVE
+- canonical_name: Massey University
+  canonical_country: 新西兰
+  aliases:
+  - 梅西大学
+  source: safe_passed_round2
+  status: ACTIVE
+- canonical_name: Monash University
+  canonical_country: 澳洲
+  aliases:
+  - 莫纳什
+  - 莫那什
+  source: safe_passed_round2
+  status: ACTIVE
+- canonical_name: New York University
+  canonical_country: 美国
+  aliases:
+  - NYU
+  - 纽约大学
+  source: manual_business_confirmation
+  status: ACTIVE
+- canonical_name: Newcastle University
+  canonical_country: 英国
+  aliases:
+  - 纽卡
+  source: manual_business_confirmation
+  status: ACTIVE
+- canonical_name: PSB Academy
+  canonical_country: 新加坡
+  aliases:
+  - psb
+  source: safe_passed_round2
+  status: ACTIVE
+- canonical_name: Pennsylvania State University
+  canonical_country: 美国
+  aliases:
+  - psu
+  source: manual_business_confirmation_round3
+  status: ACTIVE
+- canonical_name: Queen Mary University of London
+  canonical_country: 英国
+  aliases:
+  - qm
+  - 玛丽女王
+  source: manual_business_confirmation
+  status: ACTIVE
+- canonical_name: Royal Holloway, University of London
+  canonical_country: 英国
+  aliases:
+  - 皇家霍洛威
+  source: safe_passed_round2
+  status: ACTIVE
+- canonical_name: Singapore Institute of Management
+  canonical_country: 新加坡
+  aliases:
+  - SIM
+  source: safe_passed_round2
+  status: ACTIVE
+- canonical_name: Technical University of Munich
+  canonical_country: 德国
+  aliases:
+  - TUM
+  source: safe_passed_round2
+  status: ACTIVE
+- canonical_name: The Chinese University of Hong Kong
+  canonical_country: 香港
+  aliases:
+  - 港中文
+  source: safe_passed_round2
+  status: ACTIVE
+- canonical_name: The Education University of Hong Kong
+  canonical_country: 香港
+  aliases:
+  - 教大
+  - 港教
+  - 香港教育大学
+  source: manual_business_confirmation
+  status: ACTIVE
+- canonical_name: The Hang Seng University of Hong Kong
+  canonical_country: 香港
+  aliases:
+  - 香港恒生
+  source: safe_passed_round2
+  status: ACTIVE
+- canonical_name: The Hong Kong Polytechnic University
+  canonical_country: 香港
+  aliases:
+  - 港理
+  - 港理工
+  - 香港理工
+  - 香港理工大学
+  source: manual_business_confirmation
+  status: ACTIVE
+- canonical_name: The Hong Kong University of Science and Technology
+  canonical_country: 香港
+  aliases:
+  - 港科大
+  - 香港科技
+  - 香港科技大学
+  source: safe_passed_round2
+  status: ACTIVE
+- canonical_name: The University of Hong Kong
+  canonical_country: 香港
+  aliases:
+  - HK U
+  - HKU
+  - 港大
+  - 香港大学
+  source: manual_business_confirmation
+  status: ACTIVE
+- canonical_name: The University of Western Australia
+  canonical_country: 澳洲
+  aliases:
+  - 西澳
+  - 西澳大学
+  source: safe_passed_round2
+  status: ACTIVE
+- canonical_name: Thompson Rivers University
+  canonical_country: 加拿大
+  aliases:
+  - 汤普森里佛斯
+  source: safe_passed_round2
+  status: ACTIVE
+- canonical_name: Torrens University Australia
+  canonical_country: 澳洲
+  aliases:
+  - 托伦斯大学
+  source: safe_passed_round2
+  status: ACTIVE
+- canonical_name: University College London
+  canonical_country: 英国
+  aliases:
+  - UCL
+  - ucl
+  - 伦敦
+  source: manual_business_confirmation
+  status: ACTIVE
+- canonical_name: University of Adelaide
+  canonical_country: 澳洲
+  aliases:
+  - 阿德
+  - 阿德莱德
+  source: manual_business_confirmation
+  status: ACTIVE
+- canonical_name: University of Auckland
+  canonical_country: 新西兰
+  aliases:
+  - 奥克兰
+  - 奥克兰大学
+  source: manual_business_confirmation
+  status: ACTIVE
+- canonical_name: University of Bristol
+  canonical_country: 英国
+  aliases:
+  - 布里斯托
+  source: safe_passed_round2
+  status: ACTIVE
+- canonical_name: University of California, Berkeley
+  canonical_country: 美国
+  aliases:
+  - 伯克利
+  source: manual_business_confirmation_round3
+  status: ACTIVE
+- canonical_name: University of California, Los Angeles
+  canonical_country: 美国
+  aliases:
+  - ucla
+  source: safe_passed_round2
+  status: ACTIVE
+- canonical_name: University of Essex
+  canonical_country: 英国
+  aliases:
+  - 埃塞克斯
+  source: safe_passed_round2
+  status: ACTIVE
+- canonical_name: University of Exeter
+  canonical_country: 英国
+  aliases:
+  - 埃克塞特
+  source: safe_passed_round2
+  status: ACTIVE
+- canonical_name: University of Glasgow
+  canonical_country: 英国
+  aliases:
+  - 格拉
+  - 格拉斯哥
+  source: manual_business_confirmation
+  status: ACTIVE
+- canonical_name: University of Leeds
+  canonical_country: 英国
+  aliases:
+  - 利兹
+  - 利兹大学
+  source: safe_passed_round2
+  status: ACTIVE
+- canonical_name: University of Leicester
+  canonical_country: 英国
+  aliases:
+  - 莱斯特
+  source: safe_passed_round2
+  status: ACTIVE
+- canonical_name: University of Manchester
+  canonical_country: 英国
+  aliases:
+  - 曼大
+  - 曼彻斯特
+  source: manual_business_confirmation
+  status: ACTIVE
+- canonical_name: University of Melbourne
+  canonical_country: 澳洲
+  aliases:
+  - 墨大
+  - 墨尔本
+  source: manual_business_confirmation
+  status: ACTIVE
+- canonical_name: University of New South Wales
+  canonical_country: 澳洲
+  aliases:
+  - unsw
+  - 新南
+  - 新南大学
+  - 新南威尔士
+  source: manual_business_confirmation
+  status: ACTIVE
+- canonical_name: University of Nottingham Ningbo China
+  canonical_country: 中国
+  aliases:
+  - 宁诺
+  source: safe_passed_round2
+  status: ACTIVE
+- canonical_name: University of Pittsburgh
+  canonical_country: 美国
+  aliases:
+  - pitt
+  source: safe_passed_round2
+  status: ACTIVE
+- canonical_name: University of Portsmouth
+  canonical_country: 英国
+  aliases:
+  - 朴茨茅斯
+  source: safe_passed_round2
+  status: ACTIVE
+- canonical_name: University of Queensland
+  canonical_country: 澳洲
+  aliases:
+  - UQ
+  - uq
+  - 昆士兰
+  - 昆士兰大学
+  source: manual_business_confirmation
+  status: ACTIVE
+- canonical_name: University of Reading
+  canonical_country: 英国
+  aliases:
+  - 雷丁
+  source: safe_passed_round2
+  status: ACTIVE
+- canonical_name: University of Sheffield
+  canonical_country: 英国
+  aliases:
+  - 谢菲
+  - 谢菲尔德
+  source: manual_business_confirmation
+  status: ACTIVE
+- canonical_name: University of Southampton
+  canonical_country: 英国
+  aliases:
+  - 南安
+  - 南安普顿
+  source: manual_business_confirmation
+  status: ACTIVE
+- canonical_name: University of Southern California
+  canonical_country: 美国
+  aliases:
+  - 南加州大学
+  source: safe_passed_round2
+  status: ACTIVE
+- canonical_name: University of Surrey
+  canonical_country: 英国
+  aliases:
+  - 萨里大学
+  source: safe_passed_round2
+  status: ACTIVE
+- canonical_name: University of Sydney
+  canonical_country: 澳洲
+  aliases:
+  - 悉大
+  - 悉尼大学
+  source: manual_business_confirmation
+  status: ACTIVE
+- canonical_name: University of Technology Sydney
+  canonical_country: 澳洲
+  aliases:
+  - UTS
+  - 悉尼科技大学
+  source: safe_passed_round2
+  status: ACTIVE
+- canonical_name: University of Warwick
+  canonical_country: 英国
+  aliases:
+  - 华威
+  - 华威大学
+  source: manual_business_confirmation
+  status: ACTIVE
+- canonical_name: University of York
+  canonical_country: 英国
+  aliases:
+  - 约克
+  source: manual_business_confirmation
+  status: ACTIVE
+- canonical_name: University of the Arts London
+  canonical_country: 英国
+  aliases:
+  - ual
+  source: manual_business_confirmation
+  status: ACTIVE
+- canonical_name: Washington University in St. Louis
+  canonical_country: 美国
+  aliases:
+  - 圣路易斯华盛顿
+  source: safe_passed_round2
+  status: ACTIVE
+non_school_values:
+- original_value: /
+  classification: NON_SCHOOL
+  exclude_from_school_ranking: true
+  source: manual_business_confirmation
+  status: ACTIVE
+- original_value: othm
+  classification: NON_SCHOOL
+  exclude_from_school_ranking: true
+  source: safe_passed_round2
+  status: ACTIVE
+- original_value: 中外合办
+  classification: NON_SCHOOL
+  exclude_from_school_ranking: true
+  source: safe_passed_round2
+  status: ACTIVE
+- original_value: 未知
+  classification: UNKNOWN
+  exclude_from_school_ranking: true
+  source: manual_business_confirmation
+  status: ACTIVE
+- original_value: 电影
+  classification: NON_SCHOOL
+  exclude_from_school_ranking: true
+  source: safe_passed_round2
+  status: ACTIVE
+- original_value: 语言班
+  classification: NON_SCHOOL
+  exclude_from_school_ranking: true
+  source: safe_passed_round2
+  status: ACTIVE
+- original_value: 香港
+  classification: NON_SCHOOL
+  exclude_from_school_ranking: true
+  source: safe_passed_round2
+  status: ACTIVE
+- original_value: 马来
+  classification: NON_SCHOOL
+  exclude_from_school_ranking: true
+  source: safe_passed_round2
+  status: ACTIVE
+- original_value: 高中
+  classification: NON_SCHOOL
+  exclude_from_school_ranking: true
+  source: safe_passed_round2
+  status: ACTIVE
+- original_value: 高等职业学校
+  classification: NON_SCHOOL
+  exclude_from_school_ranking: true
+  source: safe_passed_round2
+  status: ACTIVE
+invariants:
+  school_original_retained: true
+  country_overwrite_allowed: false
+  country_conflict_marker: COUNTRY_SCHOOL_CONFLICT
+alias_provenance:
+  利兹: safe_passed_round2
+  莫纳什: safe_passed_round2
+  布里斯托: safe_passed_round2
+  杜伦: safe_passed_round2
+  埃克塞特: safe_passed_round2
+  赫瑞瓦特: safe_passed_round2
+  迪肯: safe_passed_round2
+  德蒙: safe_passed_round2
+  拉夫堡: safe_passed_round2
+  雷丁: safe_passed_round2
+  香港科技大学: safe_passed_round2
+  LSE: safe_passed_round2
+  弗林德斯: safe_passed_round2
+  托伦斯大学: safe_passed_round2
+  曼彻斯特城市大学: safe_passed_round2
+  浸会大学: safe_passed_round2
+  港浸会: safe_passed_round2
+  皇家霍洛威: safe_passed_round2
+  萨里大学: safe_passed_round2
+  香港恒生: safe_passed_round2
+  HK U: safe_passed_round2
+  HKU: safe_passed_round2
+  JHU: safe_passed_round2
+  SIM: safe_passed_round2
+  TUM: safe_passed_round2
+  UTS: safe_passed_round2
+  pitt: safe_passed_round2
+  psb: safe_passed_round2
+  ucla: safe_passed_round2
+  uq: safe_passed_round2
+  伦敦大学城市学院: safe_passed_round2
+  兰卡: safe_passed_round2
+  兰卡斯特: safe_passed_round2
+  凯泽大学: safe_passed_round2
+  利兹大学: safe_passed_round2
+  南加州大学: safe_passed_round2
+  卡普兰商学院: safe_passed_round2
+  哥大: safe_passed_round2
+  圣路易斯华盛顿: safe_passed_round2
+  埃塞克斯: safe_passed_round2
+  宁诺: safe_passed_round2
+  岭南大学: safe_passed_round2
+  悉尼科技大学: safe_passed_round2
+  拉筹伯: safe_passed_round2
+  教大: safe_passed_round2
+  新南大学: safe_passed_round2
+  朴茨茅斯: safe_passed_round2
+  杜伦大学: safe_passed_round2
+  梅西大学: safe_passed_round2
+  汤普森里佛斯: safe_passed_round2
+  港中文: safe_passed_round2
+  港理: safe_passed_round2
+  港理工: safe_passed_round2
+  港科大: safe_passed_round2
+  澳国立大学: safe_passed_round2
+  澳大利亚国立: safe_passed_round2
+  玛丽女王: safe_passed_round2
+  科廷大学: safe_passed_round2
+  莫那什: safe_passed_round2
+  莱斯特: safe_passed_round2
+  西澳: safe_passed_round2
+  西澳大学: safe_passed_round2
+  迪肯大学: safe_passed_round2
+  金史密斯学院: safe_passed_round2
+  香港浸会: safe_passed_round2
+  香港浸会大学: safe_passed_round2
+  香港科技: safe_passed_round2
+  cmu: manual_business_confirmation_round3
+  psu: manual_business_confirmation_round3
+  伯克利: manual_business_confirmation_round3
+updated_at: '2026-08-20T09:55:48Z'
+update_note: 'V1 school writeback: 67 safe-passed Round-2 aliases and 3 manual Round-3
+  approvals added. Eight safe-passed Round-2 NON_SCHOOL values classified in the same
+  V1 writeback.'
+non_university_entities:
+- original_value: 多伦多高中
+  entity_type: HIGH_SCHOOL
+  classification: NON_UNIVERSITY_ENTITY
+  exclude_from_university_ranking: true
+  source: manual_business_confirmation_round3
+  status: ACTIVE
+- original_value: 麦唐纳国际学校
+  entity_type: INTERNATIONAL_SCHOOL
+  classification: NON_UNIVERSITY_ENTITY
+  exclude_from_university_ranking: true
+  source: manual_business_confirmation_round3
+  status: ACTIVE
+unresolved_values:
+- original_value: UCD
+  classification: UNRESOLVED
+  exclude_from_university_ranking: true
+  source: manual_business_confirmation_round3
+  status: ACTIVE
+- original_value: 加州大学
+  classification: UNRESOLVED
+  exclude_from_university_ranking: true
+  source: manual_business_confirmation_round3
+  status: ACTIVE
+- original_value: 北卡
+  classification: UNRESOLVED
+  exclude_from_university_ranking: true
+  source: manual_business_confirmation_round3
+  status: ACTIVE
+- original_value: 华盛顿
+  classification: UNRESOLVED
+  exclude_from_university_ranking: true
+  source: manual_business_confirmation_round3
+  status: ACTIVE
+- original_value: 波士顿
+  classification: UNRESOLVED
+  exclude_from_university_ranking: true
+  source: manual_business_confirmation_round3
+  status: ACTIVE
+- original_value: 维多利亚
+  classification: UNRESOLVED
+  exclude_from_university_ranking: true
+  source: manual_business_confirmation_round3
+  status: ACTIVE

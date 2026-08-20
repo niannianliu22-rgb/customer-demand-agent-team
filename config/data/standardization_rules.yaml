@@ -1,0 +1,961 @@
+# Machine-readable business rules registry.
+# Human-readable single source of truth: policies/business_rules.md
+# If this file and business_rules.md ever disagree, business_rules.md wins,
+# and the disagreement itself is a BUSINESS_RULE_CONFLICT (see business_rules.md, section 5).
+#
+# No Agent may edit this file's `rules` content. Only a human may add or
+# revise a rule, and doing so requires bumping rules_version and adding a
+# changelog entry (see business_rules.md, section 6).
+
+rules_version: "17.0"
+last_updated: "2026-08-20"
+source: manual_business_confirmation
+single_source_of_truth: policies/business_rules.md
+
+priority_order:
+  - manual_business_confirmation_active_rules   # highest
+  - project_default_policies
+  - agent_model_inference                        # lowest
+
+conflict_handling:
+  on_data_not_covered_by_active_rule: >
+    Agent MUST NOT modify this file, MUST NOT guess a resolution, and MUST
+    emit an unresolved item with status "BUSINESS_RULE_CONFLICT" citing the
+    relevant rule_id (if any) and the conflicting data evidence. Escalates to
+    human for confirmation before any rule is added or changed.
+  rule_modification_authority: human_only
+
+rules:
+  - rule_id: RULE-001
+    rule_name: fully_blank_rows_excluded
+    scope:
+      - data_standardization_agent
+      - data_quality_agent
+      - data_gate
+    business_definition: >
+      A row whose every field is null/empty is Excel structural noise, not
+      business data. Such rows are excluded from business_row_count, from
+      the denominator of field missing-rate calculations, and from sample
+      counts. They must never be counted as a Data Quality risk and must
+      never by themselves trigger CONDITIONAL or REJECT. Raw input files
+      must never be deleted or modified because of this rule — exclusion
+      only happens in computed/derived artifacts.
+    behavior:
+      exclude_from_business_row_count: true
+      exclude_from_missing_rate_denominator: true
+      exclude_from_sample_count: true
+      counts_as_quality_risk: false
+      triggers_conditional_or_reject: false
+      raw_file_modification_allowed: false
+    examples:
+      - context: "RUN-202608-DEMAND-001, real scan"
+        note: "6 sources each had 19-213 fully-blank trailing rows in their used range"
+    status: ACTIVE
+    source: manual_business_confirmation
+    created_at: "2026-08-20"
+    affected_agents:
+      - Data Standardization Agent
+      - Data Quality Agent
+
+  - rule_id: RULE-002
+    rule_name: date_pattern_month_dot_day
+    scope:
+      - data_standardization_agent
+    business_definition: >
+      A date expression of the form M.D (month dot day) is standardized to
+      {source.year}-MM-DD. If the raw value carries no year, the year MUST
+      come from the record's source.year (from source_manifest.json) — never
+      from the current system date.
+    pattern: "M.D"
+    year_source: source.year
+    examples:
+      - input: "8.1"
+        output: "{source.year}-08-01"
+      - input: "8.25"
+        output: "{source.year}-08-25"
+    status: ACTIVE
+    source: manual_business_confirmation
+    created_at: "2026-08-20"
+    affected_agents:
+      - Data Standardization Agent
+
+  - rule_id: RULE-003
+    rule_name: date_with_trailing_text
+    scope:
+      - data_standardization_agent
+    business_definition: >
+      When a date field contains trailing non-date text, extract the clear
+      M.D portion and standardize it per RULE-002. The trailing text is
+      discarded from date_standardized (it is still visible in date_original,
+      see RULE-006).
+    pattern: "M.D + trailing_text"
+    depends_on: RULE-002
+    examples:
+      - input: "8.25due"
+        output: "{source.year}-08-25"
+    status: ACTIVE
+    source: manual_business_confirmation
+    created_at: "2026-08-20"
+    affected_agents:
+      - Data Standardization Agent
+
+  - rule_id: RULE-004
+    rule_name: date_month_only
+    scope:
+      - data_standardization_agent
+    business_definition: >
+      When a date field states only a month (no day), the business rule is
+      to take day 1 of that month.
+    pattern: "M月份"
+    examples:
+      - input: "10月份"
+        output: "{source.year}-10-01"
+    status: ACTIVE
+    source: manual_business_confirmation
+    created_at: "2026-08-20"
+    affected_agents:
+      - Data Standardization Agent
+
+  - rule_id: RULE-005
+    rule_name: date_range_take_start
+    scope:
+      - data_standardization_agent
+    business_definition: >
+      When a date field is expressed as a range (M.D1-M.D2), the standardized
+      date is the range's start date.
+    pattern: "M.D1-M.D2"
+    examples:
+      - input: "8.2-8.9"
+        output: "{source.year}-08-02"
+    status: ACTIVE
+    source: manual_business_confirmation
+    created_at: "2026-08-20"
+    affected_agents:
+      - Data Standardization Agent
+
+  - rule_id: RULE-006
+    rule_name: date_original_value_retained
+    scope:
+      - data_standardization_agent
+      - data_quality_agent
+    business_definition: >
+      When standardizing a date field (applying RULE-002 through RULE-005),
+      both date_original (untouched raw value) and date_standardized (the
+      standardized result) MUST be present in the output. Neither field may
+      be dropped, and date_standardized must never overwrite or delete
+      date_original.
+    output_fields:
+      - date_original
+      - date_standardized
+    examples:
+      - input: "8.25due"
+        source_year: 2023
+        date_original: "8.25due"
+        date_standardized: "2023-08-25"
+    status: ACTIVE
+    source: manual_business_confirmation
+    created_at: "2026-08-20"
+    affected_agents:
+      - Data Standardization Agent
+      - Data Quality Agent
+
+  - rule_id: RULE-007
+    rule_name: channel_field_equivalence
+    scope:
+      - schema_mapping_agent
+    business_definition: >
+      The raw field names 客户来源 and 客户类型 carry the same business
+      meaning and are unified into the canonical field channel.
+    source_field_variants:
+      - 客户来源
+      - 客户类型
+    canonical_field: channel
+    examples:
+      - context: "RUN-202608-DEMAND-001"
+        note: "客户来源 used by source_001/003 (学管部); 客户类型 used by source_002/004/005/006"
+    status: ACTIVE
+    source: manual_business_confirmation
+    created_at: "2026-08-20"
+    affected_agents:
+      - Schema Mapping Agent
+
+  - rule_id: RULE-008
+    rule_name: task_type_field_equivalence
+    scope:
+      - schema_mapping_agent
+    business_definition: >
+      The raw field names 作业形式, 作业类型, and 咨询内容 carry the same
+      business meaning and are unified into the canonical field task_type.
+      This rule confirms FIELD-LEVEL semantic equivalence only. It does NOT
+      confirm how the field's internal values should be standardized.
+    source_field_variants:
+      - 作业形式
+      - 作业类型
+      - 咨询内容
+    canonical_field: task_type
+    value_standardization_confirmed: false
+    unconfirmed_value_examples:
+      - essay
+      - 补考
+      - 包课
+      - 毕业论文辅导
+      - 文献综述
+      - 润色修改
+    value_standardization_note: >
+      Agents MUST NOT merge or re-categorize task_type values on their own.
+      Any scenario requiring value-level standardization of task_type must
+      emit BUSINESS_RULE_CONFLICT and wait for human confirmation before a
+      new rule is registered.
+    examples:
+      - context: "RUN-202608-DEMAND-001"
+        note: "作业形式 used by source_001/003/005; 作业类型 used by source_004/006; 咨询内容 used by source_002"
+    status: ACTIVE
+    source: manual_business_confirmation
+    created_at: "2026-08-20"
+    affected_agents:
+      - Schema Mapping Agent
+
+  - rule_id: RULE-009
+    rule_name: aud_amount_converted_to_cny
+    scope:
+      - schema_mapping_agent
+      - data_standardization_agent
+    business_definition: >
+      The raw field 订单金额/澳刀 records an actual AUD payment amount.
+      Standardization must produce three fields: amount_original (raw
+      numeric value, unmodified), currency_original (fixed "AUD"), and
+      amount_cny (amount_original * 4.5, rounded to 2 decimal places).
+      This project currently uses a FIXED business exchange rate of
+      1 AUD = 4.5 CNY. Agents MUST NOT call a live/real-time exchange rate
+      to replace this fixed rate.
+    source_field_variants:
+      - 订单金额/澳刀
+    canonical_field: amount
+    output_fields:
+      - amount_original
+      - currency_original
+      - amount_cny
+    fixed_exchange_rate:
+      from: AUD
+      to: CNY
+      rate: 4.5
+      live_rate_lookup_forbidden: true
+    rounding: "amount_cny rounded to 2 decimal places"
+    examples:
+      - input: {amount_original: 1111.11, currency_original: "AUD"}
+        output: {amount_cny: 5000.00}
+    status: ACTIVE
+    source: manual_business_confirmation
+    created_at: "2026-08-20"
+    affected_agents:
+      - Schema Mapping Agent
+      - Data Standardization Agent
+
+  - rule_id: RULE-010
+    rule_name: cny_amount_fields
+    scope:
+      - schema_mapping_agent
+      - data_standardization_agent
+    business_definition: >
+      The raw fields 订单金额/人民币, 金额, and 成交金额 all represent CNY
+      amounts and require no currency conversion. Standardize to:
+      amount_original (raw amount), currency_original (fixed "CNY"),
+      amount_cny (equal to amount_original, no conversion applied).
+    source_field_variants:
+      - 订单金额/人民币
+      - 金额
+      - 成交金额
+    canonical_field: amount
+    output_fields:
+      - amount_original
+      - currency_original
+      - amount_cny
+    examples:
+      - input: {amount_original: 2700, currency_original: "CNY"}
+        output: {amount_cny: 2700}
+    status: ACTIVE
+    source: manual_business_confirmation
+    created_at: "2026-08-20"
+    affected_agents:
+      - Schema Mapping Agent
+      - Data Standardization Agent
+    note: >
+      RULE-009 and RULE-010 together resolve the previously REVIEW_REQUIRED
+      status of the amount field (cross-source currency-label inconsistency).
+      amount-related fields are CONFIRMED as of registry v2.0.
+
+  - rule_id: RULE-011
+    rule_name: non_analysis_fields_excluded
+    scope:
+      - schema_mapping_agent
+      - data_standardization_agent
+      - historical_demand_pattern_agent
+    business_definition: >
+      The raw fields 客户备注, 跟进反馈, and 未成交原因 are not core data
+      needed for this project's customer-demand trend analysis and do not
+      enter the unified analysis dataset. Schema Mapping Agent must mark
+      them EXCLUDED_BY_BUSINESS_RULE; they must not enter unified_dataset;
+      no value standardization is performed on them; they must not be used
+      as input to Historical Demand Pattern Agent. Exclusion applies ONLY to
+      the analysis schema — raw Excel files must never be deleted or
+      modified because of this rule.
+    source_field_variants:
+      - 客户备注
+      - 跟进反馈
+      - 未成交原因
+    canonical_field: null
+    exclusion_status: EXCLUDED_BY_BUSINESS_RULE
+    raw_file_modification_allowed: false
+    status: ACTIVE
+    source: manual_business_confirmation
+    created_at: "2026-08-20"
+    affected_agents:
+      - Schema Mapping Agent
+      - Data Standardization Agent
+      - Historical Demand Pattern Agent
+
+  - rule_id: RULE-012
+    rule_name: undergraduate_year_normalized
+    scope:
+      - schema_mapping_agent
+      - data_standardization_agent
+    business_definition: >
+      学历 is standardized to degree_level (original value retained in
+      degree_level_original — must not be dropped). If the raw value is
+      大一/大二/大三/大四, normalize degree_level to 本科 (v1 of this
+      project does not analyze undergraduate year separately; year_level is
+      NOT generated). Other clear degree values map as-is: 本科->本科,
+      硕士->硕士, 博士->博士, 高中->高中. Values that cannot be classified
+      map to UNKNOWN.
+    source_field_variants:
+      - 学历
+    canonical_field: degree_level
+    output_fields:
+      - degree_level_original
+      - degree_level
+    value_mapping:
+      - {from: ["大一", "大二", "大三", "大四"], to: "本科"}
+      - {from: ["本科"], to: "本科"}
+      - {from: ["硕士"], to: "硕士"}
+      - {from: ["博士"], to: "博士"}
+      - {from: ["高中"], to: "高中"}
+      - {from: "*unrecognized*", to: "UNKNOWN"}
+    examples:
+      - input: "大二"
+        output: {degree_level_original: "大二", degree_level: "本科"}
+      - input: "硕士"
+        output: {degree_level_original: "硕士", degree_level: "硕士"}
+    status: ACTIVE
+    source: manual_business_confirmation
+    created_at: "2026-08-20"
+    affected_agents:
+      - Schema Mapping Agent
+      - Data Standardization Agent
+
+  - rule_id: RULE-013
+    rule_name: school_entity_standardization
+    scope:
+      - data_standardization_agent
+      - data_quality_agent
+      - data_gate
+      - historical_demand_pattern_agent
+    business_definition: >
+      school_aliases.yaml is the active manual dictionary for school entities.
+      Preserve school_original, write canonical school to school, and never
+      infer aliases outside the dictionary. / maps to NON_SCHOOL and 未知 maps
+      to UNKNOWN; neither may participate in school ranking or aggregation.
+    dictionary_path: config/data/school_aliases.yaml
+    output_fields:
+      - school_original
+      - school
+      - country_original
+      - country_school_conflict
+    non_school_values:
+      "/": NON_SCHOOL
+      "未知": UNKNOWN
+    country_consistency:
+      canonical_country_from_dictionary: true
+      conflict_marker: COUNTRY_SCHOOL_CONFLICT
+      country_overwrite_allowed: false
+    status: ACTIVE
+    source: manual_business_confirmation
+    created_at: "2026-08-20"
+    affected_agents:
+      - Data Standardization Agent
+      - Data Quality Agent
+      - Data Gate
+      - Historical Demand Pattern Agent
+
+  - rule_id: RULE-014
+    rule_name: task_type_xuenianbao_and_fudao_nianbao_are_distinct
+    scope:
+      - data_standardization_agent
+      - data_quality_agent
+      - data_gate
+      - historical_demand_pattern_agent
+    business_definition: >
+      学年包 and 辅导年包 are distinct official task types. A raw 学年包
+      must standardize only to 学年包; a raw 辅导年包 must standardize only to
+      辅导年包. Mutual mapping, replacement, or synonym merging is forbidden.
+    dictionary_path: config/dimensions/task_type/canonical.csv
+    approved_value_mapping:
+      - from: "学年包"
+        to: "学年包"
+        official_task_type_id: MANUAL-TASK-TYPE-001
+      - from: "辅导年包"
+        to: "辅导年包"
+        official_task_type_id_source: official_order_types.xlsx
+    merging_forbidden_pairs:
+      - ["学年包", "辅导年包"]
+    raw_company_excel_modification_allowed: false
+    status: ACTIVE
+    source: manual_business_confirmation
+    created_at: "2026-08-20"
+    affected_agents:
+      - Data Standardization Agent
+      - Data Quality Agent
+      - Data Gate
+      - Historical Demand Pattern Agent
+
+  - rule_id: RULE-015
+    rule_name: manually_confirmed_task_type_aliases_business_substance_first
+    scope:
+      - data_standardization_agent
+      - data_quality_agent
+      - data_gate
+      - historical_demand_pattern_agent
+    business_definition: >
+      Apply only the explicitly confirmed raw-value mappings below. Payment
+      action text such as 充值, 补款, 定金, and 预存 must not by itself cause
+      a value to be classified as NON_TASK. This exception must not be
+      generalized to any raw value not listed here.
+    dictionary_path: config/dimensions/task_type/canonical.csv
+    approved_value_mapping:
+      - from: "预存"
+        to: "预存"
+        official_task_type_id: MANUAL-TASK-TYPE-002
+      - from: "SVIP预存"
+        to: "预存"
+        official_task_type_id: MANUAL-TASK-TYPE-002
+      - from: "vip充值"
+        to: "预存"
+        official_task_type_id: MANUAL-TASK-TYPE-002
+      - from: "包课补款"
+        to: "包课"
+        official_task_type_id: "5"
+      - from: "预存升级学年包定金"
+        to: "学年包"
+        official_task_type_id: MANUAL-TASK-TYPE-001
+      - from: "毕业无忧定金"
+        to: "毕业无忧"
+        official_task_type_id: MANUAL-TASK-TYPE-003
+    unknown_value_handling:
+      "/": UNKNOWN
+      "": UNKNOWN
+    unknown_value_inference_allowed: false
+    status: ACTIVE
+    source: manual_business_confirmation
+    created_at: "2026-08-20"
+    affected_agents:
+      - Data Standardization Agent
+      - Data Quality Agent
+      - Data Gate
+      - Historical Demand Pattern Agent
+
+  - rule_id: RULE-016
+    rule_name: multi_task_component_standardization
+    scope:
+      - data_standardization_agent
+      - data_quality_agent
+      - data_gate
+      - historical_demand_pattern_agent
+    business_definition: >
+      A MULTI_TASK raw value must not be compressed to one task_type. Preserve
+      task_type_original, set task_type_mode to MULTI_TASK, and retain an
+      ordered task_type_components list. Every resolved component must be an
+      official value in canonical.csv.
+    output_fields:
+      - task_type_original
+      - task_type_mode
+      - task_type_components
+      - unresolved_components
+      - component_mapping_status
+    component_output_format: JSON_array_of_exact_official_task_type_values
+    task_type_mode: MULTI_TASK
+    approved_component_normalization:
+      word_count_or_续写_or_补写_as_writing: essay
+      LR部分润色_or_大论文润色: 润色-proofreading
+      数据分析: Analysis
+      演讲稿: presentation
+      quiz: online test-exam/quiz
+      answer: 做题
+      作业: assignment
+      视频: video
+    restriction: >
+      The approved component normalization applies only to the reviewed
+      MULTI_TASK values in RUN-202608-DEMAND-001. Do not generalize it to
+      new raw values without manual confirmation.
+    unresolved_component_handling:
+      marker: COMPONENT_REVIEW_REQUIRED
+      automatic_official_type_addition_allowed: false
+    analysis_usage:
+      multi_task_count_allowed: true
+      expand_resolved_components_allowed: true
+      include_unresolved_components_in_official_aggregation: false
+    status: ACTIVE
+    source: manual_business_confirmation
+    created_at: "2026-08-20"
+    affected_agents:
+      - Data Standardization Agent
+      - Data Quality Agent
+      - Data Gate
+      - Historical Demand Pattern Agent
+
+  - rule_id: RULE-017
+    rule_name: multi_task_manual_component_additions_and_resit_mapping
+    scope:
+      - data_standardization_agent
+      - data_quality_agent
+      - data_gate
+      - historical_demand_pattern_agent
+    business_definition: >
+      Adds 数据收集, 降重, and 入学测试 as ACTIVE official task types, and
+      applies the following manually confirmed MULTI_TASK component mappings.
+      The former v7 resit submapping (补考 / 补考作业 -> 考试) is DEPRECATED
+      and superseded by RULE-021. The other listed MULTI_TASK mappings remain
+      ACTIVE.
+    dictionary_path: config/dimensions/task_type/canonical.csv
+    added_official_task_types:
+      - {name: "数据收集", official_task_type_id: MANUAL-TASK-TYPE-004}
+      - {name: "降重", official_task_type_id: MANUAL-TASK-TYPE-005}
+      - {name: "入学测试", official_task_type_id: MANUAL-TASK-TYPE-006}
+    approved_multi_task_components:
+      - {raw_value: "数据收集+分析", components: ["数据收集", "Analysis"]}
+      - {raw_value: "润色+降重+续写2000词", components: ["润色-proofreading", "降重", "essay"]}
+      - {raw_value: "选课+入学测试", components: ["选课", "入学测试"]}
+    deprecated_resit_component_mapping:
+      status: DEPRECATED
+      superseded_by: RULE-021
+      historical_mappings:
+        - {raw_value: "补考➕毕业论文", components: ["考试", "Dissertation"]}
+        - {raw_value: "补考作业+考试", components: ["考试"]}
+    multi_task_component_deduplication: preserve_first_occurrence_order
+    restriction: >
+      Do not generalize these added types or resit mappings to unconfirmed raw
+      values. RULE-014 remains in force: 学年包 and 辅导年包 must not merge.
+    status: ACTIVE
+    source: manual_business_confirmation
+    created_at: "2026-08-20"
+    affected_agents:
+      - Data Standardization Agent
+      - Data Quality Agent
+      - Data Gate
+      - Historical Demand Pattern Agent
+
+  - rule_id: RULE-018
+    rule_name: proposed_medium_final_manual_task_type_aliases
+    scope:
+      - data_standardization_agent
+      - data_quality_agent
+      - data_gate
+      - historical_demand_pattern_agent
+    business_definition: >
+      The 41 Single Task PROPOSED_MEDIUM values in RUN-202608-DEMAND-001 are
+      manually approved. Apply only the exact aliases in active_aliases.yaml;
+      do not generalize its entries to other raw values.
+    dictionary_path: config/dimensions/task_type/active_aliases.yaml
+    added_official_task_types:
+      - {name: "毕业论文辅导", official_task_type_id: MANUAL-TASK-TYPE-007}
+      - {name: "作业", official_task_type_id: MANUAL-TASK-TYPE-008}
+      - {name: "小组作业", official_task_type_id: MANUAL-TASK-TYPE-009}
+    special_aliases:
+      - {from: "大论文辅导", to: "毕业论文辅导"}
+      - {from: "作业", to: "作业"}
+      - {from: "期末作业", to: "作业"}
+      - {from: "小组作业", to: "小组作业"}
+    review_required_auto_mapping_allowed: false
+    status: ACTIVE
+    source: manual_business_confirmation
+    created_at: "2026-08-20"
+    affected_agents:
+      - Data Standardization Agent
+      - Data Quality Agent
+      - Data Gate
+      - Historical Demand Pattern Agent
+
+  - rule_id: RULE-019
+    rule_name: dissertation_proofreading_classification
+    scope:
+      - data_standardization_agent
+      - data_quality_agent
+      - data_gate
+      - historical_demand_pattern_agent
+    business_definition: >
+      Classify proofreading values in this strict priority order: explicit
+      dissertation semantics, parsed word_count > 10000, then ordinary
+      proofreading. Equality at 10000 does not satisfy the word-count rule.
+    dictionary_path: config/dimensions/task_type/classification_rules.yaml
+    added_official_task_type:
+      name: "毕业论文润色"
+      official_task_type_id: MANUAL-TASK-TYPE-010
+    priority_order:
+      - explicit_dissertation_semantics
+      - parsed_word_count_gt_10000
+      - ordinary_proofreading
+    explicit_dissertation_markers:
+      - 大论文润色
+      - 毕业论文润色
+      - Dissertation润色
+    explicit_dissertation_target: 毕业论文润色
+    word_count_rule:
+      applies_when: raw_value_is_proofreading_service
+      comparison: "> 10000"
+      target: 毕业论文润色
+      equal_to_10000_uses_word_count_rule: false
+    ordinary_proofreading_target: 润色-proofreading
+    status: ACTIVE
+    source: manual_business_confirmation
+    created_at: "2026-08-20"
+    affected_agents:
+      - Data Standardization Agent
+      - Data Quality Agent
+      - Data Gate
+      - Historical Demand Pattern Agent
+
+  - rule_id: RULE-020
+    rule_name: remaining_risk_high_confidence_task_type_aliases
+    scope:
+      - data_standardization_agent
+      - data_quality_agent
+      - data_gate
+      - historical_demand_pattern_agent
+    business_definition: >
+      Applies the nine manually confirmed remaining Risk High-Confidence
+      single-task mappings. Only exact raw values in the referenced dictionary
+      may use this rule; no inference to other values is permitted.
+    dictionary_path: config/dimensions/task_type/risk_high_confirmed_aliases.yaml
+    review_required_auto_mapping_allowed: false
+    official_task_type_addition_allowed: false
+    status: ACTIVE
+    source: manual_business_confirmation
+    created_at: "2026-08-20"
+    affected_agents:
+      - Data Standardization Agent
+      - Data Quality Agent
+      - Data Gate
+      - Historical Demand Pattern Agent
+
+  - rule_id: RULE-021
+    rule_name: resit_is_independent_official_task_type
+    scope:
+      - data_standardization_agent
+      - data_quality_agent
+      - data_gate
+      - historical_demand_pattern_agent
+    business_definition: >
+      补考 is an independent official task type. 补考, 补考作业, and explicit
+      resit variants map to 补考; word count, duration, essay, or
+      tutoring modifiers do not change the core task type. 补考 and 考试 must
+      remain distinct and must never be merged. Explicit 重写 values are
+      governed by the more-specific RULE-022.
+    dictionary_path: config/dimensions/task_type/resit_aliases.yaml
+    added_official_task_type:
+      name: "补考"
+      official_task_type_id: MANUAL-TASK-TYPE-011
+    approved_multi_task_components:
+      - {raw_value: "补考➕毕业论文", components: ["补考", "Dissertation"]}
+      - {raw_value: "补考作业+考试", components: ["补考", "考试"]}
+    deprecated_predecessor:
+      rule_id: RULE-017
+      mapping: "补考 / 补考作业 -> 考试"
+      status: DEPRECATED
+    status: ACTIVE
+    source: manual_business_confirmation
+    created_at: "2026-08-20"
+    affected_agents:
+      - Data Standardization Agent
+      - Data Quality Agent
+      - Data Gate
+      - Historical Demand Pattern Agent
+
+  - rule_id: RULE-022
+    rule_name: rewrite_is_resit_not_essay
+    scope:
+      - data_standardization_agent
+      - data_quality_agent
+      - data_gate
+      - historical_demand_pattern_agent
+    business_definition: >
+      In the current company business definition, 重写 is a resit business
+      type and maps to 补考. It is not an independent official task type and
+      must not be classified by an essay, ME, or other underlying-task label.
+    dictionary_path: config/dimensions/task_type/rewrite_aliases.yaml
+    approved_single_task_aliases:
+      - {raw_value: "2500词重写", canonical_task_type: "补考"}
+      - {raw_value: "essay重写", canonical_task_type: "补考"}
+      - {raw_value: "me重写", canonical_task_type: "补考"}
+    deprecated_predecessor:
+      mapping: "essay重写 -> essay"
+      status: DEPRECATED
+      scope: "historical Round 1 candidate only"
+    generalization_allowed: false
+    status: ACTIVE
+    source: manual_business_confirmation
+    created_at: "2026-08-20"
+    affected_agents:
+      - Data Standardization Agent
+      - Data Quality Agent
+      - Data Gate
+      - Historical Demand Pattern Agent
+
+  - rule_id: RULE-023
+    rule_name: service_package_product_task_type_aliases
+    scope:
+      - data_standardization_agent
+      - data_quality_agent
+      - data_gate
+      - historical_demand_pattern_agent
+    business_definition: >
+      Apply only the listed human-confirmed service-package/product aliases.
+      SVIP/VIP are 预存 business types, not independent official task types.
+      LR部分半包 maps to 包课 because product type takes precedence over its LR wording.
+    dictionary_path: config/dimensions/task_type/service_package_aliases.yaml
+    added_official_task_type:
+      name: "DP"
+      official_task_type_id: MANUAL-TASK-TYPE-012
+    generalization_allowed: false
+    status: ACTIVE
+    source: manual_business_confirmation
+    created_at: "2026-08-20"
+    affected_agents:
+      - Data Standardization Agent
+      - Data Quality Agent
+      - Data Gate
+      - Historical Demand Pattern Agent
+
+  - rule_id: RULE-024
+    rule_name: quality_inspection_task_type_aliases
+    scope:
+      - data_standardization_agent
+      - data_quality_agent
+      - data_gate
+      - historical_demand_pattern_agent
+    business_definition: >
+      质检 is an independent official task type. The listed historical raw
+      values all map to 质检; do not split them by 高级/普通 wording in notes or
+      by dissertation/paper semantics.
+    dictionary_path: config/dimensions/task_type/quality_inspection_aliases.yaml
+    added_official_task_type:
+      name: "质检"
+      official_task_type_id: MANUAL-TASK-TYPE-013
+    retained_official_enumerations:
+      - 高级质检
+      - 普通质检
+    generalization_allowed: false
+    status: ACTIVE
+    source: manual_business_confirmation
+    created_at: "2026-08-20"
+    affected_agents:
+      - Data Standardization Agent
+      - Data Quality Agent
+      - Data Gate
+      - Historical Demand Pattern Agent
+
+  - rule_id: RULE-025
+    rule_name: dissertation_partial_package_product_classification
+    scope:
+      - data_standardization_agent
+      - data_quality_agent
+      - data_gate
+      - historical_demand_pattern_agent
+    business_definition: >
+      The exact listed values are dissertation partial/staged product services
+      and map to 毕业论文半包. Product scope overrides LR, ME, literature,
+      modification, proofreading, or PPT surface wording.
+    dictionary_path: config/dimensions/task_type/dissertation_partial_package_aliases.yaml
+    added_official_task_type:
+      name: "毕业论文半包"
+      official_task_type_id: MANUAL-TASK-TYPE-014
+    generalization_allowed: false
+    status: ACTIVE
+    source: manual_business_confirmation
+    created_at: "2026-08-20"
+    affected_agents:
+      - Data Standardization Agent
+      - Data Quality Agent
+      - Data Gate
+      - Historical Demand Pattern Agent
+
+  - rule_id: RULE-026
+    rule_name: historical_pure_word_count_to_essay
+    scope:
+      - data_standardization_agent
+      - data_quality_agent
+      - data_gate
+      - historical_demand_pattern_agent
+    business_definition: >
+      For the current historical data only, a task_type consisting solely of a
+      clear word-count expression and no explicit task semantics maps to essay.
+    dictionary_path: config/dimensions/task_type/pure_word_count_essay_aliases.yaml
+    priority_order:
+      - explicit_task_semantics
+      - special_business_rule
+      - pure_word_count_to_essay
+    examples_not_covered:
+      - "3000词方法论"
+      - "1200词反思"
+      - "1500词report"
+    generalization_allowed: false
+    status: ACTIVE
+    source: manual_business_confirmation
+    created_at: "2026-08-20"
+    affected_agents:
+      - Data Standardization Agent
+      - Data Quality Agent
+      - Data Gate
+      - Historical Demand Pattern Agent
+
+  - rule_id: RULE-027
+    rule_name: final_other_task_type_aliases_and_task_type_only_exclusions
+    scope:
+      - data_standardization_agent
+      - data_quality_agent
+      - data_gate
+      - historical_demand_pattern_agent
+    approved_alias_dictionary_path: config/dimensions/task_type/final_other_confirmed_aliases.yaml
+    exclusion_dictionary_path: config/dimensions/task_type/final_other_task_type_exclusions.yaml
+    added_official_task_types:
+      - {name: "quiz", official_task_type_id: MANUAL-TASK-TYPE-015}
+      - {name: "辅导", official_task_type_id: MANUAL-TASK-TYPE-016}
+    exclusion_effect: >
+      EXCLUDED_BY_BUSINESS_RULE for task_type aggregation and trend analysis
+      only. Preserve raw record, task_type_original, source traceability, and
+      every non-task-type dimension for analysis.
+    raw_file_modification_allowed: false
+    generalization_allowed: false
+    status: ACTIVE
+    source: manual_business_confirmation
+    created_at: "2026-08-20"
+    affected_agents:
+      - Data Standardization Agent
+      - Data Quality Agent
+      - Data Gate
+      - Historical Demand Pattern Agent
+
+changelog:
+  - version: "1.0"
+    date: "2026-08-20"
+    change: >
+      Initial version. Registers RULE-001 through RULE-008. Supersedes the
+      provisional policies/confirmed_business_rules.json created earlier in
+      this project (that file's RULE-001..004 numbering is NOT compatible
+      with this file's numbering — see business_rules.md section 6 and the
+      deprecation notice left in the old file).
+  - version: "2.0"
+    date: "2026-08-20"
+    change: >
+      Adds RULE-009 (AUD->CNY conversion, fixed rate 4.5), RULE-010 (CNY
+      amount fields), RULE-011 (exclude 客户备注/跟进反馈/未成交原因 from
+      analysis schema; introduces the EXCLUDED_BY_BUSINESS_RULE status),
+      RULE-012 (学历 undergraduate-year normalization to 本科, field renamed
+      to degree_level). RULE-009/010 resolve the previously REVIEW_REQUIRED
+      amount field.
+  - version: "3.0"
+    date: "2026-08-20"
+    change: >
+      Adds RULE-013 and the ACTIVE manual school_aliases.yaml dictionary.
+      Approved aliases normalize to canonical school entities; / and 未知 are
+      NON_SCHOOL / UNKNOWN and excluded from school ranking. Adds a
+      non-mutating COUNTRY_SCHOOL_CONFLICT check.
+  - version: "4.0"
+    date: "2026-08-20"
+    change: >
+      Adds RULE-014. Human confirmation adds 学年包 as an independent
+      canonical task type (MANUAL-TASK-TYPE-001) in canonical.csv while
+      retaining 辅导年包 as a separate official type. Mapping or merging the
+      two values is forbidden; official_order_types.xlsx is not modified.
+  - version: "5.0"
+    date: "2026-08-20"
+    change: >
+      Adds RULE-015: six manually confirmed task-type aliases use business
+      substance over payment-action wording. Adds 预存 and 毕业无忧 as manual
+      canonical types. / and an original empty task_type remain UNKNOWN and
+      must not be inferred.
+  - version: "6.0"
+    date: "2026-08-20"
+    change: >
+      Adds RULE-016. MULTI_TASK values retain task_type_original,
+      task_type_mode, and ordered official task_type_components. Components
+      not covered by the official list or an ACTIVE rule remain separately
+      flagged as COMPONENT_REVIEW_REQUIRED; they are not silently inferred
+      or added to the official list.
+  - version: "7.0"
+    date: "2026-08-20"
+    change: >
+      Adds RULE-017. 数据收集, 降重, and 入学测试 become manually confirmed
+      official task types. The five remaining MULTI_TASK component reviews are
+      resolved. Its former resit submapping (补考 / 补考作业 -> 考试) is
+      DEPRECATED as of v11.0 and retained only for historical traceability.
+  - version: "8.0"
+    date: "2026-08-20"
+    change: >
+      Adds RULE-018. The 41 Single Task PROPOSED_MEDIUM values are manually
+      approved through active_aliases.yaml. Adds 毕业论文辅导, 作业, and 小组作业
+      as official task types; 大论文辅导 maps to 毕业论文辅导, 期末作业 maps to
+      作业, and 小组作业 remains independent.
+  - version: "9.0"
+    date: "2026-08-20"
+    change: >
+      Adds RULE-019 and official task type 毕业论文润色. Proofreading values
+      classify by explicit dissertation semantics, then parsed word_count >
+      10000, then ordinary proofreading. Other risk candidates are not
+      automatically approved.
+  - version: "10.0"
+    date: "2026-08-20"
+    change: >
+      Adds RULE-020. The nine remaining Risk High-Confidence single-task
+      mappings are manually approved. No official task type is added and no
+      REVIEW_REQUIRED value is processed.
+  - version: "11.0"
+    date: "2026-08-20"
+    change: >
+      Adds RULE-021. 补考 is an independent official task type. The former
+      RULE-017 resit mapping to 考试 is DEPRECATED and retained only as
+      historical evidence. Eighteen single-task resit/rewrite variants and
+      two MULTI_TASK component mappings now use 补考.
+  - version: "12.0"
+    date: "2026-08-20"
+    change: >
+      Adds RULE-022. The human-confirmed business definition classifies the
+      three explicit rewrite values (2500词重写, essay重写, me重写) as 补考, not
+      essay or ME. The historical Round 1 essay重写 -> essay candidate is
+      DEPRECATED / historical only.
+  - version: "13.0"
+    date: "2026-08-20"
+    change: >
+      Adds RULE-023. B-group service-package/product aliases are manually
+      confirmed; DP is added as an independent official task type. No mapping
+      may be generalized beyond the exact aliases in service_package_aliases.yaml.
+  - version: "14.0"
+    date: "2026-08-20"
+    change: >
+      Adds RULE-024. 质检 becomes an independent official task type and the
+      three exact C-group raw values map to it without 高级/普通 or paper-level
+      subdivision.
+  - version: "15.0"
+    date: "2026-08-20"
+    change: >
+      Adds RULE-025. 毕业论文半包 becomes an independent official task type;
+      the twelve exact D-group partial/staged dissertation service values map
+      to it, without LR/ME/literature/PPT keyword splitting.
+  - version: "16.0"
+    date: "2026-08-20"
+    change: >
+      Adds RULE-026. The eighteen exact E-group pure word-count historical
+      values map to essay only when no explicit task semantics are present.
+  - version: "17.0"
+    date: "2026-08-20"
+    change: >
+      Adds RULE-027. Five exact F-group values are manually mapped; nineteen
+      exact values are EXCLUDED_BY_BUSINESS_RULE from task_type analysis only,
+      while their source records and non-task-type dimensions remain usable.

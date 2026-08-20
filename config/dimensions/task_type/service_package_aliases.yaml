@@ -1,0 +1,60 @@
+# ACTIVE service-package/product aliases confirmed by business.
+aliases_version: "1.0"
+business_rules_version: "13.0"
+rule_id: RULE-023
+source: manual_business_confirmation
+status: ACTIVE
+restriction: Apply only exact listed raw values; do not generalize to new product/package labels.
+entries:
+  - raw_value: "毕业无忧"
+    canonical_task_type: "毕业无忧"
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "svip"
+    canonical_task_type: "预存"
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "SVIP"
+    canonical_task_type: "预存"
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "vip"
+    canonical_task_type: "预存"
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "VIP"
+    canonical_task_type: "预存"
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "安心包"
+    canonical_task_type: "DP"
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "DP"
+    canonical_task_type: "DP"
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "卓越安心包"
+    canonical_task_type: "DP"
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "安心包三年"
+    canonical_task_type: "DP"
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "半包"
+    canonical_task_type: "包课"
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "半包课"
+    canonical_task_type: "包课"
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "咨询包课"
+    canonical_task_type: "包课"
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "LR部分半包"
+    canonical_task_type: "包课"
+    source: manual_business_confirmation
+    status: ACTIVE

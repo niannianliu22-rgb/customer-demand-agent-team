@@ -1,0 +1,83 @@
+﻿official_task_type_id,official_task_type_id_source,official_order_type,official_source_record_id,official_numeric_value
+2300020422994130,数据唯一编号,语言班引流品,2300020422994130,
+2300020319508301,数据唯一编号,提分辅导,2300020319508301,
+2300020319392209,数据唯一编号,陪跑课,2300020319392209,
+2300020319388485,数据唯一编号,辅导年包,2300020319388485,
+2300020319387910,数据唯一编号,语言班辅导,2300020319387910,
+2300020319382940,数据唯一编号,包过辅导,2300020319382940,
+2300020062220477,数据唯一编号,押题,2300020062220477,
+10,数值,辅导试听课,2300018132556817,10
+10,数值,选课,2300016570007678,10
+53,数值,outline,2300015088447530,53
+52,数值,draft,2300015056931643,52
+51,数值,Post,2300015035499167,51
+50,数值,participation,2300015013234374,50
+49,数值,memo,2300015005114603,49
+48,数值,research plan,2300015004050302,48
+47,数值,Group Presentation,2300014997691610,47
+46,数值,reflect,2300014808219358,46
+45,数值,review,2300014807585489,45
+44,数值,Analysis,2300014807559132,44
+43,数值,task,2300014807540375,43
+42,数值,portfolio,2300014801362907,42
+41,数值,video,2300014800756191,41
+40,数值,critique,2300014800606394,40
+39,数值,appraisal,2300014800440047,39
+38,数值,bibliography,2300014799818925,38
+37,数值,project,2300014799671415,37
+36,数值,course work,2300014793424345,36
+35,数值,brochure,2300014791546710,35
+34,数值,proposal,2300014791522613,34
+33,数值,assessment,2300014791467170,33
+32,数值,class blog,2300014791182415,32
+31,数值,case study,2300014790976499,31
+30,数值,Team Project,2300014764192490,30
+30,数值,Discussion,2300014763068380,30
+14,数值,Research Proposal,2300014762798419,14
+30,数值,Paper,2300014758196032,30
+29,数值,Response,2300014757797184,29
+28,数值,Book Review,2300014733861620,28
+16,数值,presentation,2300013899508222,16
+12,数值,Dissertation- tutoring,2300013128139543,12
+14,数值,海报,2300012616532222,14
+26,数值,高级质检,2300011772904918,26
+25,数值,普通质检,2300011772902539,25
+11,数值,助力考,2300011245700297,11
+10,数值,做题,2300011170013913,10
+9,数值,考试,2300011094723286,9
+31,数值,保分,2300011076902489,31
+17,数值,code/experiment,2300011023904127,17
+18,数值,translation,2300010967889484,18
+19,数值,润色-revision,2300010967889411,19
+7,数值,assignment,2300010967889008,7
+13,数值,Dissertation-part,2300010965627374,13
+6,数值,report,2300010965626266,6
+20,数值,补考/重写-内部,2300010965508450,20
+21,数值,补考/重写-外接,2300010965486799,21
+22,数值,Turniting,2300010964569656,22
+23,数值,tutoring-保分,2300010964569249,23
+24,数值,framework,2300010964568654,24
+5,数值,包课,2300010964568114,5
+15,数值,PPT,2300010964568062,15
+4,数值,Dissertation,2300010964567417,4
+27,数值,CV/PS,2300010964566506,27
+8,数值,润色-proofreading,2300010964565220,8
+3,数值,tutoring,2300010964562166,3
+2,数值,online test-exam/quiz,2300010964561051,2
+1,数值,essay,2300010964558926,1
+MANUAL-TASK-TYPE-001,manual_business_confirmation,学年包,RULE-014,
+MANUAL-TASK-TYPE-002,manual_business_confirmation,预存,RULE-015,
+MANUAL-TASK-TYPE-003,manual_business_confirmation,毕业无忧,RULE-015,
+MANUAL-TASK-TYPE-004,manual_business_confirmation,数据收集,RULE-017,
+MANUAL-TASK-TYPE-005,manual_business_confirmation,降重,RULE-017,
+MANUAL-TASK-TYPE-006,manual_business_confirmation,入学测试,RULE-017,
+MANUAL-TASK-TYPE-007,manual_business_confirmation,毕业论文辅导,RULE-018,
+MANUAL-TASK-TYPE-008,manual_business_confirmation,作业,RULE-018,
+MANUAL-TASK-TYPE-009,manual_business_confirmation,小组作业,RULE-018,
+MANUAL-TASK-TYPE-010,manual_business_confirmation,毕业论文润色,RULE-019,
+MANUAL-TASK-TYPE-011,manual_business_confirmation,补考,RULE-021,
+MANUAL-TASK-TYPE-012,manual_business_confirmation,DP,RULE-023,
+MANUAL-TASK-TYPE-013,manual_business_confirmation,质检,RULE-024,
+MANUAL-TASK-TYPE-014,manual_business_confirmation,毕业论文半包,RULE-025,
+MANUAL-TASK-TYPE-015,manual_business_confirmation,quiz,RULE-027,
+MANUAL-TASK-TYPE-016,manual_business_confirmation,辅导,RULE-027,

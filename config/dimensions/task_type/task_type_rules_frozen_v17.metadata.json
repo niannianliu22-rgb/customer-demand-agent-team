@@ -1,0 +1,85 @@
+{
+  "task_type_rules_version": "17.0",
+  "status": "FROZEN",
+  "created_at": "2026-08-20T14:04:22.005864+00:00",
+  "source_run_id": "RUN-202608-DEMAND-001",
+  "business_rules_version": "17.0",
+  "official_task_type_count": 82,
+  "alias_count": 161,
+  "special_rule_count": 10,
+  "multi_task_rule_count": 20,
+  "excluded_value_count": 19,
+  "unknown_value_count": 2,
+  "review_counts": {
+    "approved": 138,
+    "excluded": 19,
+    "review_required": 0,
+    "proposed_medium": 0,
+    "proposed_high": 0,
+    "exact_match_pending": 0
+  },
+  "input_files": [
+    {
+      "path": "config/dimensions/task_type/canonical.csv",
+      "sha256": "35eab44d704f80ce6ecb121b6d5090be34f39339140b8b5451bf36255b6f8966"
+    },
+    {
+      "path": "policies/business_rules.md",
+      "sha256": "26548512ed02929b90aa7f421debb86de9736ddb830a189674c4a38830336c38"
+    },
+    {
+      "path": "config/data/standardization_rules.yaml",
+      "sha256": "939029fe2c4a39ead1c5ed0c154cbe09927822427a2d5414f655950e590438cb"
+    },
+    {
+      "path": "runs/RUN-202608-DEMAND-001/artifacts/dimension_review/task_type_manual_final_review_v2.csv",
+      "sha256": "c3ce03e5805434417779c305c9effc692d1c90157a6194f624cba1db73b4da87"
+    },
+    {
+      "path": "runs/RUN-202608-DEMAND-001/artifacts/dimension_review/task_type_multi_task_components_review_round5.csv",
+      "sha256": "921ea41a5abf66ded29a41f7ec6ab0be2c751648fbbcd4bba651d8bd4fdfb87d"
+    },
+    {
+      "path": "runs/RUN-202608-DEMAND-001/artifacts/dimension_review/task_type_business_final_review.csv",
+      "sha256": "52bab19f85553d294340b26e81e0980019524ce0f186c48c3ea26925ee3ba666"
+    },
+    {
+      "path": "config/dimensions/task_type/active_aliases.yaml",
+      "sha256": "6b7d1b34266fd6c713190db8d78c3682869e28f8d4d8e50635848291add304c9"
+    },
+    {
+      "path": "config/dimensions/task_type/dissertation_partial_package_aliases.yaml",
+      "sha256": "e5fc138bde9784dd4af8f4ad405ff1e9b965cf724b7052c94a3daecf2ce24c12"
+    },
+    {
+      "path": "config/dimensions/task_type/final_other_confirmed_aliases.yaml",
+      "sha256": "10e19932e97df95c9787bfed011ffefcf3b85b3334da4787973141e7b6eddf78"
+    },
+    {
+      "path": "config/dimensions/task_type/pure_word_count_essay_aliases.yaml",
+      "sha256": "6dd15e574a2079e706a689e07400c2a4229cca48a054b525338a76683287ca58"
+    },
+    {
+      "path": "config/dimensions/task_type/quality_inspection_aliases.yaml",
+      "sha256": "368bd8f481cfcda24f1e48087725c156cba9b7d079ac90e36aaabf219571c33f"
+    },
+    {
+      "path": "config/dimensions/task_type/resit_aliases.yaml",
+      "sha256": "c6a483f452bb41106cd2c0e194c31a40492964376fa23b4905ca96f4c0f86129"
+    },
+    {
+      "path": "config/dimensions/task_type/rewrite_aliases.yaml",
+      "sha256": "3a93290a402a2c27c1a691075e513784a5c80ed9f0d1dd4778f8a4e0209bab93"
+    },
+    {
+      "path": "config/dimensions/task_type/risk_high_confirmed_aliases.yaml",
+      "sha256": "b6ae6f39eefb1add0d782f652c12ff091470724af0380399145e62d29ba168ef"
+    },
+    {
+      "path": "config/dimensions/task_type/service_package_aliases.yaml",
+      "sha256": "878b0838e7f60597ba1cda319fc4e29411ad52841e5a3de8aa1fa5174e9e7c47"
+    }
+  ],
+  "conflict_count": 0,
+  "deprecated_rules_excluded_from_active_set": true
+}

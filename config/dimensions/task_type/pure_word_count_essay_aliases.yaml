@@ -1,0 +1,82 @@
+# ACTIVE historical pure-word-count aliases confirmed by business.
+aliases_version: "1.0"
+business_rules_version: "16.0"
+rule_id: RULE-026
+source: manual_business_confirmation
+status: ACTIVE
+scope: RUN-202608-DEMAND-001 historical task_type values only
+priority: explicit_task_semantics > special_business_rule > pure_word_count_to_essay
+restriction: Do not apply to values with explicit task semantics (for example report, reflection, methodology).
+entries:
+  - raw_value: "150词"
+    canonical_task_type: "essay"
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "1200词"
+    canonical_task_type: "essay"
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "2000词"
+    canonical_task_type: "essay"
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "3000词"
+    canonical_task_type: "essay"
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "1000词"
+    canonical_task_type: "essay"
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "1100词"
+    canonical_task_type: "essay"
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "1200-1500词"
+    canonical_task_type: "essay"
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "1500词"
+    canonical_task_type: "essay"
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "1700词"
+    canonical_task_type: "essay"
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "200词"
+    canonical_task_type: "essay"
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "300词"
+    canonical_task_type: "essay"
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "3k词"
+    canonical_task_type: "essay"
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "4000词"
+    canonical_task_type: "essay"
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "4500"
+    canonical_task_type: "essay"
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "600词"
+    canonical_task_type: "essay"
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "750词"
+    canonical_task_type: "essay"
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "900词"
+    canonical_task_type: "essay"
+    source: manual_business_confirmation
+    status: ACTIVE
+  - raw_value: "三千词"
+    canonical_task_type: "essay"
+    source: manual_business_confirmation
+    status: ACTIVE
