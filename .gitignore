@@ -29,3 +29,16 @@ venv/
 # Editor
 .vscode/
 .idea/
+
+# Runtime data
+data/*
+!data/raw/
+!data/standardized/
+!data/output/
+!data/raw/.gitkeep
+!data/standardized/.gitkeep
+!data/output/.gitkeep
+
+# Runtime logs
+logs/*
+!logs/.gitkeep
