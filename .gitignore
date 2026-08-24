@@ -1,44 +1,42 @@
 .DS_Store
 
-# Runtime outputs / generated artifacts
-runs/
-artifacts/
-
-# Data files
-data/raw/*
-data/standardized/*
-data/output/*
-!data/raw/.gitkeep
-!data/standardized/.gitkeep
-!data/output/.gitkeep
-
-# Python
-__pycache__/
-*.pyc
+# Credentials and local environments
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*credential*
+*secret*
+*token*
 .venv/
 venv/
 
-# Environment / secrets
-.env
-.env.*
-*.key
-
-# Logs
-*.log
-
-# Editor
+# Python and editor caches
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
 .vscode/
 .idea/
 
-# Runtime data
-data/*
-!data/raw/
-!data/standardized/
-!data/output/
+# Runtime outputs: may contain customer data, raw model responses, audit logs, or paths.
+runs/**
+artifacts/**
+quality/**
+logs/**
+*.log
+
+# Business input and derived data
+data/raw/**
+data/standardized/**
+data/output/**
 !data/raw/.gitkeep
 !data/standardized/.gitkeep
 !data/output/.gitkeep
 
-# Runtime logs
-logs/*
-!logs/.gitkeep
+# Explicitly retain only synthetic and sanitized delivery fixtures.
+!examples/
+!examples/**
+!demo/
+!demo/**

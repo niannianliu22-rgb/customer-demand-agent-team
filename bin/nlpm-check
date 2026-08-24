@@ -1,0 +1,912 @@
+#!/usr/bin/env python3
+"""nlpm-check — standalone manifest-vs-disk + frontmatter validator.
+
+Implements the deterministic subset of /nlpm:check as a pure-Python
+script. Stdlib only. No external dependencies.
+
+Use this in pre-commit hooks, CI, and pre-publish scripts. For the
+full 100-point quality scoring with judgment-required findings, run
+/nlpm:score inside Claude Code.
+
+Exit codes:
+  0  no high-confidence findings
+  1  one or more high-confidence findings (strict mode: any finding)
+  2  error reading the manifest or other I/O failure
+
+Usage:
+  nlpm-check [path]            default: current directory
+  nlpm-check --json            machine-readable JSON output
+  nlpm-check --strict          fail on findings of any confidence
+  nlpm-check --quiet           suppress passing output
+
+Reference:
+  https://code.claude.com/docs/en/plugins-reference
+  https://agentskills.io/specification
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import re
+import sys
+from dataclasses import dataclass, asdict
+from pathlib import Path
+
+
+VERSION = "1.1.2"
+
+
+# ----- finding model -----
+
+@dataclass
+class Finding:
+    confidence: str  # "high" | "medium" | "low"
+    rule: str       # NLPM rule number (R01-R50) when applicable; else short tag
+    path: str       # repo-relative path or "<manifest>"
+    line: int       # 0 when not applicable
+    message: str
+    fix: str = ""
+
+    def severity(self) -> str:
+        return {"high": "HIGH", "medium": "MED", "low": "LOW"}[self.confidence]
+
+
+# ----- frontmatter parsing (regex-based; deterministic checks only) -----
+
+FRONTMATTER_RE = re.compile(r"^---\s*\n(.*?)\n---\s*\n", re.DOTALL)
+
+# Match `key: value` where value is non-empty (not bare key alone)
+# Also matches `key: |` and `key: >` (block scalar indicators)
+KV_RE = re.compile(r"^([a-zA-Z_][a-zA-Z0-9_-]*)\s*:\s*(\S.*)?$", re.MULTILINE)
+
+
+def read_frontmatter(text: str) -> dict[str, str] | None:
+    """Extract YAML frontmatter and return field presence as a dict.
+
+    Returns None if no frontmatter delimited by --- is present.
+    Values are stored as raw strings (no YAML type coercion). The
+    only thing the caller can ask is "did this field appear with a
+    non-empty value." A bare `key:` line counts as absent for our
+    purposes — Claude Code's loader does the same.
+    """
+    m = FRONTMATTER_RE.match(text)
+    if not m:
+        return None
+    block = m.group(1)
+    fields: dict[str, str] = {}
+    for kv_match in KV_RE.finditer(block):
+        key, value = kv_match.group(1), kv_match.group(2)
+        if value is None or value.strip() == "":
+            continue
+        # Block scalar indicators (| or >) mean a multi-line value follows.
+        # Treat as present without recursing into the body.
+        fields[key] = value.strip()
+    return fields
+
+
+def frontmatter_line(text: str, key: str) -> int:
+    """Return the 1-based line number of `key:` in the frontmatter, or 0."""
+    m = FRONTMATTER_RE.match(text)
+    if not m:
+        return 0
+    block = m.group(1)
+    for i, line in enumerate(block.splitlines(), start=2):  # +1 for the opening ---
+        if re.match(rf"^\s*{re.escape(key)}\s*:", line):
+            return i
+    return 0
+
+
+# ----- plugin root discovery -----
+
+# Directories never walked by any function in this module.
+#
+# `templates` is intentionally skipped: by convention, a top-level
+# `templates/` directory contains scaffold files (including SKILL.md
+# starters with placeholder `name:` values) that are meant to be copied
+# and renamed, not loaded by Claude Code at runtime. Scanning them
+# produces false-positive `manifest-disk-diff` and `skill/name-parent`
+# findings — by design, their `name:` does not match their parent dir,
+# and they sit outside the canonical `skills/` path.
+WALK_SKIP = {
+    ".git", "node_modules", ".venv", "venv", "__pycache__",
+    ".pytest_cache", ".mypy_cache", "dist", "build",
+    "templates",
+}
+
+
+def find_plugin_root(start: Path) -> Path | None:
+    """Walk up from start looking for .claude-plugin/plugin.json.
+
+    Returns the directory containing .claude-plugin, or None.
+    """
+    cur = start.resolve()
+    for candidate in [cur, *cur.parents]:
+        if (candidate / ".claude-plugin" / "plugin.json").is_file():
+            return candidate
+    return None
+
+
+def find_subplugin_roots(start: Path) -> list[Path]:
+    """Walk DOWN from start, returning every directory that owns a
+    `.claude-plugin/plugin.json`.
+
+    Used to support multi-plugin monorepos. Returned paths are sorted
+    shallowest first, so the caller can detect nesting hierarchies.
+    """
+    roots: list[Path] = []
+    for manifest in start.rglob(".claude-plugin/plugin.json"):
+        if any(part in WALK_SKIP for part in manifest.parts):
+            continue
+        roots.append(manifest.parent.parent.resolve())
+    return sorted(set(roots), key=lambda p: len(p.parts))
+
+
+def nested_subplugins(plugin_root: Path, all_roots: list[Path]) -> set[Path]:
+    """Subset of all_roots that are strictly nested INSIDE plugin_root.
+
+    A plugin checking its own tree should skip these — each nested
+    sub-plugin is checked in its own pass.
+    """
+    pr = plugin_root.resolve()
+    nested: set[Path] = set()
+    for root in all_roots:
+        r = root.resolve()
+        if r != pr and _is_under(r, pr):
+            nested.add(r)
+    return nested
+
+
+# ----- manifest parsing -----
+
+def parse_manifest(path: Path) -> dict:
+    """Load a plugin.json file as a dict. Raises on I/O or JSON errors."""
+    with path.open("r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def manifest_paths(manifest: dict, key: str) -> list[str]:
+    """Extract a component path field from plugin.json.
+
+    Accepts string, list of strings, or absent. Always returns a list.
+    """
+    value = manifest.get(key)
+    if value is None:
+        return []
+    if isinstance(value, str):
+        return [value]
+    if isinstance(value, list):
+        return [str(item) for item in value if isinstance(item, str)]
+    return []
+
+
+# ----- canonical discovery on disk -----
+
+CANONICAL_SKILL_ROOTS = ["skills", ".claude/skills"]
+CANONICAL_AGENT_ROOTS = ["agents", ".claude/agents"]
+CANONICAL_COMMAND_ROOTS = ["commands", ".claude/commands"]
+CANONICAL_HOOK_PATHS = ["hooks/hooks.json", ".claude/hooks.json"]
+
+
+def walk_skill_files(plugin_root: Path, nested_skip: set[Path] | None = None) -> list[Path]:
+    """Find every SKILL.md anywhere in the plugin tree.
+
+    Scans canonical roots first; also catches SKILL.md files outside
+    canonical layout (the manifest-vs-disk bug class).
+
+    `nested_skip`: directories belonging to nested sub-plugins. Any
+    SKILL.md found under one of these is excluded — that sub-plugin
+    is checked in its own pass.
+    """
+    nested_skip = nested_skip or set()
+    seen: set[Path] = set()
+    for root_name in CANONICAL_SKILL_ROOTS:
+        root = plugin_root / root_name
+        if root.is_dir():
+            for p in root.rglob("SKILL.md"):
+                p_res = p.resolve()
+                if any(part in WALK_SKIP for part in p.parts):
+                    continue
+                if any(_is_under(p_res, s) for s in nested_skip):
+                    continue
+                seen.add(p_res)
+    # Catch SKILL.md anywhere else in the repo (the bug class).
+    for p in plugin_root.rglob("SKILL.md"):
+        p_res = p.resolve()
+        if any(part in WALK_SKIP for part in p.parts):
+            continue
+        if any(_is_under(p_res, s) for s in nested_skip):
+            continue
+        seen.add(p_res)
+    return sorted(seen)
+
+
+def walk_markdown_in_roots(
+    plugin_root: Path,
+    roots: list[str],
+    nested_skip: set[Path] | None = None,
+) -> list[Path]:
+    """Find every .md file under any of the given canonical roots.
+
+    Excludes files inside nested sub-plugin trees.
+    """
+    nested_skip = nested_skip or set()
+    seen: set[Path] = set()
+    for root_name in roots:
+        root = plugin_root / root_name
+        if root.is_dir():
+            for p in root.rglob("*.md"):
+                p_res = p.resolve()
+                if any(part in WALK_SKIP for part in p.parts):
+                    continue
+                if any(_is_under(p_res, s) for s in nested_skip):
+                    continue
+                seen.add(p_res)
+    return sorted(seen)
+
+
+def _resolve_within_plugin(plugin_root: Path, entry: str) -> Path | None:
+    """Resolve a manifest path strictly under plugin_root.
+
+    Returns the resolved Path if the entry stays under plugin_root, or None
+    if the entry is absolute or escapes via `..`. A manifest that references
+    a path outside the plugin tree is treated as if the target does not
+    exist — the manifest-vs-disk check then flags it as missing.
+
+    Without this guard a hand-edited plugin.json could declare
+    `"./../../etc/something"`; `(plugin_root / entry).resolve()` would
+    happily traverse out of the plugin, and any later `target.is_dir()` /
+    `target.is_file()` check would silently honor whatever happened to be
+    at the resolved path on disk.
+    """
+    if Path(entry).is_absolute():
+        return None
+    resolved = (plugin_root / entry).resolve()
+    plugin_resolved = plugin_root.resolve()
+    try:
+        resolved.relative_to(plugin_resolved)
+    except ValueError:
+        return None
+    return resolved
+
+
+def resolve_manifest_skill_targets(plugin_root: Path, declared: list[str]) -> set[Path]:
+    """Resolve manifest skill paths to a set of registered SKILL.md files.
+
+    Each declared path can be:
+      - a directory (string ending with / or matching a dir on disk)
+        → every SKILL.md under that dir is registered
+      - a file path to a specific SKILL.md
+        → only that file is registered
+
+    Paths that escape `plugin_root` (absolute or `..` traversal) are
+    treated as non-existent so they surface as missing in the manifest
+    diff rather than silently following the escape.
+    """
+    registered: set[Path] = set()
+    for entry in declared:
+        target = _resolve_within_plugin(plugin_root, entry)
+        if target is None:
+            continue
+        if target.is_dir():
+            for p in target.rglob("SKILL.md"):
+                registered.add(p.resolve())
+        elif target.is_file() and target.name == "SKILL.md":
+            registered.add(target)
+        # else: declared path doesn't exist on disk; handled in the diff
+    return registered
+
+
+def resolve_manifest_markdown_targets(plugin_root: Path, declared: list[str]) -> set[Path]:
+    """Same as skill targets but for agents/commands (markdown files)."""
+    registered: set[Path] = set()
+    for entry in declared:
+        target = _resolve_within_plugin(plugin_root, entry)
+        if target is None:
+            continue
+        if target.is_dir():
+            for p in target.rglob("*.md"):
+                registered.add(p.resolve())
+        elif target.is_file() and target.suffix == ".md":
+            registered.add(target)
+    return registered
+
+
+def manifest_paths_with_existence(plugin_root: Path, declared: list[str]) -> tuple[list[str], list[str]]:
+    """Split declared paths into (existing, missing) tuples.
+
+    Entries that escape `plugin_root` (absolute path or `..` traversal)
+    are reported as missing — a plugin.json may not point outside its own
+    tree, so a path that escapes is structurally missing even if a file
+    happens to exist at the resolved location on disk.
+    """
+    existing, missing = [], []
+    for entry in declared:
+        target = _resolve_within_plugin(plugin_root, entry)
+        if target is not None and target.exists():
+            existing.append(entry)
+        else:
+            missing.append(entry)
+    return existing, missing
+
+
+# ----- checks -----
+
+def check_manifest_required(plugin_root: Path, manifest: dict, findings: list[Finding]) -> None:
+    """plugin.json must have a `name` field (per conventions §1)."""
+    if not manifest.get("name"):
+        findings.append(Finding(
+            confidence="high",
+            rule="plugin-json/required",
+            path=".claude-plugin/plugin.json",
+            line=0,
+            message="plugin.json missing required `name` field",
+            fix='Add `"name": "<plugin-name>"` (kebab-case)',
+        ))
+
+
+def check_manifest_paths_exist(plugin_root: Path, manifest: dict, findings: list[Finding]) -> None:
+    """Every path declared in plugin.json must exist on disk."""
+    for key in ("commands", "agents", "skills", "hooks", "mcpServers", "lspServers", "outputStyles"):
+        declared = manifest_paths(manifest, key)
+        _, missing = manifest_paths_with_existence(plugin_root, declared)
+        for entry in missing:
+            findings.append(Finding(
+                confidence="high",
+                rule="manifest-disk-diff",
+                path=".claude-plugin/plugin.json",
+                line=0,
+                message=f"plugin.json `{key}` declares path that doesn't exist on disk: {entry}",
+                fix=f"Either create {entry} or remove it from the manifest",
+            ))
+
+
+def check_unregistered_skills(plugin_root: Path, manifest: dict, findings: list[Finding], nested_skip: set[Path] | None = None) -> None:
+    """Every SKILL.md on disk should be reachable from the manifest."""
+    declared = manifest_paths(manifest, "skills")
+    on_disk = walk_skill_files(plugin_root, nested_skip=nested_skip)
+
+    if not declared:
+        # Manifest doesn't declare `skills`. Claude Code auto-discovers
+        # from canonical paths. SKILL.md files outside canonical paths
+        # are invisible.
+        canonical_roots = [
+            (plugin_root / r).resolve() for r in CANONICAL_SKILL_ROOTS
+        ]
+        for skill in on_disk:
+            if not any(_is_under(skill, root) for root in canonical_roots):
+                findings.append(Finding(
+                    confidence="high",
+                    rule="manifest-disk-diff",
+                    path=str(skill.relative_to(plugin_root)),
+                    line=0,
+                    message="SKILL.md outside canonical paths and not declared in plugin.json `skills`",
+                    fix='Add a `"skills": "skills/"` entry to plugin.json, or move the skill to a canonical path',
+                ))
+        return
+
+    # Manifest declares `skills`. Diff registered vs on-disk.
+    registered = resolve_manifest_skill_targets(plugin_root, declared)
+    for skill in on_disk:
+        if skill not in registered:
+            findings.append(Finding(
+                confidence="high",
+                rule="manifest-disk-diff",
+                path=str(skill.relative_to(plugin_root)),
+                line=0,
+                message="SKILL.md exists on disk but not registered by plugin.json `skills`",
+                fix=f"Add `{skill.parent.relative_to(plugin_root)}/` to plugin.json `skills` array",
+            ))
+
+
+def check_unregistered_markdown(
+    plugin_root: Path,
+    manifest: dict,
+    key: str,
+    canonical_roots: list[str],
+    findings: list[Finding],
+    nested_skip: set[Path] | None = None,
+) -> None:
+    """Generic unregistered-component check for agents and commands."""
+    declared = manifest_paths(manifest, key)
+    on_disk = walk_markdown_in_roots(plugin_root, canonical_roots, nested_skip=nested_skip)
+
+    if not declared:
+        # Auto-discovery from canonical paths. Files at canonical
+        # paths are registered; anything outside is invisible — but
+        # `walk_markdown_in_roots` only looks at canonical paths, so
+        # there's nothing to flag here for the no-manifest case.
+        return
+
+    registered = resolve_manifest_markdown_targets(plugin_root, declared)
+    for md in on_disk:
+        if md not in registered:
+            findings.append(Finding(
+                confidence="high",
+                rule="manifest-disk-diff",
+                path=str(md.relative_to(plugin_root)),
+                line=0,
+                message=f"{key} file on disk but not registered by plugin.json `{key}`",
+                fix=f"Add `{md.relative_to(plugin_root)}` to plugin.json `{key}` array",
+            ))
+
+
+def check_skill_frontmatter(plugin_root: Path, findings: list[Finding], nested_skip: set[Path] | None = None) -> None:
+    """Every SKILL.md must have `name` and `description` per the spec."""
+    SKILL_NAME_RE = re.compile(r"^[a-z][a-z0-9-]{0,63}$")
+    for skill in walk_skill_files(plugin_root, nested_skip=nested_skip):
+        rel = skill.relative_to(plugin_root)
+        try:
+            text = skill.read_text(encoding="utf-8")
+        except OSError as e:
+            findings.append(Finding(
+                confidence="high",
+                rule="skill/io",
+                path=str(rel),
+                line=0,
+                message=f"could not read SKILL.md: {e}",
+            ))
+            continue
+        fm = read_frontmatter(text)
+        if fm is None:
+            findings.append(Finding(
+                confidence="high",
+                rule="skill/frontmatter",
+                path=str(rel),
+                line=1,
+                message="SKILL.md missing YAML frontmatter (--- delimited block)",
+                fix="Add `---\\nname: <skill-name>\\ndescription: <one-liner>\\n---` at the top",
+            ))
+            continue
+        if "name" not in fm:
+            findings.append(Finding(
+                confidence="high",
+                rule="skill/frontmatter",
+                path=str(rel),
+                line=1,
+                message="SKILL.md frontmatter missing required `name`",
+                fix="Add `name: <parent-dir-name>` to frontmatter",
+            ))
+        else:
+            name = fm["name"].strip().strip('"').strip("'")
+            parent_name = skill.parent.name
+            if name != parent_name:
+                findings.append(Finding(
+                    confidence="high",
+                    rule="skill/name-parent",
+                    path=str(rel),
+                    line=frontmatter_line(text, "name"),
+                    message=f"SKILL.md `name: {name}` does not match parent directory `{parent_name}`",
+                    fix=f"Change `name:` to `{parent_name}` or rename the directory",
+                ))
+            elif not SKILL_NAME_RE.match(name):
+                findings.append(Finding(
+                    confidence="high",
+                    rule="skill/name-format",
+                    path=str(rel),
+                    line=frontmatter_line(text, "name"),
+                    message=f"SKILL.md `name: {name}` violates spec: must be lowercase letters/digits/hyphens, 1-64 chars, starting with a letter",
+                    fix="Rename to match `^[a-z][a-z0-9-]{0,63}$`",
+                ))
+        if "description" not in fm:
+            findings.append(Finding(
+                confidence="high",
+                rule="skill/frontmatter",
+                path=str(rel),
+                line=1,
+                message="SKILL.md frontmatter missing required `description`",
+                fix="Add `description: <what it does and when to use it>`",
+            ))
+
+
+def check_agent_frontmatter(plugin_root: Path, findings: list[Finding], nested_skip: set[Path] | None = None) -> None:
+    """Every agent markdown file must have `name` and `description` in its frontmatter."""
+    for agent in walk_markdown_in_roots(plugin_root, CANONICAL_AGENT_ROOTS, nested_skip=nested_skip):
+        rel = agent.relative_to(plugin_root)
+        try:
+            text = agent.read_text(encoding="utf-8")
+        except OSError as e:
+            findings.append(Finding(
+                confidence="high",
+                rule="agent/io",
+                path=str(rel),
+                line=0,
+                message=f"could not read agent file: {e}",
+            ))
+            continue
+        fm = read_frontmatter(text)
+        if fm is None:
+            findings.append(Finding(
+                confidence="high",
+                rule="agent/frontmatter",
+                path=str(rel),
+                line=1,
+                message="agent missing YAML frontmatter",
+                fix="Add `---\\nname: <agent-name>\\ndescription: <when to trigger>\\n---`",
+            ))
+            continue
+        if "name" not in fm:
+            findings.append(Finding(
+                confidence="high",
+                rule="agent/frontmatter",
+                path=str(rel),
+                line=1,
+                message="agent frontmatter missing `name`",
+                fix="Add `name: <agent-name>`",
+            ))
+        if "description" not in fm:
+            findings.append(Finding(
+                confidence="high",
+                rule="agent/frontmatter",
+                path=str(rel),
+                line=1,
+                message="agent frontmatter missing `description`",
+                fix="Add `description: <when to use>` with at least one `<example>` block",
+            ))
+
+
+def check_command_frontmatter(plugin_root: Path, findings: list[Finding], nested_skip: set[Path] | None = None) -> None:
+    """Commands require `description`. `name` is explicitly optional
+    (falls back to filename) per <https://code.claude.com/docs/en/slash-commands>."""
+    for cmd in walk_markdown_in_roots(plugin_root, CANONICAL_COMMAND_ROOTS, nested_skip=nested_skip):
+        rel = cmd.relative_to(plugin_root)
+        try:
+            text = cmd.read_text(encoding="utf-8")
+        except OSError as e:
+            findings.append(Finding(
+                confidence="high",
+                rule="command/io",
+                path=str(rel),
+                line=0,
+                message=f"could not read command file: {e}",
+            ))
+            continue
+        fm = read_frontmatter(text)
+        if fm is None:
+            findings.append(Finding(
+                confidence="high",
+                rule="command/frontmatter",
+                path=str(rel),
+                line=1,
+                message="command missing YAML frontmatter",
+                fix="Add `---\\ndescription: <what it does>\\n---`",
+            ))
+            continue
+        if "description" not in fm:
+            findings.append(Finding(
+                confidence="high",
+                rule="command/frontmatter",
+                path=str(rel),
+                line=1,
+                message="command frontmatter missing required `description`",
+                fix="Add `description: <one-line summary>`",
+            ))
+
+
+def check_hook_event_names(plugin_root: Path, findings: list[Finding]) -> None:
+    """Hook event names are case-sensitive. Catch common miscapitalizations."""
+    VALID_EVENTS = {
+        "PreToolUse", "PostToolUse", "PostToolUseFailure",
+        "PermissionRequest", "UserPromptSubmit", "Stop", "SubagentStop",
+        "SessionStart", "SessionEnd", "PreCompact", "Notification",
+        "InstructionsLoaded", "TaskCompleted",
+    }
+    VALID_LOWER = {e.lower(): e for e in VALID_EVENTS}
+    for hook_path in CANONICAL_HOOK_PATHS:
+        full = plugin_root / hook_path
+        if not full.is_file():
+            continue
+        try:
+            data = json.loads(full.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as e:
+            findings.append(Finding(
+                confidence="high",
+                rule="hook/parse",
+                path=hook_path,
+                line=0,
+                message=f"hooks.json failed to parse as JSON: {e}",
+            ))
+            continue
+        if not isinstance(data, dict):
+            continue
+        events = data.get("hooks", {})
+        if not isinstance(events, dict):
+            continue
+        for event_name in events:
+            if event_name in VALID_EVENTS:
+                continue
+            # Case-only miscapitalization is the high-confidence finding.
+            if event_name.lower() in VALID_LOWER:
+                correct = VALID_LOWER[event_name.lower()]
+                findings.append(Finding(
+                    confidence="high",
+                    rule="hook/event-case",
+                    path=hook_path,
+                    line=0,
+                    message=f"hook event `{event_name}` has wrong case (silently ignored at runtime)",
+                    fix=f"Rename to `{correct}` (case-sensitive)",
+                ))
+            else:
+                findings.append(Finding(
+                    confidence="medium",
+                    rule="hook/event-name",
+                    path=hook_path,
+                    line=0,
+                    message=f"hook event `{event_name}` not in documented event list",
+                    fix=f"Use one of: {', '.join(sorted(VALID_EVENTS))}",
+                ))
+
+
+# ----- helpers -----
+
+def _is_under(child: Path, parent: Path) -> bool:
+    try:
+        child.resolve().relative_to(parent.resolve())
+        return True
+    except ValueError:
+        return False
+
+
+# ----- output -----
+
+# ----- check orchestrator -----
+
+def check_plugin(plugin_root: Path, nested_skip: set[Path] | None = None) -> list[Finding]:
+    """Run every check for one plugin tree. Returns findings list.
+
+    `nested_skip`: set of nested sub-plugin roots whose subtrees this
+    pass should skip (each nested sub-plugin gets its own check_plugin
+    call).
+
+    Dual-platform plugins (those that ship both `.claude-plugin/plugin.json`
+    and `.codex-plugin/plugin.json` for the same plugin) have a sibling
+    `codex/` tree containing Codex-format artifacts. Those artifacts are
+    not Claude plugin content — they're a parallel layout for OpenAI's
+    Codex CLI. Treat the `codex/` subtree like a nested sub-plugin and
+    skip it during the Claude-side scan; Codex has its own validator for
+    that tree.
+    """
+    manifest_file = plugin_root / ".claude-plugin" / "plugin.json"
+    findings: list[Finding] = []
+    try:
+        manifest = parse_manifest(manifest_file)
+    except (OSError, json.JSONDecodeError) as e:
+        findings.append(Finding(
+            confidence="high",
+            rule="plugin-json/parse",
+            path=str(manifest_file),
+            line=0,
+            message=f"failed to parse plugin.json: {e}",
+        ))
+        return findings
+
+    # If this plugin also ships a Codex layout, exclude codex/ from the scan
+    nested_skip = set(nested_skip) if nested_skip else set()
+    if (plugin_root / ".codex-plugin" / "plugin.json").is_file():
+        codex_root = (plugin_root / "codex").resolve()
+        if codex_root.is_dir():
+            nested_skip.add(codex_root)
+
+    check_manifest_required(plugin_root, manifest, findings)
+    check_manifest_paths_exist(plugin_root, manifest, findings)
+    check_unregistered_skills(plugin_root, manifest, findings, nested_skip=nested_skip)
+    check_unregistered_markdown(plugin_root, manifest, "agents", CANONICAL_AGENT_ROOTS, findings, nested_skip=nested_skip)
+    check_unregistered_markdown(plugin_root, manifest, "commands", CANONICAL_COMMAND_ROOTS, findings, nested_skip=nested_skip)
+    check_skill_frontmatter(plugin_root, findings, nested_skip=nested_skip)
+    check_agent_frontmatter(plugin_root, findings, nested_skip=nested_skip)
+    check_command_frontmatter(plugin_root, findings, nested_skip=nested_skip)
+    check_hook_event_names(plugin_root, findings)
+    return findings
+
+
+# ----- output -----
+
+def render_human(findings: list[Finding], plugin_root: Path, strict: bool, quiet: bool) -> None:
+    """Print a human-readable single-plugin report. Grouped HIGH/MEDIUM/LOW."""
+    high = [f for f in findings if f.confidence == "high"]
+    medium = [f for f in findings if f.confidence == "medium"]
+    low = [f for f in findings if f.confidence == "low"]
+    total = len(findings)
+
+    if total == 0:
+        if not quiet:
+            print(f"nlpm-check: clean ({plugin_root})")
+        return
+
+    print(f"nlpm-check: {len(high)} high, {len(medium)} medium, {len(low)} low ({plugin_root})")
+    print()
+
+    for group_name, group in (("HIGH", high), ("MEDIUM", medium), ("LOW", low)):
+        if not group:
+            continue
+        print(f"== {group_name} ==")
+        for f in group:
+            location = f.path if f.line == 0 else f"{f.path}:{f.line}"
+            print(f"  [{f.rule}] {location}")
+            print(f"    {f.message}")
+            if f.fix:
+                print(f"    fix: {f.fix}")
+        print()
+
+
+def render_json(findings: list[Finding], plugin_root: Path) -> None:
+    """Print machine-readable single-plugin JSON. Schema: `mode: 'single'`."""
+    payload = {
+        "version": VERSION,
+        "mode": "single",
+        "plugin_root": str(plugin_root),
+        "findings": [asdict(f) for f in findings],
+        "summary": {
+            "high": sum(1 for f in findings if f.confidence == "high"),
+            "medium": sum(1 for f in findings if f.confidence == "medium"),
+            "low": sum(1 for f in findings if f.confidence == "low"),
+        },
+    }
+    print(json.dumps(payload, indent=2))
+
+
+def render_human_multi(
+    results: list[tuple[Path, list[Finding]]],
+    repo_root: Path,
+    strict: bool,
+    quiet: bool,
+) -> None:
+    """Print a human-readable multi-plugin report. Aggregate header + per-sub-plugin sections for non-clean plugins."""
+    total_high = total_med = total_low = 0
+    clean_count = 0
+    for _, findings in results:
+        high = sum(1 for f in findings if f.confidence == "high")
+        med = sum(1 for f in findings if f.confidence == "medium")
+        low = sum(1 for f in findings if f.confidence == "low")
+        total_high += high
+        total_med += med
+        total_low += low
+        if not findings:
+            clean_count += 1
+    n = len(results)
+    all_clean = total_high == 0 and total_med == 0 and total_low == 0
+
+    if all_clean and quiet:
+        return
+
+    print(
+        f"nlpm-check: {n} plugins · {clean_count} clean · "
+        f"{total_high} high · {total_med} medium · {total_low} low ({repo_root})"
+    )
+    if all_clean:
+        return
+    print()
+
+    for plugin_root, findings in results:
+        if not findings:
+            continue
+        rel = plugin_root.relative_to(repo_root.resolve()) if _is_under(plugin_root, repo_root.resolve()) else plugin_root
+        high = [f for f in findings if f.confidence == "high"]
+        med = [f for f in findings if f.confidence == "medium"]
+        low = [f for f in findings if f.confidence == "low"]
+        print(f"--- {rel} · {len(high)} high · {len(med)} medium · {len(low)} low ---")
+        for group_name, group in (("HIGH", high), ("MEDIUM", med), ("LOW", low)):
+            if not group:
+                continue
+            print(f"  [{group_name}]")
+            for f in group:
+                location = f.path if f.line == 0 else f"{f.path}:{f.line}"
+                print(f"    [{f.rule}] {location}")
+                print(f"      {f.message}")
+                if f.fix:
+                    print(f"      fix: {f.fix}")
+        print()
+
+
+def render_json_multi(
+    results: list[tuple[Path, list[Finding]]],
+    repo_root: Path,
+) -> None:
+    """Print machine-readable multi-plugin JSON. Schema: `mode: 'multi'` with `plugins[]` array + aggregate `summary`."""
+    plugins = []
+    total_high = total_med = total_low = 0
+    clean_count = 0
+    for plugin_root, findings in results:
+        high = sum(1 for f in findings if f.confidence == "high")
+        med = sum(1 for f in findings if f.confidence == "medium")
+        low = sum(1 for f in findings if f.confidence == "low")
+        total_high += high
+        total_med += med
+        total_low += low
+        if not findings:
+            clean_count += 1
+        plugins.append({
+            "plugin_root": str(plugin_root),
+            "findings": [asdict(f) for f in findings],
+            "summary": {"high": high, "medium": med, "low": low},
+        })
+    payload = {
+        "version": VERSION,
+        "mode": "multi",
+        "repo_root": str(repo_root),
+        "plugins": plugins,
+        "summary": {
+            "plugins_total": len(results),
+            "plugins_clean": clean_count,
+            "high": total_high,
+            "medium": total_med,
+            "low": total_low,
+        },
+    }
+    print(json.dumps(payload, indent=2))
+
+
+# ----- main -----
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(
+        prog="nlpm-check",
+        description=(
+            "Standalone manifest-vs-disk + frontmatter validator for "
+            "Claude Code plugins. For full quality scoring, run /nlpm:score."
+        ),
+    )
+    parser.add_argument("path", nargs="?", default=".", help="path to plugin root or any subdirectory")
+    parser.add_argument("--json", action="store_true", help="emit machine-readable JSON")
+    parser.add_argument("--strict", action="store_true", help="exit 1 on findings of any confidence")
+    parser.add_argument("--quiet", action="store_true", help="suppress output when clean")
+    parser.add_argument("--version", action="version", version=f"nlpm-check {VERSION}")
+    args = parser.parse_args(argv)
+
+    start = Path(args.path)
+    if not start.exists():
+        print(f"nlpm-check: path does not exist: {start}", file=sys.stderr)
+        return 2
+
+    # Discover all manifests reachable from start.
+    walk_up = find_plugin_root(start)
+    if walk_up is not None:
+        # Inside a plugin tree — scan from walk_up downward to find any
+        # nested sub-plugins under it. Includes walk_up itself.
+        all_roots = find_subplugin_roots(walk_up)
+    else:
+        all_roots = find_subplugin_roots(start)
+
+    if not all_roots:
+        print(
+            f"nlpm-check: no .claude-plugin/plugin.json found at, above, or "
+            f"within {start}",
+            file=sys.stderr,
+        )
+        return 2
+
+    if len(all_roots) == 1:
+        # Single-plugin layout — keep the original single-plugin output shape
+        # so existing CI / badge / consumers don't see a schema change.
+        plugin_root = all_roots[0]
+        findings = check_plugin(plugin_root)
+        if args.json:
+            render_json(findings, plugin_root)
+        else:
+            render_human(findings, plugin_root, strict=args.strict, quiet=args.quiet)
+        if args.strict:
+            return 1 if findings else 0
+        return 1 if any(f.confidence == "high" for f in findings) else 0
+
+    # Multi-plugin monorepo — N manifests in the tree.
+    repo_root = (walk_up or start).resolve()
+    results: list[tuple[Path, list[Finding]]] = []
+    for sub_root in all_roots:
+        nested = nested_subplugins(sub_root, all_roots)
+        findings = check_plugin(sub_root, nested_skip=nested)
+        results.append((sub_root, findings))
+
+    if args.json:
+        render_json_multi(results, repo_root)
+    else:
+        render_human_multi(results, repo_root, strict=args.strict, quiet=args.quiet)
+
+    any_high = any(f.confidence == "high" for _, fs in results for f in fs)
+    any_finding = any(fs for _, fs in results)
+    if args.strict:
+        return 1 if any_finding else 0
+    return 1 if any_high else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

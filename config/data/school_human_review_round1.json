@@ -1,0 +1,31 @@
+{
+  "mapping_id": "school_human_review_round1",
+  "version": "1.0",
+  "status": "FROZEN",
+  "source": "manual_business_confirmation",
+  "supersedes": null,
+  "rule_id": "RULE-013-HR1",
+  "approved_mappings": {
+    "伯明翰": "University of Birmingham",
+    "爱丁堡": "University of Edinburgh",
+    "诺丁汉": "University of Nottingham",
+    "卡迪夫": "Cardiff University",
+    "多伦多": "University of Toronto",
+    "利物浦": "University of Liverpool",
+    "考文垂": "Coventry University",
+    "阿伯丁": "University of Aberdeen",
+    "东北大学": "Northeastern University",
+    "哥伦比亚": "Columbia University",
+    "坎特伯雷": "University of Canterbury",
+    "纽卡斯尔": "Newcastle University",
+    "莱斯": "Rice University",
+    "csm": "University of the Arts London",
+    "约克大学": "University of York",
+    "维多利亚大学": "Victoria University",
+    "贝尔法斯特": "Queen's University Belfast",
+    "贝法": "Queen's University Belfast",
+    "伦敦大学": "University College London"
+  },
+  "approved_non_school": {"卡普兰": "ORGANIZATION"},
+  "unresolved_without_human_decision": ["堪培拉", "悉尼", "疑似谢菲"]
+}

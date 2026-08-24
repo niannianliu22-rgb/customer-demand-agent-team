@@ -1,0 +1,67 @@
+event_type_confirmation_round: '1'
+rule_version: '1.1'
+status: FROZEN
+scope: Level-1 event_type confirmation and approved mixed-semantic subtype overrides
+  only.
+taxonomy: KEEP_AS_IS
+approved_event_types:
+- ORIENTATION
+- TEACHING
+- READING
+- ASSESSMENT
+- REVISION
+- EXAM
+- RESULTS
+- RESIT
+- BREAK
+- VACATION
+- OTHER
+approved_overrides:
+- event_name_original: December Exam and Assessment Diet
+  event_type: EXAM
+  event_subtype: EXAM_AND_ASSESSMENT
+  record_role: ACADEMIC_EVENT
+  reason: 'Approved: exam-led composite period; retained as one record.'
+- event_name_original: Revision and examination period
+  event_type: EXAM
+  event_subtype: REVISION_AND_EXAM
+  record_role: ACADEMIC_EVENT
+  reason: 'Approved: continuous revision-plus-examination period; not split.'
+- event_name_original: Semester 1 assessment and exams
+  event_type: EXAM
+  event_subtype: ASSESSMENT_AND_EXAM
+  record_role: ACADEMIC_EVENT
+  reason: 'Approved: exam-led composite period; retained as one record.'
+- event_name_original: Teaching and Assessment weeks - Term 1
+  event_type: ASSESSMENT
+  event_subtype: TEACHING_AND_ASSESSMENT
+  record_role: ACADEMIC_EVENT
+  reason: 'Approved: combined teaching and assessment period.'
+- event_name_original: Teaching and assessment weeks - Term 2
+  event_type: ASSESSMENT
+  event_subtype: TEACHING_AND_ASSESSMENT
+  record_role: ACADEMIC_EVENT
+  reason: 'Approved: combined teaching and assessment period.'
+- event_name_original: Teaching and assessment weeks - Term 3
+  event_type: ASSESSMENT
+  event_subtype: TEACHING_AND_ASSESSMENT
+  record_role: ACADEMIC_EVENT
+  reason: 'Approved: combined teaching and assessment period.'
+- event_name_original: Academic year closing interval
+  event_type: OTHER
+  event_subtype: ''
+  record_role: PERIOD_METADATA
+  reason: 'Approved: Academic Period Metadata; excluded from Calendar → Demand Mapping.'
+- event_name_original: Summer Semester
+  event_type: OTHER
+  event_subtype: ''
+  record_role: PERIOD_METADATA
+  reason: 'Approved: period metadata; excluded from Calendar → Demand Mapping.'
+record_role_policy:
+  ACADEMIC_EVENT: Eligible Calendar event role; Mapping is not executed by this confirmation.
+  PERIOD_METADATA: Retained calendar evidence and period context; excluded from any
+    future Calendar → Demand Mapping.
+prohibited:
+- demand_mapping
+- opportunity_generation
+- full_subtype_taxonomy_refinement

@@ -1,0 +1,195 @@
+taxonomy_id: academic_calendar_business_taxonomy_v1
+version: '1.0-candidate'
+status: PENDING_HUMAN_CONFIRMATION
+purpose: Business-oriented minimum taxonomy for future Calendar-to-Demand and Operational Opportunity Mapping; this file does not execute mapping.
+mapping_paths:
+  - DIRECT_DEMAND_SIGNAL
+  - CONTEXTUAL_OPPORTUNITY_SIGNAL
+rules:
+  - event_type: ORIENTATION
+    business_role: SEMESTER_ONBOARDING_PREHEAT
+    mapping_relevance: CONTEXTUAL
+    business_semantic: "开学、入学、Welcome 或 Orientation 阶段；用于长期服务预热，不证明具体订单需求。其 subtype 不改变映射结果，保留为追溯信息。"
+    business_key_subtypes:
+      []
+    potential_task_type_candidate:
+      []
+    potential_service_direction_candidate:
+      - 学年包
+      - 包课
+      - DP
+      - 陪跑服务
+      - 长期辅导类服务
+    promotion_window_logic: "Orientation / Welcome 阶段"
+    demand_window_logic: "Semester Early Stage / Teaching Start 之后"
+    status: PENDING_HUMAN_CONFIRMATION
+  - event_type: TEACHING
+    business_role: TEACHING_CYCLE_CONTEXT
+    mapping_relevance: CONTEXTUAL
+    business_semantic: "正常教学阶段；为持续辅导、课程学习和作业推进提供时间背景。"
+    business_key_subtypes:
+      - TEACHING_START
+      - TEACHING_PERIOD
+    potential_task_type_candidate:
+      []
+    potential_service_direction_candidate:
+      - 长期服务
+      - 课程支持
+      - 包课
+      - 陪跑服务
+    promotion_window_logic: "TEACHING_START：开学阶段；TEACHING_PERIOD：持续教学阶段"
+    demand_window_logic: "Teaching Period"
+    status: PENDING_HUMAN_CONFIRMATION
+  - event_type: READING
+    business_role: EXAM_PREPARATION_CONTEXT
+    mapping_relevance: CONTEXTUAL
+    business_semantic: "Reading Week / Reading Period / Study Preparation 阶段；用于考前辅导与课程复习预热。"
+    business_key_subtypes:
+      []
+    potential_task_type_candidate:
+      []
+    potential_service_direction_candidate:
+      - 考前辅导
+      - 课程复习
+      - 考试准备
+      - tutoring
+    promotion_window_logic: "Reading 阶段"
+    demand_window_logic: "Reading → Revision / Exam"
+    status: PENDING_HUMAN_CONFIRMATION
+  - event_type: ASSESSMENT
+    business_role: ASSESSMENT_CONTEXT_WITH_KEY_EVENT_CANDIDATE
+    mapping_relevance: CONTEXTUAL
+    business_semantic: "考核或 coursework 集中阶段。默认仅为背景；仅明确 key subtype 可在后续作为 DIRECT 候选，且不得推断具体作业形式。"
+    business_key_subtypes:
+      - ASSESSMENT_PERIOD
+      - TEACHING_AND_ASSESSMENT
+      - FINAL_ASSESSMENT
+    potential_task_type_candidate:
+      []
+    potential_service_direction_candidate:
+      - assessment 支持
+      - 课程辅导
+      - tutoring
+    promotion_window_logic: "Assessment 阶段"
+    demand_window_logic: "Assessment 阶段；FINAL_ASSESSMENT 仅在后续人工规则确认后可成为直接信号"
+    status: PENDING_HUMAN_CONFIRMATION
+  - event_type: REVISION
+    business_role: EXAM_PREHEAT_CONTEXT
+    mapping_relevance: CONTEXTUAL
+    business_semantic: "正式复习阶段；是考试服务的预热窗口，不是具体订单需求证明。"
+    business_key_subtypes:
+      []
+    potential_task_type_candidate:
+      []
+    potential_service_direction_candidate:
+      - 考前辅导
+      - 包过辅导
+      - 考试助力
+      - 押题
+      - tutoring
+    promotion_window_logic: "Revision 阶段"
+    demand_window_logic: "Revision → Exam"
+    status: PENDING_HUMAN_CONFIRMATION
+  - event_type: EXAM
+    business_role: EXAM_DEMAND_SIGNAL
+    mapping_relevance: DIRECT
+    business_semantic: "正式考试阶段，明确支持考试类需求候选；具体服务映射仍需后续人工确认。"
+    business_key_subtypes:
+      - FINAL_EXAM
+      - GENERAL_EXAM
+      - REVISION_AND_EXAM
+      - ASSESSMENT_AND_EXAM
+      - EXAM_AND_ASSESSMENT
+    potential_task_type_candidate:
+      - 考试
+    potential_service_direction_candidate:
+      - 考前辅导
+      - 考试助力
+      - 押题
+      - 包过辅导
+      - 相关考试类服务
+    promotion_window_logic: "Exam 前阶段"
+    demand_window_logic: "Exam Period"
+    status: PENDING_HUMAN_CONFIRMATION
+  - event_type: RESULTS
+    business_role: POST_RESULTS_FOLLOW_UP_CONTEXT
+    mapping_relevance: CONTEXTUAL
+    business_semantic: "成绩发布阶段，适合成绩风险和下一阶段学习规划触达；不自动生成补考需求。"
+    business_key_subtypes:
+      - RESULTS_RELEASE
+    potential_task_type_candidate:
+      []
+    potential_service_direction_candidate:
+      - 成绩风险咨询
+      - 长期服务转化
+      - 下一阶段辅导
+    promotion_window_logic: "Results Release"
+    demand_window_logic: "Results 后；补考需求必须由实际 Resit 信号或业务信号支持"
+    status: PENDING_HUMAN_CONFIRMATION
+  - event_type: RESIT
+    business_role: RESIT_DEMAND_SIGNAL
+    mapping_relevance: DIRECT
+    business_semantic: "补考、Supplementary 或 Deferred Examination 阶段，明确支持补考/考试类需求候选。"
+    business_key_subtypes:
+      - RESIT_EXAM
+      - SUPPLEMENTARY_EXAM
+      - DEFERRED_EXAM
+    potential_task_type_candidate:
+      - 补考
+      - 考试
+    potential_service_direction_candidate:
+      - 补考辅导
+      - 包过辅导
+      - 考试助力
+      - 考前辅导
+    promotion_window_logic: "Resit 前阶段"
+    demand_window_logic: "Resit / Supplementary / Deferred Exam Period"
+    status: PENDING_HUMAN_CONFIRMATION
+  - event_type: BREAK
+    business_role: NEXT_TERM_PREHEAT_CONTEXT
+    mapping_relevance: CONTEXTUAL
+    business_semantic: "教学阶段之间的短期 Break；用于下一教学阶段长期产品预热。"
+    business_key_subtypes:
+      []
+    potential_task_type_candidate:
+      []
+    potential_service_direction_candidate:
+      - 包课
+      - 学年包
+      - 长期辅导
+      - 陪跑服务
+      - 下一阶段课程规划
+    promotion_window_logic: "Break 中后段"
+    demand_window_logic: "下一 Teaching Period / Semester Start"
+    status: PENDING_HUMAN_CONFIRMATION
+  - event_type: VACATION
+    business_role: NEXT_SEMESTER_PREHEAT_CONTEXT
+    mapping_relevance: CONTEXTUAL
+    business_semantic: "较长假期或学期之间 Vacation；用于下一学期/学年长期产品预热。"
+    business_key_subtypes:
+      []
+    potential_task_type_candidate:
+      []
+    potential_service_direction_candidate:
+      - 学年包
+      - 包课
+      - DP
+      - 陪跑服务
+      - 开学规划
+      - 长期辅导
+    promotion_window_logic: "Vacation 中后段"
+    demand_window_logic: "下一 Teaching Period / Semester Start"
+    status: PENDING_HUMAN_CONFIRMATION
+  - event_type: OTHER
+    business_role: EXCLUDED_METADATA_OR_UNREVIEWED_EVENT
+    mapping_relevance: NO_MAPPING
+    business_semantic: "当前 OTHER 均为 Period Metadata，不参与需求或运营机会生成；未来真正 Academic Event 必须单独人工 Review。"
+    business_key_subtypes:
+      []
+    potential_task_type_candidate:
+      []
+    potential_service_direction_candidate:
+      []
+    promotion_window_logic: "不适用"
+    demand_window_logic: "不适用"
+    status: PENDING_HUMAN_CONFIRMATION

@@ -1,0 +1,21 @@
+framework_name: Demand Opportunity Matrix
+framework_version: '1.0'
+status: FROZEN
+scope: Evidence integration only; no new drill-down or cross-dimensional analysis
+analysis_spine: Task Type -> Pattern -> Operational Value -> existing WHERE evidence -> Demand Opportunity
+historical_demand_scope: All HISTORICAL_DEMAND Task Types, including P4 WATCHLIST
+priority_mapping:
+  P1_CORE_DEMAND: CORE_OPPORTUNITY
+  P2_GROWTH_DEMAND: GROWTH_OPPORTUNITY
+  P3_HIGH_VALUE_NICHE: HIGH_VALUE_OPPORTUNITY
+  P4_WATCHLIST: WATCHLIST
+value_logic: Volume Value OR Revenue Value. High volume/low ticket and low volume/high revenue remain eligible through separate paths.
+where_rule: Read existing Demand Market Tree only; never execute the Level 3 plan.
+optional_drill_down: Every READY_FOR_DRILL_DOWN plan is frozen as OPTIONAL_DRILL_DOWN, pending a future specific business question.
+calendar_interface:
+  calendar_signal: NOT_EVALUATED
+  calendar_new_demand: NOT_EVALUATED
+  calendar_opportunity_status: NOT_EVALUATED
+  future_operational_scope: Historical Demand UNION Academic Calendar New Demand
+excluded_dimensions: [channel, customer_group, ddl]
+forbidden: [unified_dataset modification, frozen framework modification, level3 execution, high-dimensional cross, academic calendar, WHEN, acquisition analysis]

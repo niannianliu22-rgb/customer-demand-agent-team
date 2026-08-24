@@ -1,0 +1,19 @@
+framework_name: Historical Demand Pattern
+framework_version: '1.0'
+status: FROZEN
+analysis_spine: Actual completed Task Type -> Year/Month -> Country -> supporting School evidence
+scope:
+  order_status: 已成交
+  task_type_mode: SINGLE_TASK
+  value_classes: [CORE_OPPORTUNITY, GROWTH_OPPORTUNITY, HIGH_VALUE_OPPORTUNITY, ACTIVE_DEMAND]
+  coverage: 2023/2024/2025 August same-period cohorts
+pattern_key: [month, task_type, value_class, country]
+school_role: Supporting School Evidence and Academic Calendar Validation Entry; school must not enter the primary Pattern Key
+supporting_school_structure: Each Country Pattern retains supporting_schools with canonical school name, available Chinese display alias, historical order/repeat evidence, and Calendar-match readiness.
+pattern_strength:
+  STRONG: repeat_year_count = 3 AND historical_order_count >= 3
+  MEDIUM: repeat_year_count >= 2 OR historical_order_count >= 3
+  WEAK: all remaining patterns
+strength_rule_status: FROZEN
+country_role: Primary Pattern Layer
+forbidden: [school_in_primary_pattern_key, further_pattern_optimisation, course, channel, customer_group, ddl, academic_calendar_execution, forecast]

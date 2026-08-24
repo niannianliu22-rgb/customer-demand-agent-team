@@ -9,9 +9,11 @@ from __future__ import annotations
 
 import csv
 import datetime as dt
+import hashlib
 import json
 import re
 import sys
+import os
 from collections import Counter
 from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 from pathlib import Path
@@ -21,7 +23,7 @@ from openpyxl import Workbook, load_workbook
 
 
 ROOT = Path(__file__).resolve().parents[2]
-RUN_ID = "RUN-202608-DEMAND-001"
+RUN_ID = os.environ["CDAT_RUN_ID"]
 ACTIVE_STATUSES = {"CONFIRMED", "EXCLUDED_BY_BUSINESS_RULE"}
 DATE_DOT = re.compile(r"(?P<month>\d{1,2})\.(?P<day>\d{1,2})")
 DATE_MONTH = re.compile(r"(?P<month>\d{1,2})月份?")
@@ -31,6 +33,20 @@ DEGREE_MAP = {"大一": "本科", "大二": "本科", "大三": "本科", "大�
 
 def empty(value) -> bool:
     return value is None or (isinstance(value, str) and not value.strip())
+
+
+def checksum(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def business_rules_identity(content: str) -> tuple[str, str]:
+    """Use the frozen declared version, or its checksum when no version exists."""
+    match = re.search(r"Business Rules Version:\s*([^*\n]+)", content)
+    return (match.group(1).strip(), 'DECLARED_VERSION') if match else (checksum_value(content), 'CHECKSUM')
+
+
+def checksum_value(content: str) -> str:
+    return hashlib.sha256(content.encode('utf-8')).hexdigest()
 
 
 def iso_date(value, year: int):
@@ -105,26 +121,146 @@ def load_json(path: Path):
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def assert_snapshot_rule(manifest: dict, rule_name: str, path: Path) -> None:
+    """Refuse to execute when a live frozen rule diverges from this Run."""
+    entry = next(item for item in manifest["rule_versions"] if item["rule_name"] == rule_name)
+    if checksum(path) != entry["checksum"]:
+        raise RuntimeError(f"{rule_name} checksum diverges from the frozen Run snapshot")
+
+
+def load_dimension_rules(run_manifest: dict) -> dict:
+    """Load only human-confirmed, frozen dimension mappings for A05."""
+    paths = {
+        "school": ROOT / "config/data/school_aliases.yaml",
+        "task": ROOT / "config/dimensions/task_type/task_type_rules_frozen_v17.yaml",
+        "channel": ROOT / "config/dimensions/channel/channel_rules_frozen_v1.yaml",
+        "date": ROOT / "config/data/date_standardization_rules_v1_1.yaml",
+    }
+    for name, rule_name in (("school", "school_mapping"), ("task", "task_type_rules"), ("channel", "channel_rules"), ("date", "date_rules")):
+        assert_snapshot_rule(run_manifest, rule_name, paths[name])
+    school = yaml.safe_load(paths["school"].read_text(encoding="utf-8"))
+    task = yaml.safe_load(paths["task"].read_text(encoding="utf-8"))
+    channel = yaml.safe_load(paths["channel"].read_text(encoding="utf-8"))
+    if school.get("status") != "ACTIVE" or school.get("dictionary_version") != "1.1":
+        raise RuntimeError("Frozen school dictionary v1.1 is required")
+    if task.get("status") != "FROZEN" or task.get("task_type_rules_version") != "17.0":
+        raise RuntimeError("Frozen task type rules v17.0 are required")
+    if channel.get("status") != "FROZEN" or channel.get("channel_rules_version") != "1.0":
+        raise RuntimeError("Frozen channel rules v1.0 are required")
+    review_1 = load_json(ROOT / "config/data/school_human_review_round1.json")
+    review_2 = load_json(ROOT / "config/data/school_human_review_round2.json")
+    if review_1.get("status") != "FROZEN" or review_2.get("status") != "FROZEN":
+        raise RuntimeError("Frozen school review mappings are required")
+    aliases = {alias: entity for entity in school["canonical_entities"] if entity.get("status") == "ACTIVE" for alias in entity["aliases"]}
+    canonical = {entity["canonical_name"]: entity for entity in school["canonical_entities"] if entity.get("status") == "ACTIVE"}
+    return {
+        "task": task,
+        "task_official": set(task["official_task_types"]),
+        "task_aliases": {entry["raw_value"]: entry for entry in task["aliases"]},
+        "task_multi": {entry["raw_value"]: entry for entry in task["multi_task_rules"]},
+        "task_excluded": {entry["raw_value"]: entry for entry in task["excluded_values"]},
+        "task_unknown": {entry["raw_value"]: entry for entry in task["unknown_values"]},
+        "channel": channel,
+        "channel_aliases": {entry["raw_channel"]: entry for entry in channel["aliases"]},
+        "school_aliases": aliases,
+        "school_canonical": canonical,
+        "school_non_school": {entry["original_value"]: entry["classification"] for entry in school.get("non_school_values", []) if entry.get("status") == "ACTIVE"},
+        "school_non_university": {entry["original_value"] for entry in school.get("non_university_entities", []) if entry.get("status") == "ACTIVE"},
+        "school_unresolved": {entry["original_value"] for entry in school.get("unresolved_values", []) if entry.get("status") == "ACTIVE"} | set(review_1.get("unresolved_without_human_decision", [])),
+        "school_review_1": review_1,
+        "school_review_2": review_2,
+    }
+
+
+def apply_task_type(record: dict, rules: dict) -> None:
+    raw = "" if record.get("task_type") is None else str(record["task_type"]).strip()
+    if raw in rules["task_multi"]:
+        item = rules["task_multi"][raw]
+        status, value, mode, components, rule_id = "MULTI_TASK", "MULTI_TASK", "MULTI_TASK", item["task_type_components"], item["rule_id"]
+    elif raw in rules["task_aliases"]:
+        item = rules["task_aliases"][raw]
+        status, value, mode, components, rule_id = "STANDARDIZED", item["official_task_type"], "SINGLE_TASK", [], item["rule_id"]
+    elif raw in rules["task_excluded"]:
+        status, value, mode, components, rule_id = "EXCLUDED_BY_BUSINESS_RULE", "", "EXCLUDED", [], "RULE-027"
+    elif raw in rules["task_unknown"]:
+        status, value, mode, components, rule_id = "UNKNOWN", "UNKNOWN", "UNKNOWN", [], "NO_INFERENCE"
+    elif raw in rules["task_official"]:
+        status, value, mode, components, rule_id = "STANDARDIZED", raw, "SINGLE_TASK", [], "CANONICAL_IDENTITY"
+    else:
+        status, value, mode, components, rule_id = "UNMATCHED", "UNKNOWN", "UNKNOWN", [], "NO_FROZEN_RULE_MATCH"
+    record.update({"task_type_original": raw, "task_type": value, "task_type_mode": mode, "task_type_components": json.dumps(components, ensure_ascii=False), "task_type_rule_id": rule_id, "task_type_rule_version": "17.0", "task_type_standardization_status": status})
+
+
+def apply_channel(record: dict, rules: dict) -> None:
+    raw = "" if record.get("channel") is None else str(record["channel"]).strip()
+    item = rules["channel_aliases"].get(raw)
+    if item is None:
+        raise RuntimeError(f"No frozen channel v1 rule matches {raw!r}; no inference is permitted")
+    record.update({"channel_original": raw, "channel_group": item["channel_group"], "channel": item["channel"] or "", "channel_rule_id": item["rule_id"], "channel_rule_version": "1.0", "channel_standardization_status": "STANDARDIZED"})
+
+
+def school_id(name: str) -> str:
+    return "SCH-" + hashlib.sha1(name.encode("utf-8")).hexdigest()[:10].upper()
+
+
+def apply_school(record: dict, rules: dict) -> None:
+    raw = "" if record.get("school") is None else str(record["school"]).strip()
+    country = "" if record.get("country") is None else str(record["country"]).strip()
+    final, status, rule_id, version, entity = "", "UNKNOWN", "RULE-013", "1.1", None
+    review_2 = rules["school_review_2"].get("approved_mappings", {}).get(raw)
+    if review_2:
+        final, status, rule_id, version = review_2["canonical_school"], "STANDARDIZED", rules["school_review_2"]["rule_id"], rules["school_review_2"]["version"]
+    elif raw in rules["school_review_1"].get("approved_mappings", {}):
+        final, status, rule_id, version = rules["school_review_1"]["approved_mappings"][raw], "STANDARDIZED", rules["school_review_1"]["rule_id"], rules["school_review_1"]["version"]
+    elif raw in rules["school_review_1"].get("approved_non_school", {}):
+        final, status, rule_id, version = "NON_SCHOOL", rules["school_review_1"]["approved_non_school"][raw], rules["school_review_1"]["rule_id"], rules["school_review_1"]["version"]
+    elif raw in rules["school_aliases"]:
+        entity = rules["school_aliases"][raw]; final, status = entity["canonical_name"], "STANDARDIZED"
+    elif raw in rules["school_canonical"]:
+        entity = rules["school_canonical"][raw]; final, status = raw, "STANDARDIZED"
+    elif raw in rules["school_non_school"]:
+        final, status = rules["school_non_school"][raw], rules["school_non_school"][raw]
+    elif raw in rules["school_non_university"]:
+        final, status = "NON_UNIVERSITY_ENTITY", "NON_UNIVERSITY_ENTITY"
+    elif raw in rules["school_unresolved"]:
+        final, status = "UNRESOLVED", "UNRESOLVED"
+    elif raw:
+        final, status = "UNSTANDARDIZED", "UNSTANDARDIZED"
+    conflict = ""
+    canonical_country = entity.get("canonical_country") if entity else ""
+    if canonical_country and country and country != canonical_country:
+        conflict = "COUNTRY_SCHOOL_CONFLICT"
+    record.update({"school_original": raw, "school": final, "school_id": review_2.get("school_id", school_id(final)) if review_2 else (school_id(final) if status == "STANDARDIZED" else ""), "school_rule_id": rule_id, "school_rule_version": str(version), "school_standardization_status": status, "country_school_conflict": conflict})
+
+
 def main(run_id: str):
     run_dir = ROOT / "runs" / run_id
     artifacts = run_dir / "artifacts"
     manifest = load_json(artifacts / "source_manifest.json")
     mapping = load_json(artifacts / "schema_mapping.json")
-    gate = load_json(artifacts / "schema_gate_result.json")
-    schema = load_json(ROOT / "schemas" / "canonical_schema.json")
-    rules = yaml.safe_load((ROOT / "config" / "data" / "standardization_rules.yaml").read_text(encoding="utf-8"))
-    business_rules = (ROOT / "policies" / "business_rules.md").read_text(encoding="utf-8")
+    gate = load_json(run_dir / "gates" / "SCHEMA_GATE.json")
+    schema = load_json(run_dir / "snapshots" / "canonical_schema.json")
+    run_manifest = load_json(run_dir / "run_manifest.json")
+    rules_snapshot = run_dir / "snapshots" / "standardization_rules.yaml"
+    business_rules_snapshot = run_dir / "snapshots" / "business_rules.md"
+    rules = yaml.safe_load(rules_snapshot.read_text(encoding="utf-8"))
+    business_rules = business_rules_snapshot.read_text(encoding="utf-8")
+    expected_standardization_rules_version = rules.get("rules_version")
+    expected_business_rules_identity, business_rules_identity_type = business_rules_identity(business_rules)
 
-    if gate["gate_status"] != "PASS":
+    if gate["decision"] != "PASS":
         raise RuntimeError("Data Standardization requires Schema Gate PASS")
-    if schema["status"] != "FROZEN" or schema["schema_version"] != "1.0.0":
-        raise RuntimeError("Frozen canonical schema v1.0.0 is required")
-    if rules["rules_version"] != "2.0" or "Business Rules Version: 2.0" not in business_rules:
-        raise RuntimeError("Business Rules v2.0 is required")
+    if schema["status"] != "FROZEN" or schema["schema_version"] != run_manifest["schema_version"]:
+        raise RuntimeError("Run snapshot canonical schema must match the frozen manifest version")
+    if not expected_standardization_rules_version:
+        raise RuntimeError("Run snapshot lacks an authoritative standardization rules version")
+    if business_rules_identity_type == 'DECLARED_VERSION' and expected_business_rules_identity != str(expected_standardization_rules_version):
+        raise RuntimeError("Run snapshot business rules version does not match standardization rules version")
     if mapping["status"] != "COMPLETED" or manifest["status"] != "COMPLETED":
         raise RuntimeError("Intake and mapping artifacts must be COMPLETED")
     if manifest["received_source_count"] != 6 or len(manifest["sources"]) != 6:
         raise RuntimeError("Expected six received sources")
+    dimension_rules = load_dimension_rules(run_manifest)
 
     canonical_fields = [field["name"] for field in schema["fields"]]
     canonical_set = set(canonical_fields)
@@ -223,6 +359,9 @@ def main(run_id: str):
                     if target not in canonical_set:
                         raise RuntimeError(f"Mapping target is not canonical: {target}")
                     record[target] = value
+            apply_school(record, dimension_rules)
+            apply_task_type(record, dimension_rules)
+            apply_channel(record, dimension_rules)
             output_rows.append(record)
 
         wb.close()
@@ -247,8 +386,8 @@ def main(run_id: str):
     write_json(artifacts / "standardization_review.json", review)
     cleaning = {
         "run_id": run_id, "agent": "Data Standardization Agent", "wave": "W3", "version": 1,
-        "status": review["status"], "business_rules_version": rules["rules_version"], "canonical_schema_version": schema["schema_version"],
-        "inputs": ["source_manifest.json", "source_profiles/*.json", "schema_mapping.json", "schema_gate_result.json", "canonical_schema.json", "business_rules.md", "standardization_rules.yaml"],
+        "status": review["status"], "business_rules_version": expected_standardization_rules_version, "business_rules_identity": expected_business_rules_identity, "business_rules_identity_type": business_rules_identity_type, "business_rules_checksum": checksum(business_rules_snapshot), "standardization_rules_checksum": checksum(rules_snapshot), "canonical_schema_version": schema["schema_version"],
+        "inputs": ["source_manifest.json", "source_profiles/*.json", "schema_mapping.json", "gates/SCHEMA_GATE.json", "snapshots/canonical_schema.json", "snapshots/business_rules.md", "snapshots/standardization_rules.yaml"],
         "sources": source_logs,
         "totals": {"input_rows": sum(item["input_rows"] for item in source_logs), "blank_rows_excluded": sum(item["blank_rows_excluded"] for item in source_logs), "output_rows": len(all_rows), "date_transformations": dict(global_date_counts), "degree_transformations": dict(global_degree_counts), "currency_transformations": dict(global_currency_counts), "review_required_count": len(issues)},
         "excluded_fields": sorted(expected_excluded), "unified_dataset_fields": canonical_fields,
@@ -257,6 +396,10 @@ def main(run_id: str):
     write_json(artifacts / "cleaning_log.json", cleaning)
     standardization_rules = {"run_id": run_id, "agent": "Data Standardization Agent", "wave": "W3", "version": 1, "status": review["status"], "generated_at": dt.datetime.now(dt.timezone.utc).isoformat(), "items": source_logs, "unresolved": issues, "evidence_refs": cleaning["evidence_refs"]}
     write_json(artifacts / "standardization_rules.json", standardization_rules)
+    # A05 owns the run-bound task/channel standardization evidence consumed by A06.
+    # This helper is read-only against the newly written unified dataset.
+    from complete_a05_standardization_audits_v1 import complete_a05_audits
+    complete_a05_audits(run_id)
     print(json.dumps({"status": review["status"], "sources": source_logs, "output_rows": len(all_rows), "review_required_count": len(issues)}, ensure_ascii=False, indent=2))
 
 

@@ -1,10 +1,10 @@
 # Business Rules — Single Source of Truth
 
-**Business Rules Version: 17.0**
+**Business Rules Version: 19.0**
 
 > 本文件是全项目业务规则的**人类可读唯一真源（Single Source of Truth）**。任何人工确认的业务规则一经写入本文件并标记 `status: ACTIVE`，即对全部相关 Agent 具有约束力——不因对话上下文结束而失效，不因 Agent 更换底层模型而失效，不由任何 Agent 自行推翻。
 >
-> 机器可读版本见 [`config/data/standardization_rules.yaml`](../config/data/standardization_rules.yaml)（`rules_version: "17.0"`，与本文件版本号保持一致）。两份文件描述同一组规则，本文件为叙述与治理层面的真源，YAML 文件为 Agent/程序执行时读取的结构化版本；若两者内容出现不一致，以本文件为准，并应立即修正 YAML 文件使二者重新一致（不一致本身就是 `BUSINESS_RULE_CONFLICT`，见第五节）。
+> 机器可读版本见 [`config/data/standardization_rules.yaml`](../config/data/standardization_rules.yaml)（`rules_version: "19.0"`，与本文件版本号保持一致）。两份文件描述同一组规则，本文件为叙述与治理层面的真源，YAML 文件为 Agent/程序执行时读取的结构化版本；若两者内容出现不一致，以本文件为准，并应立即修正 YAML 文件使二者重新一致（不一致本身就是 `BUSINESS_RULE_CONFLICT`，见第五节）。
 
 ---
 
@@ -424,6 +424,19 @@
 | `created_at` | 2026-08-20 |
 | `affected_agents` | Data Standardization Agent、Data Quality Agent、Data Gate、Historical Demand Pattern Agent |
 
+### RULE-028 — Channel v1.0 最终人工确认标准化
+
+| 字段 | 值 |
+|---|---|
+| `rule_id` | RULE-028 |
+| `scope` | Channel 标准化、Data Quality、Data Gate |
+| `business_definition` | 对当前 RUN 的 30 个 raw channel 执行精确的人工确认映射，产出 `channel_original`、`channel_group`、`channel`。`channel_group` 仅允许「老客户」与「新客户」。完整 aliases、canonical list 与优先级只以 `config/dimensions/channel/channel_rules_frozen_v1.yaml` 为准。 |
+| `新客户` 的二级 channel | 原始值「新客户」确认属于 `channel_group=新客户`，二级 `channel=null`。它代表历史数据未记录具体获客来源；参与新客户一级统计，但不参与具体获客渠道效果归因；「未知来源」不得注册为 canonical channel。 |
+| `restriction` | 仅精确人工确认值可映射；不得以模型推理覆盖、扩展或修改 Frozen Channel v1.0。 |
+| `source` | `manual_business_confirmation` |
+| `status` | `ACTIVE` |
+| `created_at` | 2026-08-21 |
+
 ---
 
 ## 二、规则与 Agent 的对应关系
@@ -512,5 +525,7 @@ Agent **必须**：
 | 15.0 | 2026-08-20 | 新增 RULE-025：完成 D 组论文部分／缩写类 12 个原始值审核，新增独立 official task type `毕业论文半包`。列明的 LR、ME、文献综述、局部服务与答辩 PPT 值均按毕业论文局部／阶段性产品服务口径归入该类型。 |
 | 16.0 | 2026-08-20 | 新增 RULE-026：完成 E 组仅字数／信息不足类 18 个原始值审核。当前历史中无明确任务语义的纯字数值映射为 `essay`；明确任务语义和特殊业务规则优先，禁止向未来未知文本无限泛化。 |
 | 17.0 | 2026-08-20 | 新增 RULE-027：完成 F 组审核。`quiz`、毕业设计辅导／毕设辅导、反思／地理作业值按人工确认映射；其余 19 个无法唯一判断值仅排除出 task_type 聚合和趋势分析，记录及其他维度保留。 |
+| 18.0 | 2026-08-21 | 新增 RULE-028：完成 Channel v1.0 的最终人工确认。30 个 raw channel 生成 `channel_original`、`channel_group`、`channel`；「新客户」映射为 `新客户 / 未知来源`，仅进入一级新客户统计，不归因至命名获客渠道。正式冻结规则位于 `config/dimensions/channel/channel_rules_frozen_v1.yaml`。 |
+| 19.0 | 2026-08-21 | 更正 RULE-028 的 Channel v1.0 最终口径：原始值「新客户」的二级 `channel` 为 `null`，不是 canonical channel「未知来源」；该空值为合法标准化结果，不属于 UNKNOWN、unmatched、REVIEW_REQUIRED 或映射冲突。 |
 
 后续任何规则新增/修改，必须：新增一行变更记录；同步升级 `Business Rules Version` 与 YAML 的 `rules_version`；保留旧版本规则内容（不得直接覆盖删除），以便追溯"某个历史结论当时依据的是哪个版本的规则"。

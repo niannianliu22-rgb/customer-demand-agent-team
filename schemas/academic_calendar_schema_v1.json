@@ -1,0 +1,162 @@
+{
+  "schema_name": "academic_calendar",
+  "schema_version": "1.0",
+  "status": "FROZEN",
+  "change_control": "Any semantic or field change requires a new calendar schema/rule version.",
+  "fields": [
+    {
+      "name": "school_id",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "school",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "country",
+      "type": "string",
+      "required": true,
+      "allowed_values": [
+        "英国",
+        "澳洲",
+        "美国",
+        "香港",
+        "新加坡",
+        "新西兰"
+      ]
+    },
+    {
+      "name": "academic_year_original",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "academic_year_canonical",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "period_type",
+      "type": "string",
+      "required": true,
+      "allowed_values": [
+        "SEMESTER",
+        "TERM",
+        "QUARTER",
+        "SESSION",
+        "FULL_YEAR",
+        "OTHER"
+      ]
+    },
+    {
+      "name": "period_name",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "event_type",
+      "type": "string",
+      "required": true,
+      "allowed_values": [
+        "ORIENTATION",
+        "TEACHING",
+        "READING",
+        "ASSESSMENT",
+        "REVISION",
+        "EXAM",
+        "RESULTS",
+        "RESIT",
+        "BREAK",
+        "VACATION",
+        "OTHER"
+      ]
+    },
+    {
+      "name": "event_subtype",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "event_name_original",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "start_date",
+      "type": "string",
+      "format": "date",
+      "required": true
+    },
+    {
+      "name": "end_date",
+      "type": "string",
+      "format": "date",
+      "required": true
+    },
+    {
+      "name": "is_stage",
+      "type": "boolean",
+      "required": true
+    },
+    {
+      "name": "is_event",
+      "type": "boolean",
+      "required": true
+    },
+    {
+      "name": "source_url",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "source_title",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "last_checked_at",
+      "type": "string",
+      "format": "date",
+      "required": true
+    },
+    {
+      "name": "collection_status",
+      "type": "string",
+      "required": true,
+      "allowed_values": [
+        "READY",
+        "PARTIAL",
+        "NEEDS_REVIEW",
+        "NOT_FOUND",
+        "PENDING_COLLECTION"
+      ]
+    },
+    {
+      "name": "standardization_status",
+      "type": "string",
+      "required": true,
+      "allowed_values": [
+        "STANDARDIZED",
+        "REVIEW_REQUIRED",
+        "UNMATCHED"
+      ]
+    },
+    {
+      "name": "event_rule_id",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "academic_year_rule_id",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "period_rule_id",
+      "type": "string",
+      "required": false
+    }
+  ]
+}

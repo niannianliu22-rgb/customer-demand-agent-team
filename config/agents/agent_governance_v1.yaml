@@ -1,0 +1,355 @@
+version: '1.0'
+status: FROZEN
+purpose: Responsibility, authority, benefit and boundary controls for Customer Demand Agent Team V2.
+global_constraints:
+  - no_agent_may_modify_frozen_rules
+  - no_agent_may_modify_an_upstream_artifact
+  - no_agent_may_use_unregistered_evidence
+  - no_agent_may_create_contract_outside_fields
+  - no_agent_may_bypass_gate_or_supervisor
+  - no_agent_may_self_upgrade_confidence
+organization_layers:
+  CONTROL_LAYER: [A01, A02]
+  DATA_GOVERNANCE_LAYER: [A03, A04, A05, A06]
+  EVIDENCE_AND_CONTEXT_LAYER: [A07, A08, A09]
+  DECISION_AND_CONTROL_LAYER: [A10, A11]
+  FORECAST_AND_EXECUTION_LAYER: [A12, A13]
+agents:
+  A01:
+    agent_name: Supervisor Agent
+    mission: Govern one traceable run from initialization to controlled completion.
+    responsibility: Create and govern run state; dispatch only dependency-ready Agents; enforce structured Gate decisions, pause human review, calculate precise return paths and mark stale downstream artifacts.
+    authority:
+      can: [read_registry_workflow_state_and_gate_artifacts, write_run_manifest_run_log_and_runtime_state, decide_dispatch_pause_resume_return_and_stale_state, block_downstream_after_gate_fail]
+      cannot: [perform_business_analysis, alter_data_or_frozen_rules, decide_gate_outcome_from_natural_language, generate_opportunity_forecast_or_action]
+    benefit: Prevents invalid sequencing, uncontrolled reruns and use of stale outputs so downstream business conclusions remain governed.
+    boundary:
+      data_boundary: workflow metadata and registered structured status artifacts only
+      decision_boundary: process control only; never business, quality or opportunity judgment
+      model_boundary: TIER_0 deterministic; optional explanation cannot change state or gate
+      artifact_boundary: writes only run manifest/log/state and artifact-validity metadata
+      business_boundary: cannot create, edit or prioritize demand opportunities
+    owned_inputs: [agent_registry, workflow, dependency_graph, runtime_state, structured_gate_artifacts]
+    owned_outputs: [run_manifest, run_log, runtime_state, final_run_status, stale_state]
+    decision_rights: [dispatch_ready_agent, pause_resume_run, calculate_return_chain, mark_stale]
+    blocking_rights: [block_downstream_on_gate_fail, pause_for_human_review]
+    return_rights: [route_to_registered_return_target]
+    allowed_tools: [python_orchestration, checksum, structured_yaml_json_io]
+    allowed_models: [NONE]
+    upstream_agents: []
+    downstream_agents: [A02, A03]
+    success_criteria: [all_dispatches_follow_dependency_graph, every_state_change_logged, no_gate_bypassed]
+    failure_conditions: [unknown_return_target, missing_structured_gate_artifact, unregistered_agent_dispatch]
+    accountability: Run control, safe state transitions and controlled completion.
+  A02:
+    agent_name: Knowledge Agent
+    mission: Maintain the immutable evidence, rule-version and run-state ledger.
+    responsibility: Record artifact metadata, checksums, frozen rule versions, warnings, blockers, return history and model-call audit events for each run.
+    authority:
+      can: [read_registered_artifact_metadata, write_append_only_knowledge_and_model_call_ledger, record_status_and_checksum]
+      cannot: [perform_analysis, decide_business_or_gate_outcomes, edit_artifacts_or_frozen_rules, dispatch_agents]
+    benefit: Makes each decision reproducible across sessions and prevents reinvention of Frozen Rules.
+    boundary:
+      data_boundary: metadata, checksums, versions and registered artifacts only
+      decision_boundary: records decisions; never makes them
+      model_boundary: TIER_0 deterministic
+      artifact_boundary: writes only knowledge registry and run ledger/audit records
+      business_boundary: cannot infer demand or recommend actions
+    owned_inputs: [frozen_registry, run_manifest, run_log, registered_artifact_metadata]
+    owned_outputs: [knowledge_ledger, frozen_registry_snapshot, model_call_audit]
+    decision_rights: [record_provenance_and_status]
+    blocking_rights: []
+    return_rights: []
+    allowed_tools: [checksum, structured_yaml_json_io, append_only_jsonl]
+    allowed_models: [NONE]
+    upstream_agents: [A01]
+    downstream_agents: [A01]
+    success_criteria: [every_registered_artifact_has_checksum_and_producer, no_prompt_in_normal_log, frozen_versions_traceable]
+    failure_conditions: [unreadable_metadata, checksum_missing, malformed_ledger_event]
+    accountability: Provenance, frozen knowledge and run audit integrity.
+  A03:
+    agent_name: Data Intake Agent
+    mission: Establish a governed and traceable source inventory.
+    responsibility: Identify approved source files, produce source manifest and source profiles, and establish source lineage for every received record.
+    authority:
+      can: [read_approved_source_roots, write_source_manifest_and_profiles, fail_on_inaccessible_or_unregistered_source]
+      cannot: [infer_business_meaning, map_schema, standardize_values, modify_source_content]
+    benefit: Stops unregistered or incomplete source inputs from contaminating every downstream result.
+    boundary:
+      data_boundary: approved raw source files and source metadata only
+      decision_boundary: source availability and lineage only
+      model_boundary: TIER_0 deterministic
+      artifact_boundary: owns source manifest and profiles only
+      business_boundary: cannot classify demand or calendar meaning
+    owned_inputs: [approved_source_list, source_root]
+    owned_outputs: [source_manifest, source_profiles]
+    decision_rights: [accept_or_reject_source_registration]
+    blocking_rights: [SOURCE_GATE]
+    return_rights: []
+    allowed_tools: [file_inventory, hashing, source_profile_scripts]
+    allowed_models: [NONE]
+    upstream_agents: [A01]
+    downstream_agents: [A04]
+    success_criteria: [all_expected_sources_registered, source_lineage_complete]
+    failure_conditions: [inaccessible_source, missing_required_source_profile]
+    accountability: Source completeness and source lineage.
+  A04:
+    agent_name: Schema Mapping Agent
+    mission: Map source structures to the canonical schema without altering its governance.
+    responsibility: Produce a traceable source-to-canonical field mapping and flag every required unmapped field for review.
+    authority:
+      can: [read_manifest_profiles_and_canonical_schema, write_schema_mapping_candidates, return_unmapped_required_fields]
+      cannot: [modify_canonical_schema, approve_ambiguous_llm_candidate, standardize_data_values]
+    benefit: Ensures downstream fields have stable semantics and protects the canonical data contract.
+    boundary:
+      data_boundary: source headers/profiles and canonical schema only
+      decision_boundary: mapping status only; ambiguous candidate requires human review
+      model_boundary: deterministic first; TIER_1 candidate-only exception
+      artifact_boundary: owns schema mapping artifact only
+      business_boundary: cannot draw business conclusions
+    owned_inputs: [source_manifest, source_profiles, canonical_schema, frozen_schema_mappings]
+    owned_outputs: [schema_mapping]
+    decision_rights: [mark_mapping_resolved_or_review_required]
+    blocking_rights: [SCHEMA_GATE]
+    return_rights: [A03_for_missing_profile]
+    allowed_tools: [mapping_scripts, canonical_schema_reader, candidate_model_when_authorized]
+    allowed_models: [medium_primary, medium_fallback_candidate_only]
+    upstream_agents: [A03]
+    downstream_agents: [A05]
+    success_criteria: [all_required_fields_mapped_or_governed, mapping_evidence_present]
+    failure_conditions: [unmapped_required_field, missing_source_profile, schema_mutation_attempt]
+    accountability: Canonical field mapping completeness.
+  A05:
+    agent_name: Data Standardization Agent
+    mission: Apply Frozen standardization rules and expose exceptions without guessing.
+    responsibility: Produce the standardized unified dataset plus cleaning and review lineage for school, task type, channel, date and numeric fields.
+    authority:
+      can: [read_mapped_data_and_frozen_standardization_rules, write_standardized_dataset_and_lineage, request_human_review_for_unresolved_values]
+      cannot: [modify_frozen_mapping, approve_low_confidence_candidate, issue_data_quality_gate_decision, change_business_framework]
+    benefit: Creates consistently governed data that analysis Agents can safely consume.
+    boundary:
+      data_boundary: mapped data and registered Frozen standardization rules only
+      decision_boundary: applies rules; unresolved ambiguity remains human review
+      model_boundary: deterministic first; TIER_1 candidate-only exception
+      artifact_boundary: owns unified dataset and standardization lineage only
+      business_boundary: cannot evaluate demand quality, value or opportunity
+    owned_inputs: [schema_mapping, source_data, frozen_school_task_channel_date_rules]
+    owned_outputs: [unified_dataset, cleaning_log, review_log, standardization_lineage]
+    decision_rights: [apply_existing_frozen_rule, mark_human_review_required]
+    blocking_rights: [STANDARDIZATION_GATE]
+    return_rights: [A04_for_schema_defect]
+    allowed_tools: [standardization_scripts, frozen_mapping_readers, candidate_model_when_authorized]
+    allowed_models: [medium_primary, medium_fallback_candidate_only]
+    upstream_agents: [A04]
+    downstream_agents: [A06]
+    success_criteria: [rules_applied_traceably, unresolved_items_packaged_for_review, no_frozen_rule_changed]
+    failure_conditions: [blocking_unresolved_value, missing_lineage, unauthorized_rule_change]
+    accountability: Standardized dataset and exception lineage.
+  A06:
+    agent_name: Data Quality Agent
+    mission: Determine whether standardized data is safe enough for the evidence chain.
+    responsibility: Assess record integrity, required-field coverage, standardization validity, dates, amounts and cross-field consistency; issue the structured Data Quality Gate result.
+    authority:
+      can: [read_standardized_dataset_schema_and_lineage, write_quality_report_and_issue_list, decide_DATA_QUALITY_GATE, return_defects_to_A03_A04_or_A05]
+      cannot: [modify_data, remap_fields, alter_frozen_rules, infer_demand]
+    benefit: Intercepts data defects before they can distort historical, calendar or opportunity conclusions.
+    boundary:
+      data_boundary: standardized dataset, canonical schema and approved lineage only
+      decision_boundary: data sufficiency/validity only; no business decision
+      model_boundary: TIER_0 deterministic
+      artifact_boundary: owns quality reports and issue list only
+      business_boundary: cannot repair or interpret demand
+    owned_inputs: [unified_dataset, canonical_schema, standardization_gate_report, frozen_rules]
+    owned_outputs: [quality_report, data_quality_issues, data_quality_gate_report]
+    decision_rights: [PASS, PASS_WITH_WARNINGS, FAIL]
+    blocking_rights: [DATA_QUALITY_GATE]
+    return_rights: [A03, A04, A05]
+    allowed_tools: [quality_scripts, deterministic_validation, checksum]
+    allowed_models: [NONE]
+    upstream_agents: [A05]
+    downstream_agents: [A07, A08]
+    success_criteria: [all_blockers_traceable, valid_missing_not_misclassified, downstream_impact_explicit]
+    failure_conditions: [missing_quality_metric, non_traceable_blocker, gate_decided_by_llm]
+    accountability: Data analysis fitness and Data Quality Gate decision.
+  A07:
+    agent_name: Historical Demand Pattern Agent
+    mission: Establish what historically occurred, where, when and with what operational value.
+    responsibility: Interpret precomputed multi-year demand, value, country/school, August-pattern and lead-time evidence into a traceable Historical Demand Report.
+    authority:
+      can: [read_quality_approved_historical_aggregates, write_historical_demand_report, flag_data_quality_limitations]
+      cannot: [alter_statistics, use_calendar_to_change_history, forecast_future_demand, modify_dataset]
+    benefit: Supplies the independent historical evidence baseline for validation and opportunity decisions.
+    boundary:
+      data_boundary: approved historical aggregates and Frozen historical frameworks only
+      decision_boundary: historical evidence interpretation only
+      model_boundary: TIER_2; numbers must be deterministic precomputed evidence
+      artifact_boundary: owns historical demand report only
+      business_boundary: cannot validate current context or create forecast/action
+    owned_inputs: [quality_report, historical_aggregates, historical_time_patterns, frozen_historical_framework]
+    owned_outputs: [historical_demand_report]
+    decision_rights: [state_historical_strength_and_limitations]
+    blocking_rights: [CONTEXT_GATE_for_missing_or_mixed_historical_evidence]
+    return_rights: [A05, A06_for_data_defect]
+    allowed_tools: [historical_aggregation_reader, structured_reasoning_model]
+    allowed_models: [strong_primary, strong_fallback]
+    upstream_agents: [A06]
+    downstream_agents: [A09]
+    success_criteria: [three_years_preserved, consultation_date_used_for_month, limitations_disclosed]
+    failure_conditions: [calendar_contaminates_history, statistic_recalculation_by_model, untraceable_evidence]
+    accountability: Historical demand evidence interpretation.
+  A08:
+    agent_name: Academic Context Agent
+    mission: Establish official current/future academic context and governed potential service signals.
+    responsibility: Produce an Academic Context Report from standardized Calendar events, Frozen taxonomy, mapping and promotion windows at separate country and school levels.
+    authority:
+      can: [read_frozen_calendar_artifacts, write_academic_context_report, preserve_unresolved_calendar_limitations]
+      cannot: [invent_event_or_official_date, change_calendar_taxonomy, use_history_to_rewrite_calendar, claim_order_existence]
+    benefit: Provides the independent current-context evidence required to time future operational attention.
+    boundary:
+      data_boundary: frozen Calendar and registered mapping/promotion artifacts only
+      decision_boundary: context and potential-service interpretation only
+      model_boundary: hybrid deterministic/TIER_1 with authorized TIER_2 escalation
+      artifact_boundary: owns academic context report only
+      business_boundary: cannot create final demand opportunity or forecast
+    owned_inputs: [frozen_calendar, calendar_taxonomy, business_mapping, promotion_rules, quality_report]
+    owned_outputs: [academic_context_report]
+    decision_rights: [state_context_strength_and_coverage_limitations]
+    blocking_rights: [CONTEXT_GATE_for_missing_or_mixed_calendar_evidence]
+    return_rights: [A05_or_A06_for_data_linkage_defect]
+    allowed_tools: [calendar_standardization_reader, frozen_mapping_reader, authorized_context_model]
+    allowed_models: [medium_primary, strong_primary_escalation]
+    upstream_agents: [A06]
+    downstream_agents: [A09]
+    success_criteria: [official_dates_preserved, country_school_granularity_separate, calendar_signal_not_order]
+    failure_conditions: [invented_event, taxonomy_mutation, historical_evidence_used_as_calendar_fact]
+    accountability: Academic context evidence and Calendar coverage transparency.
+  A09:
+    agent_name: Current Context Validation Agent
+    mission: Align independent historical and current-context evidence without creating opportunities.
+    responsibility: Assign approved validation status and time/business alignment to registered A07/A08 evidence at controlled country, period and justified school levels.
+    authority:
+      can: [read_A07_A08_and_quality_evidence, write_validation_report, preserve_historical_only_and_calendar_new_items, return_alignment_defects]
+      cannot: [delete_historical_evidence_for_calendar_absence, create_opportunity, alter_A07_or_A08, compare_calendar_count_to_consultation_count]
+    benefit: Prevents false confirmation, preserves independent evidence chains and exposes temporal shifts before opportunity synthesis.
+    boundary:
+      data_boundary: A07/A08 reports plus approved quality/mapping artifacts only
+      decision_boundary: validation status and alignment only
+      model_boundary: TIER_2 evidence-bound reasoning
+      artifact_boundary: owns validation report only
+      business_boundary: cannot make final operating recommendation
+    owned_inputs: [historical_demand_report, academic_context_report, quality_report, frozen_business_mapping]
+    owned_outputs: [validation_report]
+    decision_rights: [CURRENTLY_SUPPORTED, HISTORICAL_ONLY_VALID, CALENDAR_NEW_SIGNAL, TEMPORAL_SHIFT, CONTEXT_CONFLICT, INSUFFICIENT_EVIDENCE]
+    blocking_rights: [INSIGHT_GATE_for_invalid_evidence_alignment]
+    return_rights: [A07, A08]
+    allowed_tools: [structured_evidence_comparison, strong_reasoning_model]
+    allowed_models: [strong_primary, strong_fallback]
+    upstream_agents: [A07, A08]
+    downstream_agents: [A10]
+    success_criteria: [historical_only_preserved, calendar_new_preserved, country_school_granularity_not_mixed]
+    failure_conditions: [opportunity_creation, evidence_chain_mutation, calendar_absence_as_conflict]
+    accountability: Evidence alignment and validation classification.
+  A10:
+    agent_name: Demand Opportunity Agent
+    mission: Create the governed monthly customer demand opportunity contract.
+    responsibility: Synthesize A07/A08/A09 evidence into the Month → Country → Best Window → Academic Stage → Business Direction → School → Specific Demand hierarchy.
+    authority:
+      can: [read_A07_A08_A09_quality_and_frozen_taxonomies, write_insight_report_and_summary, classify_strength_with_evidence]
+      cannot: [recalculate_upstream_evidence, alter_validation_status, create_new_task_type_or_business_direction, forecast_or_edit_critic]
+    benefit: Converts evidence into a single traceable operating opportunity view for Critic, Forecast and business teams.
+    boundary:
+      data_boundary: registered A07/A08/A09 artifacts and Frozen taxonomy only
+      decision_boundary: current monthly opportunity synthesis only
+      model_boundary: TIER_3 critical evidence-bound reasoning
+      artifact_boundary: owns insight report and summary only
+      business_boundary: cannot predict future horizons or prescribe actions
+    owned_inputs: [historical_demand_report, academic_context_report, validation_report, quality_report, frozen_taxonomies]
+    owned_outputs: [insight_report, demand_opportunity_summary]
+    decision_rights: [country_direction_hierarchy, opportunity_strength_within_evidence]
+    blocking_rights: [INSIGHT_GATE_for_invalid_hierarchy_or_deleted_evidence]
+    return_rights: [A09_for_validation_contract_defect]
+    allowed_tools: [structured_evidence_synthesis, critical_opportunity_model]
+    allowed_models: [critical_opportunity_primary, critical_opportunity_fallback]
+    upstream_agents: [A09]
+    downstream_agents: [A11]
+    success_criteria: [historical_and_calendar_items_preserved, country_is_directional_not_task_granular, schools_have_traceable_demand]
+    failure_conditions: [unregistered_direction, confidence_inflation, unsupported_country_generalization]
+    accountability: Monthly demand opportunity contract.
+  A11:
+    agent_name: Critic Agent
+    mission: Independently audit opportunity conclusions before forecasting.
+    responsibility: Audit A10 against cited A07-A09 evidence for overgeneralization, low-sample overclaim, time weakness, duplication and confidence inflation; issue a Critic decision.
+    authority:
+      can: [read_A10_and_cited_upstream_evidence, write_critic_report_and_findings, decide_PASS_PASS_WITH_WARNINGS_or_RETURN_FOR_REVISION, specify_return_to_agent]
+      cannot: [modify_A10_artifact, create_or_edit_opportunity, alter_history_calendar_or_validation, generate_forecast]
+    benefit: Lowers over-inference and protects Forecast/Action from unsupported opportunity claims.
+    boundary:
+      data_boundary: A10 plus cited A07-A09/quality evidence only
+      decision_boundary: audit decision and precise corrective request only
+      model_boundary: independent TIER_3 critical reasoning, distinct primary profile from A10
+      artifact_boundary: owns critic report/findings only
+      business_boundary: cannot become an opportunity editor or operating planner
+    owned_inputs: [insight_report, historical_demand_report, academic_context_report, validation_report, quality_report]
+    owned_outputs: [critic_report, critic_findings, critic_summary]
+    decision_rights: [PASS, PASS_WITH_WARNINGS, RETURN_FOR_REVISION]
+    blocking_rights: [CRITIC_GATE]
+    return_rights: [A07, A08, A09, A10]
+    allowed_tools: [evidence_audit, independent_critical_reasoning_model]
+    allowed_models: [critical_critic_primary, critical_critic_fallback]
+    upstream_agents: [A10]
+    downstream_agents: [A12]
+    success_criteria: [every_finding_traceable, no_A10_mutation, warning_constraints_explicit]
+    failure_conditions: [edits_opportunity, untraceable_finding, unsupported_return_target]
+    accountability: Independent opportunity assurance and Critic Gate decision.
+  A12:
+    agent_name: Forecast Agent
+    mission: Convert Critic-approved opportunities into time-bounded future demand opportunity forecasts.
+    responsibility: Produce NEXT_7_DAYS, NEXT_14_DAYS and NEXT_28_DAYS opportunity forecasts with status, strength, confidence, evidence boundary and inherited Critic constraints.
+    authority:
+      can: [read_critic_approved_opportunity_and_registered_evidence, write_forecast_report_summary_and_csv, mark_expired_watch_or_insufficient_items]
+      cannot: [create_new_school_direction_or_event, predict_orders_or_revenue, upgrade_critic_downgrade, modify_opportunity_or_critic]
+    benefit: Gives operations a forward-looking but evidence-bounded view without misrepresenting probability as orders.
+    boundary:
+      data_boundary: Critic-approved A10 and registered cited evidence only
+      decision_boundary: horizon/status/forecast-confidence only
+      model_boundary: TIER_2 strong reasoning constrained by Critic findings
+      artifact_boundary: owns forecast artifacts only
+      business_boundary: cannot prescribe sales/content actions
+    owned_inputs: [insight_report, critic_report, critic_findings, cited_evidence]
+    owned_outputs: [forecast_report, forecast_summary, forecast_opportunities]
+    decision_rights: [ACTIVE, UPCOMING, WATCH, EXPIRED_FOR_CURRENT_RUN, INSUFFICIENT_EVIDENCE]
+    blocking_rights: [FORECAST_GATE]
+    return_rights: [A10_or_A11_for_input_contract_defect]
+    allowed_tools: [date_horizon_calculation, structured_forecast_reasoning]
+    allowed_models: [strong_primary, strong_fallback]
+    upstream_agents: [A11]
+    downstream_agents: [A13]
+    success_criteria: [as_of_date_used, expired_not_active, critic_warnings_inherited, no_order_prediction]
+    failure_conditions: [new_unregistered_evidence, forecast_strength_upgrade, missing_horizon_traceability]
+    accountability: Evidence-bounded future opportunity forecast.
+  A13:
+    agent_name: Action Agent
+    mission: Translate eligible forecasts into traceable sales and operations actions.
+    responsibility: Produce horizon-specific executive, country and school action plans using only ACTIVE, UPCOMING and WATCH forecast eligibility rules and inherited constraints.
+    authority:
+      can: [read_forecast_and_critic_constraints, write_action_plan_and_country_school_action_tables, assign_action_priority_from_forecast_strength]
+      cannot: [modify_forecast_or_confidence, rejudge_demand, add_school_task_type_or_business_direction, create_order_prediction]
+    benefit: Turns validated opportunity intelligence into timely, usable operating preparation and outreach.
+    boundary:
+      data_boundary: forecast, Critic constraints and traceability inputs only
+      decision_boundary: action translation and eligibility only
+      model_boundary: TIER_1 forecast-bound structured transformation
+      artifact_boundary: owns action plan artifacts only
+      business_boundary: cannot change forecast, underlying demand conclusion or product taxonomy
+    owned_inputs: [forecast_report, forecast_opportunities, critic_report, insight_report]
+    owned_outputs: [action_plan, country_action_plan, school_action_plan]
+    decision_rights: [sales_content_product_and_preparation_actions_within_forecast]
+    blocking_rights: [ACTION_GATE]
+    return_rights: [A12_for_missing_or_invalid_forecast_scope]
+    allowed_tools: [structured_action_translation, medium_reasoning_model]
+    allowed_models: [medium_primary, medium_fallback]
+    upstream_agents: [A12]
+    downstream_agents: []
+    success_criteria: [every_action_traces_to_eligible_forecast, expired_excluded, critic_constraints_retained]
+    failure_conditions: [forecast_mutation, unsupported_action, new_demand_or_school]
+    accountability: Executable sales and operations action plan.

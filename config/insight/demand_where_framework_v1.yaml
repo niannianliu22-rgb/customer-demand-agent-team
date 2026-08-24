@@ -1,0 +1,30 @@
+framework_name: Demand WHERE Analysis
+framework_version: '1.0'
+status: FROZEN
+source: demand_pattern_operational_value_v1
+scope: Task Type -> Country | School | Degree Level; first-stage independent distributions only
+analysis_objects: final_priority_task_type_pool
+excluded_priority_class: P4_WATCHLIST
+year_scope: 2023-08, 2024-08, 2025-08 independent cohorts
+definitions:
+  demand_distribution_share:
+    numerator: task_type observations in a WHERE value and year
+    denominator: all observations for that task_type in that same year
+  local_demand_share:
+    numerator: task_type observations in a WHERE value and year
+    denominator: all valid task_type observations in that same WHERE value and year
+  amount_share:
+    numerator: SINGLE_TASK exact attributed amount for the task_type in WHERE value and year
+    denominator: SINGLE_TASK exact attributed amount for that task_type in the same year
+  school_eligibility: canonical school only; UNKNOWN, UNSTANDARDIZED, NON_SCHOOL, NON_UNIVERSITY_ENTITY, UNRESOLVED, blank excluded
+sample_rule:
+  default_effective_count: 5
+  high_value_niche_concentration_count: 3
+pattern_rule: persistence plus count, demand_distribution_share, local_demand_share; candidate thresholds derived from observed distributions and recorded in QA
+priority_rule:
+  core_market: persistent, stable, and high demand contribution
+  growth_market: rising or emerging with effective sample
+  concentrated_market: high local demand share; P3 high-value niche uses lower evidence floor but retains LOW_SAMPLE flag
+  watchlist_market: all remaining segments
+multi_task_rule: counts expand frozen components; amounts are SINGLE_TASK exact only and never allocated to MULTI_TASK components
+forbidden: [country_school_degree full cross, context analysis, automatic drill-down]

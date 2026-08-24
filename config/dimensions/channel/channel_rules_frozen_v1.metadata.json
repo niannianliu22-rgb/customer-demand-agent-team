@@ -1,0 +1,18 @@
+{
+  "channel_rules_version": "1.0",
+  "status": "FROZEN",
+  "source": "manual_business_confirmation",
+  "raw_channel_count": 30,
+  "canonical_channel_count": 9,
+  "canonical_group_count": 2,
+  "mapping_conflict_count": 0,
+  "review_required_count": 0,
+  "unknown_channel_count": 0,
+  "inputs": {
+    "dataset_before_standardization_sha256": "cb86f7d86f91f522d5fb8917c59e51571c6ac8099cd44c47e82ce6c1e418fddf",
+    "schema_before_upgrade_version": "1.1.0"
+  },
+  "created_at": "2026-08-21T08:30:20.518183+00:00",
+  "corrected_at": "2026-08-21T08:35:22.271148+00:00",
+  "correction": "raw_channel 新客户 uses legal null channel; 未知来源 is not canonical."
+}

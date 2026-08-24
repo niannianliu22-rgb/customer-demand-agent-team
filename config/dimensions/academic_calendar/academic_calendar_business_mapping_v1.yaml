@@ -1,0 +1,216 @@
+{
+  "mapping_id": "academic_calendar_business_mapping_v1",
+  "version": "1.0",
+  "status": "FROZEN",
+  "source": "manual_business_confirmation",
+  "execution_guard": "RULES_ONLY: this configuration must not be treated as historical orders or executed during this freeze step.",
+  "output_contract": {
+    "potential_task_type": "Possible customer need; must remain separate from service direction.",
+    "potential_service_direction": "Potential operating/promotion direction; must remain separate from task type.",
+    "promotion_window": "Time to begin content preheat, outreach, sales preparation, or promotion.",
+    "demand_window": "Time when demand may be more likely to concentrate; it is not necessarily the calendar start date."
+  },
+  "signal_paths": {
+    "DIRECT_DEMAND_SIGNAL": "Direct but potential opportunity evidence, never a realized order.",
+    "CONTEXTUAL_OPPORTUNITY": "Operational timing/background evidence, never proof that a task type has occurred.",
+    "NO_MAPPING": "Excluded from demand and opportunity mapping."
+  },
+  "period_metadata_rule": {
+    "record_role": "PERIOD_METADATA",
+    "mapping_eligible": false,
+    "records": [
+      "Academic year closing interval",
+      "Summer Semester"
+    ]
+  },
+  "event_mappings": [
+    {
+      "event_type": "ORIENTATION",
+      "mapping_role": "CONTEXTUAL_OPPORTUNITY",
+      "potential_task_type": [],
+      "potential_service_direction": [
+        "学年包",
+        "包课",
+        "DP",
+        "陪跑服务"
+      ],
+      "promotion_window": "Orientation / Welcome 阶段",
+      "demand_window": "Semester Early Stage / Teaching Start 之后",
+      "business_key_subtypes": [],
+      "status": "FROZEN"
+    },
+    {
+      "event_type": "TEACHING",
+      "mapping_role": "CONTEXTUAL_OPPORTUNITY",
+      "potential_task_type": [
+        "essay",
+        "assignment",
+        "作业",
+        "小组作业",
+        "project",
+        "Historical Demand Inventory 中其他合理的作业类 Task Type"
+      ],
+      "potential_service_direction": [
+        "课程支持",
+        "长期辅导",
+        "包课",
+        "陪跑服务"
+      ],
+      "promotion_window": "TEACHING_START 及 Teaching Period 前段",
+      "demand_window": "Teaching Period",
+      "business_key_subtypes": [
+        "TEACHING_START",
+        "TEACHING_PERIOD"
+      ],
+      "status": "FROZEN"
+    },
+    {
+      "event_type": "READING",
+      "mapping_role": "CONTEXTUAL_OPPORTUNITY",
+      "potential_task_type": [],
+      "potential_service_direction": [
+        "考前辅导",
+        "包过辅导",
+        "押题"
+      ],
+      "promotion_window": "Reading 阶段",
+      "demand_window": "Reading → Revision / Exam",
+      "business_key_subtypes": [],
+      "status": "FROZEN"
+    },
+    {
+      "event_type": "ASSESSMENT",
+      "mapping_role": "CONTEXTUAL_OPPORTUNITY",
+      "potential_task_type": [],
+      "potential_service_direction": [
+        "assessment 支持",
+        "课程辅导",
+        "tutoring"
+      ],
+      "promotion_window": "Assessment 阶段",
+      "demand_window": "Assessment 阶段；复合 Assessment/Exam subtype 亦受 EXAM 规则约束",
+      "business_key_subtypes": [
+        "ASSESSMENT_PERIOD",
+        "TEACHING_AND_ASSESSMENT",
+        "FINAL_ASSESSMENT"
+      ],
+      "status": "FROZEN"
+    },
+    {
+      "event_type": "REVISION",
+      "mapping_role": "CONTEXTUAL_OPPORTUNITY",
+      "potential_task_type": [],
+      "potential_service_direction": [
+        "考前辅导",
+        "包过辅导",
+        "押题"
+      ],
+      "promotion_window": "Revision 阶段",
+      "demand_window": "Revision → Exam",
+      "business_key_subtypes": [],
+      "status": "FROZEN"
+    },
+    {
+      "event_type": "EXAM",
+      "mapping_role": "DIRECT_DEMAND_SIGNAL",
+      "potential_task_type": [
+        "考试"
+      ],
+      "potential_service_direction": [
+        "考试",
+        "考前辅导",
+        "包过辅导",
+        "押题"
+      ],
+      "promotion_window": "Exam 前的 Revision / 考前阶段",
+      "demand_window": "Exam Period",
+      "business_key_subtypes": [
+        "FINAL_EXAM",
+        "GENERAL_EXAM",
+        "REVISION_AND_EXAM",
+        "ASSESSMENT_AND_EXAM",
+        "EXAM_AND_ASSESSMENT"
+      ],
+      "status": "FROZEN"
+    },
+    {
+      "event_type": "RESULTS",
+      "mapping_role": "CONTEXTUAL_OPPORTUNITY",
+      "potential_task_type": [],
+      "potential_service_direction": [
+        "补考",
+        "考试辅导",
+        "押题",
+        "包过辅导"
+      ],
+      "promotion_window": "Results Release",
+      "demand_window": "Results 后；补考须由 Resit Calendar Signal 或实际业务信号支持",
+      "business_key_subtypes": [
+        "RESULTS_RELEASE"
+      ],
+      "status": "FROZEN"
+    },
+    {
+      "event_type": "RESIT",
+      "mapping_role": "DIRECT_DEMAND_SIGNAL",
+      "potential_task_type": [
+        "补考",
+        "考试"
+      ],
+      "potential_service_direction": [
+        "补考",
+        "考试辅导",
+        "押题",
+        "包过辅导"
+      ],
+      "promotion_window": "Resit 前的 Results 后 / 考前阶段",
+      "demand_window": "Resit / Supplementary / Deferred Exam Period",
+      "business_key_subtypes": [
+        "RESIT_EXAM",
+        "SUPPLEMENTARY_EXAM",
+        "DEFERRED_EXAM"
+      ],
+      "status": "FROZEN"
+    },
+    {
+      "event_type": "BREAK",
+      "mapping_role": "CONTEXTUAL_OPPORTUNITY",
+      "potential_task_type": [],
+      "potential_service_direction": [
+        "学年包",
+        "包课",
+        "DP",
+        "陪跑服务"
+      ],
+      "promotion_window": "Break 中后段",
+      "demand_window": "下一 Teaching Period / Semester Start",
+      "business_key_subtypes": [],
+      "status": "FROZEN"
+    },
+    {
+      "event_type": "VACATION",
+      "mapping_role": "CONTEXTUAL_OPPORTUNITY",
+      "potential_task_type": [],
+      "potential_service_direction": [
+        "学年包",
+        "包课",
+        "DP",
+        "陪跑服务"
+      ],
+      "promotion_window": "Vacation 中后段",
+      "demand_window": "下一 Teaching Period / Semester Start",
+      "business_key_subtypes": [],
+      "status": "FROZEN"
+    },
+    {
+      "event_type": "OTHER",
+      "mapping_role": "NO_MAPPING",
+      "potential_task_type": [],
+      "potential_service_direction": [],
+      "promotion_window": "不适用",
+      "demand_window": "不适用",
+      "business_key_subtypes": [],
+      "status": "FROZEN"
+    }
+  ]
+}

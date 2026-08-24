@@ -1,0 +1,175 @@
+version: '2.1'
+status: IMPLEMENTED_RUNTIME
+agent_count: 13
+model_routing_version: '1.0'
+model_routing_source: config/models/model_routing_v1.yaml
+agents:
+  - agent_id: A01
+    name: Supervisor Agent
+    display_role: Workflow Supervisor
+    implementation_status: READY
+    execution_mode: DETERMINISTIC_WITH_OPTIONAL_EXCEPTION_EXPLANATION
+    model_tier: TIER_0_DETERMINISTIC
+    llm_enabled: false
+    llm_trigger: operator_requested_exception_explanation_only
+    primary_model: NONE
+    fallback_model: NONE
+    reasoning_level: NONE
+    structured_output_schema: schemas/agent_model_output_envelope_v1.json
+    evidence_boundary: A01
+  - agent_id: A02
+    name: Knowledge Agent
+    display_role: Evidence & Freeze Ledger
+    implementation_status: READY
+    execution_mode: DETERMINISTIC
+    model_tier: TIER_0_DETERMINISTIC
+    llm_enabled: false
+    llm_trigger: NEVER
+    primary_model: NONE
+    fallback_model: NONE
+    reasoning_level: NONE
+    structured_output_schema: schemas/agent_model_output_envelope_v1.json
+    evidence_boundary: A02
+  - agent_id: A03
+    name: Data Intake Agent
+    display_role: Source Intake
+    implementation_status: READY
+    execution_mode: DETERMINISTIC
+    model_tier: TIER_0_DETERMINISTIC
+    llm_enabled: false
+    llm_trigger: NEVER
+    primary_model: NONE
+    fallback_model: NONE
+    reasoning_level: NONE
+    structured_output_schema: schemas/agent_model_output_envelope_v1.json
+    evidence_boundary: A03
+  - agent_id: A04
+    name: Schema Mapping Agent
+    display_role: Canonical Schema Mapper
+    implementation_status: READY
+    execution_mode: DETERMINISTIC_WITH_EXCEPTION_CANDIDATE
+    model_tier: TIER_0_DETERMINISTIC
+    llm_enabled: conditional
+    llm_trigger: unknown_column_or_ambiguous_header_without_frozen_mapping
+    primary_model: medium_codex
+    fallback_model: NONE
+    reasoning_level: LOW
+    structured_output_schema: schemas/agent_model_output_envelope_v1.json
+    evidence_boundary: A04
+  - agent_id: A05
+    name: Data Standardization Agent
+    display_role: Dataset Standardizer
+    implementation_status: READY
+    execution_mode: DETERMINISTIC_WITH_EXCEPTION_CANDIDATE
+    model_tier: TIER_0_DETERMINISTIC
+    llm_enabled: conditional
+    llm_trigger: unresolved_ambiguous_or_review_required_after_frozen_rules
+    primary_model: medium_codex
+    fallback_model: NONE
+    reasoning_level: LOW
+    structured_output_schema: schemas/agent_model_output_envelope_v1.json
+    evidence_boundary: A05
+  - agent_id: A06
+    name: Data Quality Agent
+    display_role: Dataset Quality Assurer
+    implementation_status: READY
+    execution_mode: DETERMINISTIC
+    model_tier: TIER_0_DETERMINISTIC
+    llm_enabled: false
+    llm_trigger: NEVER
+    primary_model: NONE
+    fallback_model: NONE
+    reasoning_level: NONE
+    structured_output_schema: schemas/agent_model_output_envelope_v1.json
+    evidence_boundary: A06
+  - agent_id: A07
+    name: Historical Demand Pattern Agent
+    display_role: Historical Demand Analysis
+    implementation_status: READY
+    execution_mode: DETERMINISTIC_METRICS_PLUS_LLM_INTERPRETATION
+    model_tier: TIER_2_STRONG_REASONING
+    llm_enabled: true
+    llm_trigger: interpretation_of_precomputed_historical_evidence
+    primary_model: strong_codex
+    fallback_model: NONE
+    reasoning_level: HIGH
+    structured_output_schema: schemas/agent_model_output_envelope_v1.json
+    evidence_boundary: A07
+  - agent_id: A08
+    name: Academic Context Agent
+    display_role: Current / Future Academic Context Analysis
+    implementation_status: READY
+    execution_mode: HYBRID_DETERMINISTIC_PLUS_CONTEXT_INTERPRETATION
+    model_tier: TIER_1_MEDIUM
+    llm_enabled: conditional
+    llm_trigger: complex_calendar_event_to_business_context_interpretation
+    primary_model: medium_claude_sonnet
+    fallback_model: NONE
+    reasoning_level: HIGH
+    structured_output_schema: schemas/agent_model_output_envelope_v1.json
+    evidence_boundary: A08
+  - agent_id: A09
+    name: Current Context Validation Agent
+    display_role: Evidence Alignment Validator
+    implementation_status: READY
+    execution_mode: EVIDENCE_BOUND_LLM
+    model_tier: TIER_2_STRONG_REASONING
+    llm_enabled: true
+    llm_trigger: historical_and_calendar_evidence_alignment
+    primary_model: strong_codex
+    fallback_model: NONE
+    reasoning_level: HIGH
+    structured_output_schema: schemas/agent_model_output_envelope_v1.json
+    evidence_boundary: A09
+  - agent_id: A10
+    name: Demand Insight Agent
+    display_role: Demand Opportunity Agent
+    implementation_status: READY
+    execution_mode: EVIDENCE_BOUND_LLM
+    model_tier: TIER_3_CRITICAL_REASONING
+    llm_enabled: true
+    llm_trigger: monthly_opportunity_synthesis_from_a07_a08_a09
+    primary_model: critical_maker_codex
+    fallback_model: NONE
+    reasoning_level: CRITICAL
+    structured_output_schema: schemas/agent_model_output_envelope_v1.json
+    evidence_boundary: A10
+  - agent_id: A11
+    name: Critic Agent
+    display_role: Opportunity Critic
+    implementation_status: READY
+    execution_mode: INDEPENDENT_EVIDENCE_BOUND_LLM
+    model_tier: TIER_3_CRITICAL_REASONING
+    llm_enabled: true
+    llm_trigger: independent_a10_evidence_and_overclaim_audit
+    primary_model: critical_checker_claude_opus
+    fallback_model: NONE
+    reasoning_level: CRITICAL
+    structured_output_schema: schemas/agent_model_output_envelope_v1.json
+    evidence_boundary: A11
+  - agent_id: A12
+    name: Forecast Agent
+    display_role: Future Demand Opportunity Forecast
+    implementation_status: READY
+    execution_mode: EVIDENCE_BOUND_LLM
+    model_tier: TIER_2_STRONG_REASONING
+    llm_enabled: true
+    llm_trigger: critic_constrained_horizon_opportunity_forecast
+    primary_model: strong_codex
+    fallback_model: NONE
+    reasoning_level: HIGH
+    structured_output_schema: schemas/agent_model_output_envelope_v1.json
+    evidence_boundary: A12
+  - agent_id: A13
+    name: Action Agent
+    display_role: Sales & Operations Action Planner
+    implementation_status: READY
+    execution_mode: FORECAST_BOUND_LLM
+    model_tier: TIER_1_MEDIUM
+    llm_enabled: true
+    llm_trigger: eligible_forecast_to_action_translation
+    primary_model: medium_claude_sonnet_medium
+    fallback_model: NONE
+    reasoning_level: MEDIUM
+    structured_output_schema: schemas/agent_model_output_envelope_v1.json
+    evidence_boundary: A13

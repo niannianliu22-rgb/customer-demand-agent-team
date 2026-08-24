@@ -1,0 +1,54 @@
+calendar_event_taxonomy_version: '1.0'
+status: FROZEN
+source: official_calendar_stage_names_semantic_review
+event_types:
+- event_type: ORIENTATION
+  name_zh: 迎新
+  business_definition: 官方校历阶段的规范分类。
+- event_type: TEACHING
+  name_zh: 教学
+  business_definition: 官方校历阶段的规范分类。
+- event_type: READING
+  name_zh: 阅读周
+  business_definition: 官方校历阶段的规范分类。
+- event_type: ASSESSMENT
+  name_zh: 评估
+  business_definition: 官方校历阶段的规范分类。
+- event_type: REVISION
+  name_zh: 复习
+  business_definition: 官方校历阶段的规范分类。
+- event_type: EXAM
+  name_zh: 考试
+  business_definition: 常规考试或期末考试阶段；不含延期/补充/补考考试。
+- event_type: RESULTS
+  name_zh: 成绩发布
+  business_definition: 官方校历阶段的规范分类。
+- event_type: RESIT
+  name_zh: 补考/补充评估
+  business_definition: 面向未通过、补充或延期安排的考试/评估；用 event_subtype 区分。
+- event_type: BREAK
+  name_zh: 学期间歇
+  business_definition: 官方校历阶段的规范分类。
+- event_type: VACATION
+  name_zh: 假期
+  business_definition: 官方校历阶段的规范分类。
+- event_type: OTHER
+  name_zh: 其他
+  business_definition: 官方记录存在但不属于当前 taxonomy 的学业阶段。
+event_subtypes:
+  EXAM:
+  - FINAL_EXAM
+  - GENERAL_EXAM
+  RESIT:
+  - RESIT_EXAM
+  - SUPPLEMENTARY_EXAM
+  - DEFERRED_EXAM
+  ASSESSMENT:
+  - GENERAL_ASSESSMENT
+  RESULTS:
+  - RESULTS_RELEASE
+resit_policy:
+  RESIT_EXAM: 官网明确 resit/resits。
+  SUPPLEMENTARY_EXAM: 官网明确 supplementary 或 special/supplementary examination。
+  DEFERRED_EXAM: 官网明确 deferred examination period。
+  rule: 三者均属 RESIT 业务大类，但不得抹除 subtype。

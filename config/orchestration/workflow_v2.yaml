@@ -1,0 +1,67 @@
+version: '2.1'
+status: IMPLEMENTED_RUNTIME
+workflow_id: customer_demand_agent_team_v2
+agent_status_enum: [NOT_STARTED, READY, RUNNING, COMPLETED, COMPLETED_WITH_WARNINGS, HUMAN_REVIEW_REQUIRED, RETURN_REQUIRED, FAILED, BLOCKED, SKIPPED, REUSED, STALE]
+run_status_enum: [INITIALIZED, READY, RUNNING, WAITING_FOR_HUMAN, RETURNING, BLOCKED, FAILED, COMPLETED, ABORTED_BEFORE_EXECUTION, SUPERSEDED_BEFORE_EXECUTION]
+gates:
+  SOURCE_GATE:
+    required_artifact: [source_manifest.json, source_profiles]
+    pass_condition: expected sources registered and profiled
+    warning_condition: readable source has governed non-critical warning
+    fail_condition: source registration or profile missing
+    return_target: A03
+  SCHEMA_GATE:
+    required_artifact: [source_manifest.json, schema_mapping.json]
+    pass_condition: required fields mapped or explicitly governed
+    warning_condition: optional field governed as nullable
+    fail_condition: required field unaccounted for
+    return_target: A04
+  STANDARDIZATION_GATE:
+    required_artifact: [quality/standardization_gate_report.json]
+    pass_condition: decision is PASS or PASS_WITH_WARNINGS
+    warning_condition: decision is PASS_WITH_WARNINGS
+    fail_condition: decision is FAIL
+    return_target: A05
+  DATA_QUALITY_GATE:
+    required_artifact: [quality/data_quality_gate_report.json]
+    pass_condition: decision is PASS or PASS_WITH_WARNINGS
+    warning_condition: decision is PASS_WITH_WARNINGS
+    fail_condition: decision is FAIL
+    return_target: A06
+  CONTEXT_GATE:
+    required_artifact: [historical_demand_report.json, academic_context_report.json]
+    pass_condition: both distinct evidence reports are COMPLETED and traceable
+    warning_condition: either report carries propagated data-quality warning
+    fail_condition: either report missing or evidence chains mixed
+    return_target: A07_OR_A08
+  INSIGHT_GATE:
+    required_artifact: [validation_report.json, insight_report.json]
+    pass_condition: country-direction and school-demand hierarchy is traceable
+    warning_condition: opportunity carries DIRECTIONAL or WATCH evidence
+    fail_condition: historical opportunity deleted or hierarchy invalid
+    return_target: A10
+  CRITIC_GATE:
+    required_artifact: [critic_report.json]
+    pass_condition: decision is PASS or PASS_WITH_WARNINGS
+    warning_condition: decision is PASS_WITH_WARNINGS
+    fail_condition: decision is RETURN_FOR_REVISION
+    return_target: return_to_agent
+  FORECAST_GATE:
+    required_artifact: [forecast_report.json]
+    pass_condition: opportunity-only forecast with traceable horizons
+    warning_condition: inherited critic constraint exists
+    fail_condition: order/revenue forecast or missing evidence
+    return_target: A12
+  ACTION_GATE:
+    required_artifact: [action_plan.json]
+    pass_condition: every action is traceable to eligible forecast
+    warning_condition: action retains a forecast warning
+    fail_condition: action re-judges demand or lacks forecast reference
+    return_target: A13
+parallel_groups:
+  - [A07, A08]
+final_agent: A13
+constraints:
+  - calendar_absence_must_not_delete_historical_demand
+  - calendar_new_signal_may_exist_independently
+  - forecast_must_not_predict_order_count_or_revenue

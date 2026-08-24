@@ -1,0 +1,34 @@
+channel_canonical_version: '1.0'
+status: ACTIVE
+source: manual_business_confirmation
+channel_groups:
+- 老客户
+- 新客户
+canonical_channels:
+- channel: 老客户
+  channel_group: 老客户
+  analysis_note: ''
+- channel: 闲鱼
+  channel_group: 新客户
+  analysis_note: ''
+- channel: 垂直号
+  channel_group: 新客户
+  analysis_note: ''
+- channel: 小红书
+  channel_group: 新客户
+  analysis_note: ''
+- channel: 群推
+  channel_group: 新客户
+  analysis_note: ''
+- channel: 转介绍
+  channel_group: 新客户
+  analysis_note: ''
+- channel: 学生号
+  channel_group: 新客户
+  analysis_note: ''
+- channel: 备用
+  channel_group: 新客户
+  analysis_note: ''
+- channel: 对公
+  channel_group: 新客户
+  analysis_note: ''

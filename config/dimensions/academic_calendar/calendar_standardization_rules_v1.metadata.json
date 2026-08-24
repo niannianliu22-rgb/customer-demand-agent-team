@@ -1,0 +1,25 @@
+{
+  "calendar_standardization_rule_version": "1.0",
+  "status": "FROZEN",
+  "source": "official_calendar_collection_structured_layer",
+  "input_artifact": "runs/RUN-202608-DEMAND-001/artifacts/academic_calendar_v1/academic_calendar_standardized.csv",
+  "output_artifact": "runs/RUN-202608-DEMAND-001/artifacts/academic_calendar_standardization_v1/academic_calendar_standardized.csv",
+  "records": {
+    "input": 118,
+    "standardized": 118,
+    "unmatched": 0,
+    "review_required": 0,
+    "raw_event_names": 105,
+    "canonical_event_types_used": 11,
+    "aliases": 105,
+    "school_id_complete": 118
+  },
+  "qa_result": "PASS",
+  "created_at": "2026-08-22",
+  "rules": {
+    "canonical": "calendar_event_canonical.yaml",
+    "aliases": "calendar_event_aliases.yaml",
+    "standardization": "calendar_standardization_rules_v1.yaml"
+  },
+  "schema": "schemas/academic_calendar_schema_v1.json"
+}

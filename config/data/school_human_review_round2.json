@@ -1,0 +1,13 @@
+{
+  "mapping_id": "school_human_review_round2",
+  "version": "1.0",
+  "status": "FROZEN",
+  "source": "manual_business_confirmation",
+  "supersedes": "school_human_review_round1@1.0",
+  "rule_id": "RULE-013-HR2",
+  "approved_mappings": {
+    "堪培拉": {"canonical_school": "University of Canberra", "school_id": "SCH-A468171CD0"},
+    "疑似谢菲": {"canonical_school": "University of Sheffield", "school_id": "SCH-FA76E7885E"},
+    "悉尼": {"canonical_school": "University of Sydney", "school_id": "SCH-E16430D623"}
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "status": "FROZEN",
+  "version": "1.0",
+  "source": "manual_business_confirmation",
+  "frozen_at": "2026-08-22T09:02:18Z",
+  "input_calendar": "runs/RUN-202608-DEMAND-001/artifacts/academic_calendar_event_type_confirmation_v1/academic_calendar_standardized_v1_1.csv",
+  "input_calendar_sha256": "27df3cb82b950479ce64d4dcd2726e5afa243811c794b9c659445dabe5c17320",
+  "raw_collection_sha256": "5563f14ce7b4d9062c27e2ecbff9ed8c95327fbe09a848ca15cc5b072a8fdffc",
+  "unified_dataset_sha256": "c802055534a01940cf102502a9feeb6cab90c879eafe96556fb127e1d74d4fc1",
+  "execution": {
+    "calendar_demand_mapping_executed": false,
+    "opportunity_generation_executed": false,
+    "historical_demand_modified": false,
+    "unified_dataset_modified": false,
+    "calendar_records_modified": false
+  },
+  "artifact": "academic_calendar_business_mapping_v1",
+  "rules_file": "config/dimensions/academic_calendar/academic_calendar_business_mapping_v1.yaml"
+}

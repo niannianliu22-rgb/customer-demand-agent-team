@@ -1,0 +1,31 @@
+version: '2.0'
+status: IMPLEMENTED_RUNTIME
+nodes: [A01, A02, A03, A04, A05, A06, A07, A08, A09, A10, A11, A12, A13]
+edges:
+  - [A03, A04]
+  - [A04, A05]
+  - [A05, A06]
+  - [A06, A07]
+  - [A06, A08]
+  - [A07, A09]
+  - [A08, A09]
+  - [A09, A10]
+  - [A10, A11]
+  - [A11, A12]
+  - [A12, A13]
+gates_after:
+  A03: SOURCE_GATE
+  A04: SCHEMA_GATE
+  A05: STANDARDIZATION_GATE
+  A06: DATA_QUALITY_GATE
+  A09: CONTEXT_GATE
+  A10: INSIGHT_GATE
+  A11: CRITIC_GATE
+  A12: FORECAST_GATE
+  A13: ACTION_GATE
+return_rules:
+  RETURN_FOR_REVISION: invalidate_return_target_and_downstream
+  HUMAN_REVIEW_REQUIRED: pause_at_return_target
+artifact_validity:
+  valid_status: VALID
+  invalidated_status: STALE

@@ -1,0 +1,633 @@
+calendar_event_alias_version: '1.0'
+status: FROZEN
+aliases:
+- alias_id: CAL-EVT-ALIAS-001
+  event_name_original: Academic year closing interval
+  event_type: OTHER
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-002
+  event_name_original: Assessment Period
+  event_type: ASSESSMENT
+  event_subtype: GENERAL_ASSESSMENT
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-003
+  event_name_original: Assessment weeks - Semester 1
+  event_type: ASSESSMENT
+  event_subtype: GENERAL_ASSESSMENT
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-004
+  event_name_original: Autumn Term
+  event_type: TEACHING
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-005
+  event_name_original: Autumn semester examinations
+  event_type: EXAM
+  event_subtype: GENERAL_EXAM
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-006
+  event_name_original: Autumn teaching
+  event_type: TEACHING
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-007
+  event_name_original: Autumn term
+  event_type: TEACHING
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-008
+  event_name_original: Break
+  event_type: BREAK
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-009
+  event_name_original: Break after Main intake 2
+  event_type: BREAK
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-010
+  event_name_original: Campus Arrivals
+  event_type: ORIENTATION
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-011
+  event_name_original: Christmas vacation
+  event_type: VACATION
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-012
+  event_name_original: College Reading Week
+  event_type: READING
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-013
+  event_name_original: December Exam and Assessment Diet
+  event_type: EXAM
+  event_subtype: GENERAL_EXAM
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-014
+  event_name_original: End of year exams
+  event_type: EXAM
+  event_subtype: GENERAL_EXAM
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-015
+  event_name_original: Exam resits
+  event_type: RESIT
+  event_subtype: RESIT_EXAM
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-016
+  event_name_original: Examination Period
+  event_type: EXAM
+  event_subtype: GENERAL_EXAM
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-017
+  event_name_original: Examination period
+  event_type: EXAM
+  event_subtype: GENERAL_EXAM
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-018
+  event_name_original: Examinations
+  event_type: EXAM
+  event_subtype: GENERAL_EXAM
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-019
+  event_name_original: Exams
+  event_type: EXAM
+  event_subtype: GENERAL_EXAM
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-020
+  event_name_original: Fall 2026 Regular Session classes
+  event_type: TEACHING
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-021
+  event_name_original: Fall Break
+  event_type: BREAK
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-022
+  event_name_original: Fall break
+  event_type: BREAK
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-023
+  event_name_original: Fall classes
+  event_type: TEACHING
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-024
+  event_name_original: Fall semester classes
+  event_type: TEACHING
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-025
+  event_name_original: Final Exams
+  event_type: EXAM
+  event_subtype: FINAL_EXAM
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-026
+  event_name_original: Final assessments
+  event_type: EXAM
+  event_subtype: FINAL_EXAM
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-027
+  event_name_original: Final exam period
+  event_type: EXAM
+  event_subtype: FINAL_EXAM
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-028
+  event_name_original: First Semester teaching
+  event_type: TEACHING
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-029
+  event_name_original: First term
+  event_type: TEACHING
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-030
+  event_name_original: Induction Week
+  event_type: ORIENTATION
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-031
+  event_name_original: Induction week
+  event_type: ORIENTATION
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-032
+  event_name_original: Inter-semester break
+  event_type: BREAK
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-033
+  event_name_original: International students’ orientation week
+  event_type: ORIENTATION
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-034
+  event_name_original: Introduction week (Welcome)
+  event_type: ORIENTATION
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-035
+  event_name_original: Main intake 2
+  event_type: TEACHING
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-036
+  event_name_original: Main intake 3
+  event_type: TEACHING
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-037
+  event_name_original: Michaelmas Term
+  event_type: TEACHING
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-038
+  event_name_original: Mid Term Break
+  event_type: BREAK
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-039
+  event_name_original: Mid-Semester break
+  event_type: BREAK
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-040
+  event_name_original: Mid-semester break
+  event_type: BREAK
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-041
+  event_name_original: Mid-year Orientation Week
+  event_type: ORIENTATION
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-042
+  event_name_original: Non-teaching study break
+  event_type: BREAK
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-043
+  event_name_original: Pre-examination study break
+  event_type: REVISION
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-044
+  event_name_original: Reading/Field Trip Week
+  event_type: READING
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-045
+  event_name_original: Resit examinations
+  event_type: RESIT
+  event_subtype: RESIT_EXAM
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-046
+  event_name_original: Resits
+  event_type: RESIT
+  event_subtype: RESIT_EXAM
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-047
+  event_name_original: Results final release date
+  event_type: RESULTS
+  event_subtype: RESULTS_RELEASE
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-048
+  event_name_original: Results from Semester 2 published
+  event_type: RESULTS
+  event_subtype: RESULTS_RELEASE
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-049
+  event_name_original: Revision Period
+  event_type: REVISION
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-050
+  event_name_original: Revision and examination period
+  event_type: EXAM
+  event_subtype: GENERAL_EXAM
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-051
+  event_name_original: Revision period
+  event_type: REVISION
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-052
+  event_name_original: SIM-UB Fall final examinations
+  event_type: EXAM
+  event_subtype: FINAL_EXAM
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-053
+  event_name_original: SIM-UB Fall teaching
+  event_type: TEACHING
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-054
+  event_name_original: SWOT Vac
+  event_type: REVISION
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-055
+  event_name_original: SWOTVAC
+  event_type: REVISION
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-056
+  event_name_original: Second Semester
+  event_type: TEACHING
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-057
+  event_name_original: Second Semester examinations
+  event_type: EXAM
+  event_subtype: GENERAL_EXAM
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-058
+  event_name_original: Second Semester resumes
+  event_type: TEACHING
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-059
+  event_name_original: Semester 1
+  event_type: TEACHING
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-060
+  event_name_original: Semester 1 Teaching
+  event_type: TEACHING
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-061
+  event_name_original: Semester 1 assessment and exams
+  event_type: EXAM
+  event_subtype: GENERAL_EXAM
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-062
+  event_name_original: Semester 1 teaching
+  event_type: TEACHING
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-063
+  event_name_original: Semester 2
+  event_type: TEACHING
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-064
+  event_name_original: Semester 2 - 12 teaching weeks
+  event_type: TEACHING
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-065
+  event_name_original: Semester 2 Undergraduate
+  event_type: TEACHING
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-066
+  event_name_original: Semester 2 classes
+  event_type: TEACHING
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-067
+  event_name_original: Semester 2 deferred examination period
+  event_type: RESIT
+  event_subtype: DEFERRED_EXAM
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-068
+  event_name_original: Semester 2 examination period
+  event_type: EXAM
+  event_subtype: GENERAL_EXAM
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-069
+  event_name_original: Semester 2 teaching
+  event_type: TEACHING
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-070
+  event_name_original: Semester 2 teaching period
+  event_type: TEACHING
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-071
+  event_name_original: Semester 2 teaching resumes
+  event_type: TEACHING
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-072
+  event_name_original: Semester One teaching
+  event_type: TEACHING
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-073
+  event_name_original: Semester Two teaching
+  event_type: TEACHING
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-074
+  event_name_original: Semester Two teaching resumes
+  event_type: TEACHING
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-075
+  event_name_original: Semester two teaching period
+  event_type: TEACHING
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-076
+  event_name_original: Semester two teaching resumes
+  event_type: TEACHING
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-077
+  event_name_original: September Semester Teaching
+  event_type: TEACHING
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-078
+  event_name_original: September Semester Welcome Week
+  event_type: ORIENTATION
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-079
+  event_name_original: Special/Supplementary Examinations
+  event_type: RESIT
+  event_subtype: SUPPLEMENTARY_EXAM
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-080
+  event_name_original: Spring Term
+  event_type: TEACHING
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-081
+  event_name_original: Spring term
+  event_type: TEACHING
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-082
+  event_name_original: Study Days
+  event_type: REVISION
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-083
+  event_name_original: Study break
+  event_type: REVISION
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-084
+  event_name_original: Summer 2026 classes
+  event_type: TEACHING
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-085
+  event_name_original: Summer Semester
+  event_type: OTHER
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-086
+  event_name_original: Summer Term
+  event_type: TEACHING
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-087
+  event_name_original: Summer Vacation
+  event_type: VACATION
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-088
+  event_name_original: Summer teaching period
+  event_type: TEACHING
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-089
+  event_name_original: Summer vacation
+  event_type: VACATION
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-090
+  event_name_original: Teaching and Assessment weeks - Term 1
+  event_type: ASSESSMENT
+  event_subtype: GENERAL_ASSESSMENT
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-091
+  event_name_original: Teaching and assessment weeks - Term 2
+  event_type: ASSESSMENT
+  event_subtype: GENERAL_ASSESSMENT
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-092
+  event_name_original: Teaching and assessment weeks - Term 3
+  event_type: ASSESSMENT
+  event_subtype: GENERAL_ASSESSMENT
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-093
+  event_name_original: Teaching block 1
+  event_type: TEACHING
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-094
+  event_name_original: Teaching break
+  event_type: BREAK
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-095
+  event_name_original: Teaching weeks - Semester 1
+  event_type: TEACHING
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-096
+  event_name_original: Teaching weeks - Semester 2
+  event_type: TEACHING
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-097
+  event_name_original: Term four (postgraduate taught students only)
+  event_type: TEACHING
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-098
+  event_name_original: Thanksgiving Holiday
+  event_type: BREAK
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-099
+  event_name_original: Trimester 3 Singapore
+  event_type: TEACHING
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-100
+  event_name_original: Vacation Period
+  event_type: VACATION
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-101
+  event_name_original: Welcome 26
+  event_type: ORIENTATION
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-102
+  event_name_original: Welcome Week
+  event_type: ORIENTATION
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-103
+  event_name_original: Welcome week
+  event_type: ORIENTATION
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-104
+  event_name_original: Winter Vacation
+  event_type: VACATION
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE
+- alias_id: CAL-EVT-ALIAS-105
+  event_name_original: Winter break
+  event_type: VACATION
+  event_subtype: null
+  mapping_source: V1_SEMANTIC_REVIEW_OF_OFFICIAL_STAGE_NAME
+  status: ACTIVE

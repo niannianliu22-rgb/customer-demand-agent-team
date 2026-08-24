@@ -1,0 +1,15 @@
+{
+  "mapping_id": "date_human_review_round1",
+  "version": "1.0",
+  "status": "FROZEN",
+  "source": "manual_business_confirmation",
+  "approved_decisions": {
+    "source_003:11:ddl": {"decision": "CONFIRM_DATE", "date": "2024-08-07", "ddl_components": ["2024-08-07"]},
+    "source_003:132:ddl": {"decision": "CONFIRM_DATE", "date": "2024-09-06", "ddl_components": ["2024-09-06", "2024-09-13"]},
+    "source_003:66:consultation_date": {"decision": "INVALID_DATE"},
+    "source_001:146:ddl": {"decision": "INVALID_DATE"},
+    "source_002:51:ddl": {"decision": "INVALID_DATE"},
+    "source_002:122:ddl": {"decision": "INVALID_DATE"},
+    "source_003:138:ddl": {"decision": "INVALID_DATE"}
+  }
+}

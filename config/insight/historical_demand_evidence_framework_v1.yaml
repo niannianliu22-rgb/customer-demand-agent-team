@@ -1,0 +1,44 @@
+framework_name: Historical Demand Evidence & Analysis Depth Framework
+framework_version: '1.0'
+status: FROZEN
+scope: Historical-demand evidence governance; no new cross-dimensional analysis
+separation:
+  demand_existence: Every valid standardized historical Task Type is HISTORICAL_DEMAND regardless of priority, trend, value, or evidence.
+  demand_priority: Retains the frozen P1_CORE_DEMAND, P2_GROWTH_DEMAND, P3_HIGH_VALUE_NICHE, P4_WATCHLIST classification; it is not an existence label.
+  analysis_evidence: Determines the strength and permitted depth of analysis, separately from existence and priority.
+evidence_levels:
+  STRONG_EVIDENCE: Cross-year persistent, stable evidence with material distribution contribution; supports stable market interpretation.
+  MODERATE_EVIDENCE: At least two years of effective directional evidence; conclusions must remain directional.
+  EMERGING_SIGNAL: Recent-year count and distribution/share growth supported against earlier years; not a validated long-term market.
+  LIMITED_HIGH_VALUE_EVIDENCE: Lower-frequency P3/high-revenue task with genuine revenue evidence; does not imply a core market.
+  WEAK_EVIDENCE: Historical fact exists but persistence, share, and trend do not support a reliable market conclusion.
+  INSUFFICIENT_EVIDENCE: Too little usable evidence or denominator support for a market conclusion.
+evidence_rule: Rule-based; combines three-year count, years present, annual count, both shares, persistence, direction, stability, revenue value and denominator size. No one fixed count threshold decides every result.
+dimension_rules:
+  country: Low-cardinality dimension; requires cross-year evidence for Strong/Moderate market interpretation.
+  degree_level: Low-cardinality dimension; requires cross-year evidence for Strong/Moderate market interpretation.
+  school: High-cardinality dimension; combines three-year count, years present, shares and direction; it does not impose a uniform per-year threshold that would erase emerging schools.
+analysis_depth:
+  L0_DEMAND_ONLY: Historical demand fact retained; no reliable WHERE analysis currently.
+  L1_MACRO_WHERE: Country and/or Degree supports a directional macro WHERE reading; School not yet supported.
+  L2_SCHOOL_WHERE: School evidence supports CORE/GROWTH/CONCENTRATED/EMERGING school-market identification.
+  L3_SELECTIVE_DRILL_DOWN: A specific segment passes the Evidence Gate and may be considered for later human-approved selective drill-down.
+  STOP: Insufficient evidence to increase dimensionality; never deletes historical demand.
+evidence_gate:
+  STRONG_EVIDENCE: ALLOW_DRILL_DOWN
+  MODERATE_EVIDENCE: ALLOW_SELECTIVE_DRILL_DOWN
+  EMERGING_SIGNAL: ALLOW_SELECTIVE_DRILL_DOWN
+  LIMITED_HIGH_VALUE_EVIDENCE: ALLOW_VALUE_DRIVEN_DRILL_DOWN
+  WEAK_EVIDENCE: STOP
+  INSUFFICIENT_EVIDENCE: STOP
+system_boundary:
+  historical_demand_engine: Finds demand that actually occurred in standardized historical business data.
+  academic_calendar_demand_engine: Independently identifies current academic-node opportunity; not executed by this framework.
+  operational_demand_scope: Historical Demand UNION Academic Calendar Demand
+  calendar_new_demand: A calendar-discovered demand that is absent from historical data; it never deletes Historical Demand.
+forbidden:
+  - modifying unified_dataset
+  - modifying frozen upstream frameworks
+  - executing new high-dimensional cross analysis
+  - academic calendar analysis
+  - context analysis

@@ -1,0 +1,50 @@
+framework_name: Demand Pattern & Operational Value V1
+framework_version: '1.0'
+status: FROZEN
+source: manual_business_confirmation
+scope: Task Type only; no WHERE dimension analysis
+analysis_period: 2023-2025 August same-period cohorts
+final_priority_rules:
+  P1_CORE_DEMAND: PERSISTENT + STABLE CORE_STABLE pattern + HIGH_VOLUME_VALUE or HIGH_REVENUE_VALUE
+  P2_GROWTH_DEMAND: CORE_RISING or EMERGING + HIGH_VOLUME_VALUE or HIGH_REVENUE_VALUE
+  P3_HIGH_VALUE_NICHE: HIGH_REVENUE_VALUE without P1/P2 qualification and not VOLATILE/CORE_DECLINING
+  P4_WATCHLIST: declining, volatile, low-sample, or insufficiently established candidates
+operational_logic: HIGH_VOLUME_VALUE OR HIGH_REVENUE_VALUE; no AND gate
+ranking: Rule-based lexicographic tier ranking; no continuous weighted score
+final_pool_task_types:
+- essay
+- Dissertation
+- 选课
+- 预存
+- DP
+- 学年包
+- tutoring
+- 毕业论文辅导
+- report
+- project
+watchlist_task_types:
+- 补考
+- 考试
+- 包课
+- 作业
+- 润色-proofreading
+- 毕业论文润色
+- 做题
+- 毕业论文半包
+- 毕业无忧
+- Paper
+- presentation
+- quiz
+- Dissertation-part
+- 质检
+- code/experiment
+- 小组作业
+- PPT
+- 海报
+- CV/PS
+- 辅导
+- Group Presentation
+- assignment
+- course work
+- reflect
+upstream_framework: config/insight/demand_insight_metrics_v1.yaml

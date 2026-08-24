@@ -1,36 +1,297 @@
 {
   "schema_name": "unified_dataset",
-  "schema_version": "1.1.0",
+  "schema_version": "1.5.0",
   "status": "FROZEN",
   "business_rules_version": "3.0",
   "fields": [
-    {"name": "source_id", "type": "string", "required": true},
-    {"name": "source_file", "type": "string", "required": true},
-    {"name": "source_sheet", "type": "string", "required": true},
-    {"name": "source_row_id", "type": "integer", "required": true},
-    {"name": "year", "type": "integer", "required": true},
-    {"name": "department", "type": "string", "required": true},
-    {"name": "consultation_date_original", "type": "string", "required": false},
-    {"name": "consultation_date", "type": "string", "format": "date", "required": false},
-    {"name": "country_original", "type": "string", "required": false},
-    {"name": "country", "type": "string", "required": false},
-    {"name": "school_original", "type": "string", "required": false},
-    {"name": "school", "type": "string", "required": false},
-    {"name": "country_school_conflict", "type": "string", "required": false},
-    {"name": "degree_level_original", "type": "string", "required": false},
-    {"name": "degree_level", "type": "string", "required": false},
-    {"name": "major", "type": "string", "required": false},
-    {"name": "task_type", "type": "string", "required": false},
-    {"name": "ddl_original", "type": "string", "required": false},
-    {"name": "ddl", "type": "string", "format": "date", "required": false},
-    {"name": "channel", "type": "string", "required": false},
-    {"name": "order_id", "type": "string", "required": false},
-    {"name": "order_status", "type": "string", "required": false},
-    {"name": "amount_original", "type": "number", "required": false},
-    {"name": "currency_original", "type": "string", "required": false},
-    {"name": "amount_cny", "type": "number", "required": false},
-    {"name": "consultant_name", "type": "string", "required": false}
+    {
+      "name": "source_id",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "source_file",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "source_sheet",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "source_row_id",
+      "type": "integer",
+      "required": true
+    },
+    {
+      "name": "year",
+      "type": "integer",
+      "required": true
+    },
+    {
+      "name": "department",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "consultation_date_original",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "consultation_date",
+      "type": "string",
+      "format": "date",
+      "required": false
+    },
+    {
+      "name": "country_original",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "country",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "school_original",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "school",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "school_id",
+      "type": "string",
+      "required": false,
+      "field_class": "canonical_dimension_key",
+      "semantic_definition": "Stable canonical school identifier when an approved canonical school mapping exists.",
+      "producer": "School Standardization",
+      "consumer": "school-level traceability and joins",
+      "usable_for_analysis": false,
+      "version_introduced": "1.5.0"
+    },
+    {
+      "name": "school_rule_id",
+      "type": "string",
+      "required": false,
+      "field_class": "standardization_lineage",
+      "semantic_definition": "School standardization rule or approved human-review mapping identifier applied to the row.",
+      "producer": "School Standardization",
+      "consumer": "standardization gate and traceability",
+      "usable_for_analysis": false,
+      "version_introduced": "1.4.0"
+    },
+    {
+      "name": "school_rule_version",
+      "type": "string",
+      "required": false,
+      "field_class": "standardization_lineage",
+      "semantic_definition": "Version of the school mapping rule set applied to the row.",
+      "producer": "School Standardization",
+      "consumer": "standardization gate and traceability",
+      "usable_for_analysis": false,
+      "version_introduced": "1.4.0"
+    },
+    {
+      "name": "school_standardization_status",
+      "type": "string",
+      "required": false,
+      "field_class": "standardization_metadata",
+      "semantic_definition": "Row-level school standardization outcome, including approved non-school and review-required classifications.",
+      "producer": "School Standardization",
+      "consumer": "standardization gate and traceability",
+      "usable_for_analysis": false,
+      "version_introduced": "1.4.0"
+    },
+    {
+      "name": "country_school_conflict",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "degree_level_original",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "degree_level",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "major",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "task_type",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "task_type_original",
+      "type": "string",
+      "required": false,
+      "field_class": "standardization_lineage",
+      "semantic_definition": "Original task-type value preserved by the Frozen Task Type v17 standardization process.",
+      "producer": "Task Type Standardization",
+      "consumer": "standardization audit and traceability",
+      "usable_for_analysis": false,
+      "version_introduced": "1.3.0"
+    },
+    {
+      "name": "task_type_mode",
+      "type": "string",
+      "required": false,
+      "field_class": "standardization_metadata",
+      "semantic_definition": "Frozen Task Type processing mode, such as single-task or multi-task handling.",
+      "producer": "Task Type Standardization",
+      "consumer": "standardization audit",
+      "usable_for_analysis": false,
+      "version_introduced": "1.3.0"
+    },
+    {
+      "name": "task_type_components",
+      "type": "string",
+      "required": false,
+      "field_class": "standardization_lineage",
+      "semantic_definition": "Delimited canonical component trace for multi-task handling; not a new business dimension.",
+      "producer": "Task Type Standardization",
+      "consumer": "task-type audit and traceability",
+      "usable_for_analysis": false,
+      "version_introduced": "1.3.0"
+    },
+    {
+      "name": "task_type_rule_id",
+      "type": "string",
+      "required": false,
+      "field_class": "standardization_lineage",
+      "semantic_definition": "Frozen Task Type rule identifier applied to the row.",
+      "producer": "Task Type Standardization",
+      "consumer": "rule audit and traceability",
+      "usable_for_analysis": false,
+      "version_introduced": "1.3.0"
+    },
+    {
+      "name": "task_type_rule_version",
+      "type": "string",
+      "required": false,
+      "field_class": "standardization_lineage",
+      "semantic_definition": "Version of the Frozen Task Type rule set applied to the row.",
+      "producer": "Task Type Standardization",
+      "consumer": "rule audit and traceability",
+      "usable_for_analysis": false,
+      "version_introduced": "1.3.0"
+    },
+    {
+      "name": "task_type_standardization_status",
+      "type": "string",
+      "required": false,
+      "field_class": "standardization_metadata",
+      "semantic_definition": "Row-level Frozen Task Type standardization outcome.",
+      "producer": "Task Type Standardization",
+      "consumer": "quality gate and traceability",
+      "usable_for_analysis": false,
+      "version_introduced": "1.3.0"
+    },
+    {
+      "name": "ddl_original",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "ddl",
+      "type": "string",
+      "format": "date",
+      "required": false
+    },
+    {
+      "name": "ddl_components",
+      "type": "string",
+      "required": false,
+      "field_class": "standardization_lineage",
+      "semantic_definition": "Delimited ISO dates when one raw DDL contains multiple confirmed deadlines. ddl retains the earliest confirmed deadline for single-date consumers.",
+      "producer": "Date Standardization",
+      "consumer": "deadline traceability and optional multi-DDL-aware consumers",
+      "usable_for_analysis": false,
+      "version_introduced": "1.4.0"
+    },
+    {
+      "name": "channel_original",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "channel_group",
+      "type": "string",
+      "required": false,
+      "allowed_values": [
+        "老客户",
+        "新客户"
+      ]
+    },
+    {
+      "name": "channel",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "channel_rule_id",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "channel_rule_version",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "channel_standardization_status",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "order_id",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "order_status",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "amount_original",
+      "type": "number",
+      "required": false
+    },
+    {
+      "name": "currency_original",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "amount_cny",
+      "type": "number",
+      "required": false
+    },
+    {
+      "name": "consultant_name",
+      "type": "string",
+      "required": false
+    }
   ],
-  "forbidden_legacy_fields": ["amount", "deadline", "date_original", "date_standardized"],
+  "forbidden_legacy_fields": [
+    "amount",
+    "deadline",
+    "date_original",
+    "date_standardized"
+  ],
   "change_control": "Any field addition, deletion, rename, type change, or standardization-semantic change requires a new schema version."
 }

@@ -1,0 +1,219 @@
+{
+  "taxonomy_id": "academic_calendar_business_taxonomy_v1",
+  "version": "1.0",
+  "status": "FROZEN",
+  "source": "manual_business_confirmation",
+  "scope": "Business interpretation only; no record-level mapping execution.",
+  "event_type_rules": [
+    {
+      "event_type": "ORIENTATION",
+      "business_role": "SEMESTER_ONBOARDING_PREHEAT",
+      "mapping_role": "CONTEXTUAL_OPPORTUNITY",
+      "business_semantic": "开学、新生入学、新学期启动；长期服务的运营预热窗口，不证明客户已产生具体长期服务订单。",
+      "business_key_subtypes": [],
+      "potential_task_type": [],
+      "potential_service_direction": [
+        "学年包",
+        "包课",
+        "DP",
+        "陪跑服务"
+      ],
+      "promotion_window": "Orientation / Welcome 阶段",
+      "demand_window": "Semester Early Stage / Teaching Start 之后",
+      "status": "FROZEN"
+    },
+    {
+      "event_type": "TEACHING",
+      "business_role": "TEACHING_CYCLE_CONTEXT",
+      "mapping_role": "CONTEXTUAL_OPPORTUNITY",
+      "business_semantic": "正式开课及持续教学阶段；课程任务与作业需求的时间背景。TEACHING_START 提示作业需求周期即将开始，但不证明具体作业已产生。",
+      "business_key_subtypes": [
+        "TEACHING_START",
+        "TEACHING_PERIOD"
+      ],
+      "potential_task_type": [
+        "essay",
+        "assignment",
+        "作业",
+        "小组作业",
+        "project",
+        "Historical Demand Inventory 中其他合理的作业类 Task Type"
+      ],
+      "potential_service_direction": [
+        "课程支持",
+        "长期辅导",
+        "包课",
+        "陪跑服务"
+      ],
+      "promotion_window": "TEACHING_START 及 Teaching Period 前段",
+      "demand_window": "Teaching Period",
+      "status": "FROZEN"
+    },
+    {
+      "event_type": "READING",
+      "business_role": "EXAM_PREPARATION_CONTEXT",
+      "mapping_role": "CONTEXTUAL_OPPORTUNITY",
+      "business_semantic": "Reading Week、考前准备或集中学习阶段；不能单独证明具体考试订单。",
+      "business_key_subtypes": [],
+      "potential_task_type": [],
+      "potential_service_direction": [
+        "考前辅导",
+        "包过辅导",
+        "押题"
+      ],
+      "promotion_window": "Reading 阶段",
+      "demand_window": "Reading → Revision / Exam",
+      "status": "FROZEN"
+    },
+    {
+      "event_type": "ASSESSMENT",
+      "business_role": "ASSESSMENT_CONTEXT_WITH_KEY_SIGNAL",
+      "mapping_role": "CONTEXTUAL_OPPORTUNITY",
+      "business_semantic": "Assessment Period / Week；默认仅为考核或 coursework 集中阶段背景，不自动推导 essay、report、project、presentation、作业或 tutoring。明确 key subtype 可提高时间信号强度，但本身不改变默认 Contextual 角色。复合 Assessment/Exam subtype 保持其已冻结的 EXAM 父类，并适用 EXAM 规则。",
+      "business_key_subtypes": [
+        "ASSESSMENT_PERIOD",
+        "TEACHING_AND_ASSESSMENT",
+        "FINAL_ASSESSMENT"
+      ],
+      "potential_task_type": [],
+      "potential_service_direction": [
+        "assessment 支持",
+        "课程辅导",
+        "tutoring"
+      ],
+      "promotion_window": "Assessment 阶段",
+      "demand_window": "Assessment 阶段；复合 Assessment/Exam subtype 亦受 EXAM 规则约束",
+      "status": "FROZEN"
+    },
+    {
+      "event_type": "REVISION",
+      "business_role": "EXAM_PREHEAT_CONTEXT",
+      "mapping_role": "CONTEXTUAL_OPPORTUNITY",
+      "business_semantic": "考试前集中复习阶段；是考试服务的重要预热窗口，不是具体订单需求证明。",
+      "business_key_subtypes": [],
+      "potential_task_type": [],
+      "potential_service_direction": [
+        "考前辅导",
+        "包过辅导",
+        "押题"
+      ],
+      "promotion_window": "Revision 阶段",
+      "demand_window": "Revision → Exam",
+      "status": "FROZEN"
+    },
+    {
+      "event_type": "EXAM",
+      "business_role": "EXAM_DEMAND_SIGNAL",
+      "mapping_role": "DIRECT_DEMAND_SIGNAL",
+      "business_semantic": "正式考试阶段；明确支持考试类潜在需求/服务机会，但 Calendar Event 不得被计为真实成交需求。",
+      "business_key_subtypes": [
+        "FINAL_EXAM",
+        "GENERAL_EXAM",
+        "REVISION_AND_EXAM",
+        "ASSESSMENT_AND_EXAM",
+        "EXAM_AND_ASSESSMENT"
+      ],
+      "potential_task_type": [
+        "考试"
+      ],
+      "potential_service_direction": [
+        "考试",
+        "考前辅导",
+        "包过辅导",
+        "押题"
+      ],
+      "promotion_window": "Exam 前的 Revision / 考前阶段",
+      "demand_window": "Exam Period",
+      "status": "FROZEN"
+    },
+    {
+      "event_type": "RESULTS",
+      "business_role": "POST_RESULTS_FOLLOW_UP_CONTEXT",
+      "mapping_role": "CONTEXTUAL_OPPORTUNITY",
+      "business_semantic": "成绩发布或出分阶段；可能形成成绩风险与后续学习规划机会，但 Results 不等于挂科，不得自动生成真实补考需求。",
+      "business_key_subtypes": [
+        "RESULTS_RELEASE"
+      ],
+      "potential_task_type": [],
+      "potential_service_direction": [
+        "补考",
+        "考试辅导",
+        "押题",
+        "包过辅导"
+      ],
+      "promotion_window": "Results Release",
+      "demand_window": "Results 后；补考须由 Resit Calendar Signal 或实际业务信号支持",
+      "status": "FROZEN"
+    },
+    {
+      "event_type": "RESIT",
+      "business_role": "RESIT_DEMAND_SIGNAL",
+      "mapping_role": "DIRECT_DEMAND_SIGNAL",
+      "business_semantic": "补考、Supplementary 或 Deferred Exam 阶段；为补考/考试类潜在需求提供强信号，不能直接计为真实成交。",
+      "business_key_subtypes": [
+        "RESIT_EXAM",
+        "SUPPLEMENTARY_EXAM",
+        "DEFERRED_EXAM"
+      ],
+      "potential_task_type": [
+        "补考",
+        "考试"
+      ],
+      "potential_service_direction": [
+        "补考",
+        "考试辅导",
+        "押题",
+        "包过辅导"
+      ],
+      "promotion_window": "Resit 前的 Results 后 / 考前阶段",
+      "demand_window": "Resit / Supplementary / Deferred Exam Period",
+      "status": "FROZEN"
+    },
+    {
+      "event_type": "BREAK",
+      "business_role": "NEXT_TERM_PREHEAT_CONTEXT",
+      "mapping_role": "CONTEXTUAL_OPPORTUNITY",
+      "business_semantic": "学期间隔或 Term Break；用于下一学习阶段长期服务预热。",
+      "business_key_subtypes": [],
+      "potential_task_type": [],
+      "potential_service_direction": [
+        "学年包",
+        "包课",
+        "DP",
+        "陪跑服务"
+      ],
+      "promotion_window": "Break 中后段",
+      "demand_window": "下一 Teaching Period / Semester Start",
+      "status": "FROZEN"
+    },
+    {
+      "event_type": "VACATION",
+      "business_role": "NEXT_SEMESTER_PREHEAT_CONTEXT",
+      "mapping_role": "CONTEXTUAL_OPPORTUNITY",
+      "business_semantic": "较长假期；用于下一学期或下一学年的长期服务预热。",
+      "business_key_subtypes": [],
+      "potential_task_type": [],
+      "potential_service_direction": [
+        "学年包",
+        "包课",
+        "DP",
+        "陪跑服务"
+      ],
+      "promotion_window": "Vacation 中后段",
+      "demand_window": "下一 Teaching Period / Semester Start",
+      "status": "FROZEN"
+    },
+    {
+      "event_type": "OTHER",
+      "business_role": "NO_MAPPING_METADATA_OR_REVIEW",
+      "mapping_role": "NO_MAPPING",
+      "business_semantic": "当前 OTHER 是 PERIOD_METADATA；保留原始证据但不参与 Calendar → Demand 或 Opportunity Mapping。未来真正 Academic Event 的 OTHER 必须单独 Review。",
+      "business_key_subtypes": [],
+      "potential_task_type": [],
+      "potential_service_direction": [],
+      "promotion_window": "不适用",
+      "demand_window": "不适用",
+      "status": "FROZEN"
+    }
+  ]
+}

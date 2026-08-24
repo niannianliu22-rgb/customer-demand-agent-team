@@ -14,6 +14,7 @@ per the Data Intake Agent contract (agents/data_intake.md).
 
 import datetime
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -231,7 +232,7 @@ def build(run_id: str):
 
 
 if __name__ == "__main__":
-    run_id = sys.argv[1] if len(sys.argv) > 1 else "RUN-202608-DEMAND-001"
+    run_id = sys.argv[1] if len(sys.argv) > 1 else os.environ["CDAT_RUN_ID"]
     result = build(run_id)
     print(json.dumps({
         "run_id": result["run_id"],

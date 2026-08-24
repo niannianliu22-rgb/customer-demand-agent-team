@@ -1,0 +1,166 @@
+{
+  "registry_version": "2.0",
+  "generated_at": "2026-08-23T10:53:33.691767+00:00",
+  "entries": [
+    {
+      "rule_name": "canonical_schema",
+      "version": "1.5.0",
+      "status": "FROZEN",
+      "frozen_at": "2026-08-23T10:53:33.578721+00:00",
+      "artifact_path": "schemas/canonical_schema.json",
+      "checksum": "b39a080dcdc8908f0bcab3f8d6558a41fe2a345793d1001ca489a57fd9d1959d",
+      "dependency": [],
+      "supersedes": null
+    },
+    {
+      "rule_name": "school_mapping",
+      "version": "1.1",
+      "status": "FROZEN",
+      "frozen_at": "2026-08-23T10:53:33.597038+00:00",
+      "artifact_path": "config/data/school_aliases.yaml",
+      "checksum": "2adeebf5576e145bebe9f2929ae37f594d14b06991fe36e6b4fca3d8207e278f",
+      "dependency": [],
+      "supersedes": null
+    },
+    {
+      "rule_name": "task_type_rules",
+      "version": "VERSION_NOT_DECLARED",
+      "status": "FROZEN",
+      "frozen_at": "2026-08-23T10:53:33.636833+00:00",
+      "artifact_path": "config/dimensions/task_type/task_type_rules_frozen_v17.yaml",
+      "checksum": "f3d83621eda9ec5e09c24df1ecef277fd27716d9da605b0d0859e631a2ae8b61",
+      "dependency": [],
+      "supersedes": null
+    },
+    {
+      "rule_name": "channel_rules",
+      "version": "VERSION_NOT_DECLARED",
+      "status": "FROZEN",
+      "frozen_at": "2026-08-23T10:53:33.642983+00:00",
+      "artifact_path": "config/dimensions/channel/channel_rules_frozen_v1.yaml",
+      "checksum": "e0a5e9bc42d1490b427e45e00478009b9a233dda87862fee04fcf898b8785115",
+      "dependency": [],
+      "supersedes": null
+    },
+    {
+      "rule_name": "date_rules",
+      "version": "1.1",
+      "status": "FROZEN",
+      "frozen_at": "2026-08-23T10:53:33.644377+00:00",
+      "artifact_path": "config/data/date_standardization_rules_v1_1.yaml",
+      "checksum": "b25fa0d7b57c0914f48de7342cbdb79f3726a0b0eda346c118a148a7cc7ea09f",
+      "dependency": [],
+      "supersedes": null
+    },
+    {
+      "rule_name": "historical_demand_framework",
+      "version": "DOCUMENT_FROZEN",
+      "status": "FROZEN",
+      "frozen_at": "2026-08-23T10:53:33.644411+00:00",
+      "artifact_path": "docs/historical_demand_evidence_framework_v1.md",
+      "checksum": "67d6c7e6380c986cc03f6cba65e294d5db0c49dca31a1504898073571c1bda9c",
+      "dependency": [],
+      "supersedes": null
+    },
+    {
+      "rule_name": "operational_value_framework",
+      "version": "DOCUMENT_FROZEN",
+      "status": "FROZEN",
+      "frozen_at": "2026-08-23T10:53:33.644899+00:00",
+      "artifact_path": "docs/demand_insight_metric_framework_v1.md",
+      "checksum": "05ba3407e36d9b8980701164aa1ebcecde6e31e03cb8aa7852d61ca159fe7404",
+      "dependency": [],
+      "supersedes": null
+    },
+    {
+      "rule_name": "calendar_taxonomy",
+      "version": "1.0",
+      "status": "FROZEN",
+      "frozen_at": "2026-08-23T10:53:33.650466+00:00",
+      "artifact_path": "config/dimensions/academic_calendar/academic_calendar_business_taxonomy_v1.yaml",
+      "checksum": "7ca30994f46cb02f879fc4787cddc9aeedd6d6fd527396e0e3b8cd4c9863d267",
+      "dependency": [],
+      "supersedes": null
+    },
+    {
+      "rule_name": "calendar_business_mapping",
+      "version": "1.0",
+      "status": "FROZEN",
+      "frozen_at": "2026-08-23T10:53:33.655533+00:00",
+      "artifact_path": "config/dimensions/academic_calendar/academic_calendar_business_mapping_v1.yaml",
+      "checksum": "2960b25704ea718a94cab0c2f4efe5c10bf3bc99c1a6fb2522901a16f9c52dce",
+      "dependency": [],
+      "supersedes": null
+    },
+    {
+      "rule_name": "promotion_window_rules",
+      "version": "1.1",
+      "status": "FROZEN",
+      "frozen_at": "2026-08-23T10:53:33.658244+00:00",
+      "artifact_path": "config/dimensions/academic_calendar/promotion_window_business_rules_v1.yaml",
+      "checksum": "04b9a8ae0fa7eae8731a03ef1381c4e48771f59876c92628c3ffc7bc106da239",
+      "dependency": [],
+      "supersedes": null
+    },
+    {
+      "rule_name": "agent_contracts_v2",
+      "version": "DOCUMENT_FROZEN",
+      "status": "FROZEN",
+      "frozen_at": "2026-08-23T10:53:33.658299+00:00",
+      "artifact_path": "docs/AGENT_CONTRACTS_V2.md",
+      "checksum": "120be2f1b3c54a089f86c82bb74e075303bbebe0206284ab257699e8a47616ff",
+      "dependency": [],
+      "supersedes": null
+    },
+    {
+      "rule_name": "gate_model_v2",
+      "version": "DOCUMENT_FROZEN",
+      "status": "FROZEN",
+      "frozen_at": "2026-08-23T10:53:33.658481+00:00",
+      "artifact_path": "docs/GATE_MODEL_V2.md",
+      "checksum": "f752cbd55477cbbcc47639a7eae8e2ce4a696afe04b69b2aeb82c237a7d32b9e",
+      "dependency": [],
+      "supersedes": null
+    },
+    {
+      "rule_name": "model_registry_v1",
+      "version": "1.1",
+      "status": "FROZEN",
+      "frozen_at": "2026-08-23T10:53:33.660818+00:00",
+      "artifact_path": "config/models/model_registry_v1.yaml",
+      "checksum": "dadce63a34d5a4d19ee830b75ca147ddef6d30850b8fc1698a1994a8413a25c4",
+      "dependency": [],
+      "supersedes": null
+    },
+    {
+      "rule_name": "model_routing_v1",
+      "version": "1.0",
+      "status": "FROZEN",
+      "frozen_at": "2026-08-23T10:53:33.669745+00:00",
+      "artifact_path": "config/models/model_routing_v1.yaml",
+      "checksum": "6ab4569611291155ac364a7ae7d7dae816a61c485e95a6d934e57eb4a4d9ecb5",
+      "dependency": [],
+      "supersedes": null
+    },
+    {
+      "rule_name": "model_runtime_binding_v1",
+      "version": "3.0",
+      "status": "FROZEN",
+      "frozen_at": "2026-08-23T10:53:33.671975+00:00",
+      "artifact_path": "config/models/model_runtime_binding_v1.yaml",
+      "checksum": "36714f46996c18a0953b6ab0784a3af92cc90f9bf15615f16eff34fe1c9a3e34",
+      "dependency": [],
+      "supersedes": null
+    },
+    {
+      "rule_name": "agent_governance_v1",
+      "version": "1.0",
+      "status": "FROZEN",
+      "frozen_at": "2026-08-23T10:53:33.691734+00:00",
+      "artifact_path": "config/agents/agent_governance_v1.yaml",
+      "checksum": "a3304e65943c91be1b0ead9b0f389ceb105847d620085681f3afcce7bc5ce5e0",
+      "dependency": [],
+      "supersedes": null
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+version: '1.0'
+status: FROZEN_KNOWLEDGE_REGISTRY
+sources:
+  historical_evidence_v1:
+    producer_component: historical_demand_deterministic_pipeline_v1
+    source_class: FROZEN_KNOWLEDGE
+    source_run: RUN-202608-DEMAND-001
+    consumer_agents: [A07]
+    artifacts:
+      - demand_opportunity_v1/demand_opportunity_matrix_v1.csv
+      - historical_demand_pattern_v1/historical_demand_patterns.csv
+      - demand_where_v1/task_type_country_pattern.csv
+      - demand_where_v1/task_type_school_pattern.csv
+      - historical_time_pattern_v1/august_period_pattern.csv
+      - historical_time_pattern_v1/august_period_top_school.csv
+      - historical_time_pattern_v1/task_type_lead_time_three_year.csv
+  academic_context_evidence_v1:
+    producer_component: academic_calendar_deterministic_pipeline_v1
+    source_class: FROZEN_KNOWLEDGE
+    source_run: RUN-202608-DEMAND-001
+    consumer_agents: [A08]
+    artifacts:
+      - academic_calendar_event_type_confirmation_v1/academic_calendar_standardized_v1_1.csv
+      - calendar_demand_mapping_v1/calendar_demand_mapping_v1.csv
+      - calendar_demand_mapping_v1/calendar_demand_mapping_v1_qa.json
+      - promotion_window_business_rules_v1/calendar_promotion_window_candidates.csv
+      - promotion_window_business_rules_v1/promotion_window_business_rules_v1_qa.json

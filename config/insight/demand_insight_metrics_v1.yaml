@@ -1,0 +1,82 @@
+framework_name: Demand Insight Metric Framework
+framework_version: '1.0'
+status: FROZEN
+source: manual_business_confirmation
+scope: historical demand insight only; 2023-2025 August same-period comparison
+year_scope: '2023年8月、2024年8月、2025年8月；不得表述为全年趋势或完整年度季节性。'
+core_dimensions:
+  - year
+  - country
+  - school
+  - degree_level
+  - task_type
+  - ddl
+  - channel
+customer_value_labels:
+  customer_group:
+    source: channel_group
+    values: [老客户, 新客户]
+  key_account:
+    single_task_types: [学年包, 毕业无忧, DP]
+    multi_task_rule: MULTI_TASK only supplies coverage; its amount is not attributed to avoid duplicate allocation.
+  high_value:
+    rule: amount_cny > 10000
+    business_term: 高价值成交
+    prohibited_terms: [高价值客户LTV, 高价值客户生命周期, 客户累计价值]
+metrics:
+  - metric_id: DIM-COUNT-SHARE
+    metric_name: dimension demand count and share
+    dimension: [country, school, degree_level, task_type, ddl, channel]
+    measure: [count, share, amount_cny, amount_share, average_amount, median_amount, max_amount]
+    numerator_definition: Records in each dimension value; task_type uses official observations.
+    denominator_definition: Dimension-specific population recorded in each artifact; never globally assumed to be 818.
+    filters: school uses eligible canonical school records; ddl uses parseable standardized DDL; channel excludes legal null only for secondary-channel denominator.
+    exclusions: task_type EXCLUDED_BY_BUSINESS_RULE and non-official unknown statuses excluded from task ranking.
+    amount_rule: Valid amount_cny only; task_type amount is SINGLE_TASK exact attribution and MULTI_TASK amount is not allocated.
+    multi_task_rule: SINGLE_TASK once; MULTI_TASK once per frozen component for count/coverage only.
+    null_rule: Legal channel null remains in customer_group but not named-channel attribution.
+    year_scope: Combined and source-year-specific August cohorts.
+    business_definition: Standard demand profile of each fixed core dimension.
+  - metric_id: VALUE-KEY-ACCOUNT
+    metric_name: key-account business contribution
+    dimension: [year, task_type, school, customer_group, channel]
+    measure: [record_count, record_share, amount_cny, amount_share, average_amount]
+    numerator_definition: SINGLE_TASK records with task_type 学年包、毕业无忧、DP; MULTI_TASK coverage reported separately.
+    denominator_definition: Corresponding annual or combined valid amount total.
+    filters: task_type in [学年包, 毕业无忧, DP]
+    exclusions: MULTI_TASK amount excluded from key-account amount attribution.
+    amount_rule: Exact single-task record amount only; no repeated multi-component allocation.
+    multi_task_rule: Coverage-only, MULTI_TASK_AMOUNT_AMBIGUOUS.
+    null_rule: Not applicable.
+    year_scope: Combined and each source-year August cohort.
+    business_definition: Large-account business contribution, not customer-level LTV.
+  - metric_id: VALUE-HIGH
+    metric_name: high-value transaction profile
+    dimension: [year, country, school, degree_level, task_type, customer_group, channel, ddl]
+    measure: [record_count, record_share, amount_cny, amount_share, average_amount, median_amount, max_amount]
+    numerator_definition: Individual records with amount_cny > 10000.
+    denominator_definition: Corresponding valid-amount record population and valid amount total.
+    filters: amount_cny > 10000.
+    exclusions: None for record-level profiles; school ranking retains eligible canonical school only.
+    amount_rule: One record contributes its amount once to non-task dimensions; task_type amount is SINGLE_TASK exact only.
+    multi_task_rule: Component coverage may be shown, but amount remains unallocated.
+    null_rule: Legal channel null appears separately and is not a named channel.
+    year_scope: Combined and each source-year August cohort.
+    business_definition: High-value transaction, never customer lifetime value.
+fixed_cross_analyses:
+  - year_x_school_x_task_type
+  - year_x_task_type_x_ddl
+  - year_x_school_x_ddl
+  - year_x_channel_x_task_type
+  - year_x_customer_group_x_task_type
+  - year_x_key_account_x_school
+  - year_x_high_value_x_school
+  - year_x_high_value_x_task_type
+  - year_x_high_value_x_channel
+trend_rule:
+  labels: [RISING, DECLINING, STABLE, NEW, LOW_SAMPLE]
+  definition: Compare adjacent August cohorts using both count and share; NEW requires prior zero and current non-low sample; LOW_SAMPLE overrides directional labeling; RISING/DECLINING require count and share to move in the same direction; otherwise STABLE.
+deferred_dimensions:
+  - course_name
+  - course_code
+department_policy: department is source traceability only and is excluded from V1 demand rankings, profiles, and trends.

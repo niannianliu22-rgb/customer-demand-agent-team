@@ -1,0 +1,14 @@
+rule_set: date_standardization_rules_v1_1
+version: '1.1'
+status: ACTIVE
+scope: Deterministic format extension for Data Standardization Remediation Round 1; does not modify Frozen Business Rules.
+rules:
+  - {rule_id: RULE-DATE-R1-MONTH_DOT_DAY, pattern: 'M. D or M.D', normalization: 'record_year-MM-DD', status: ACTIVE}
+  - {rule_id: RULE-DATE-R2-MONTH_SLASH_DAY_SUFFIX, pattern: 'M/D日', normalization: 'record_year-MM-DD', status: ACTIVE}
+  - {rule_id: RULE-DATE-R3-MONTH_SLASH_DAY, pattern: 'M/D', normalization: 'record_year-MM-DD', status: ACTIVE}
+  - {rule_id: RULE-DATE-R4-CHINESE_MONTH_DAY, pattern: 'M 月 D 日', normalization: 'record_year-MM-DD', status: ACTIVE}
+  - {rule_id: RULE-DATE-R5-MIDDLE_DOT_MONTH_DAY, pattern: 'M·D', normalization: 'record_year-MM-DD', status: ACTIVE}
+  - {rule_id: RULE-DATE-R6-UNDETERMINED_DDL, pattern: '未定', normalization: 'VALID_MISSING for ddl only', status: ACTIVE}
+guardrails:
+  - Do not infer a date from time-only fractions, multi-valued dates, text contamination, or ambiguous/incomplete values.
+  - Preserve original values and emit REVIEW_REQUIRED when a rule does not match.

@@ -1,0 +1,40 @@
+calendar_standardization_rule_version: '1.0'
+status: FROZEN
+source_input: runs/RUN-202608-DEMAND-001/artifacts/academic_calendar_v1/academic_calendar_standardized.csv
+school_master_source: runs/RUN-202608-DEMAND-001/artifacts/academic_calendar_v1/supporting_school_master.csv
+country_canonical_values:
+- 英国
+- 澳洲
+- 美国
+- 香港
+- 新加坡
+- 新西兰
+academic_year_rules:
+- rule_id: CAL-YEAR-001
+  original: 2025/26
+  canonical: AY_2025_2026
+  definition: 学校以跨自然年的 Academic Year 表示。
+- rule_id: CAL-YEAR-002
+  original: '2026'
+  canonical: CY_2026
+  definition: 学校以单一自然年日历表示；不强行转为跨年学年。
+- rule_id: CAL-YEAR-003
+  original: 2026/27
+  canonical: AY_2026_2027
+  definition: 学校以跨自然年的 Academic Year 表示。
+period_rules:
+  SEMESTER: official name contains Semester
+  TERM: official name contains Term
+  QUARTER: official name contains Quarter
+  SESSION: official name contains Session
+  FULL_YEAR: official name contains Academic year or Full-year
+  OTHER: no official period label is inferable; period_name=OFFICIAL_CALENDAR_UNSPECIFIED
+status_rules:
+  collection_status: Copied from current supporting_school_master.calendar_status.
+  standardization_status:
+  - STANDARDIZED
+  - REVIEW_REQUIRED
+  - UNMATCHED
+  no_status_cross_use: Collection status never substitutes for standardization status.
+date_rule: ISO 8601 YYYY-MM-DD; start_date must be less than or equal to end_date.
+alias_source: calendar_event_aliases.yaml

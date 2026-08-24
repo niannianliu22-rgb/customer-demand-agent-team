@@ -1,0 +1,60 @@
+version: '1.0'
+status: IMPLEMENTED
+artifacts:
+  standardized_dataset:
+    path: artifacts/unified_dataset.csv
+    producer_agent: A05
+    consumer_agents: [A06, A07]
+    required_by: DATA_QUALITY_AGENT
+  task_type_standardization_audit:
+    path: artifacts/task_type_standardization_v17_audit.json
+    producer_agent: A05
+    consumer_agents: [A06]
+    required_by: DATA_QUALITY_AGENT
+    rule_version: '17.0'
+  channel_standardization_audit:
+    path: artifacts/channel_standardization_v1_audit.json
+    producer_agent: A05
+    consumer_agents: [A06]
+    required_by: DATA_QUALITY_AGENT
+    rule_version: '1.0'
+  cleaning_log:
+    path: artifacts/cleaning_log.json
+    producer_agent: A05
+    consumer_agents: [A06]
+    required_by: DATA_QUALITY_AGENT
+  data_quality_report:
+    path: quality/quality_report.json
+    producer_agent: A06
+    consumer_agents: [A07, A08, A09, A10, A11, A12, A13]
+    required_by: EVIDENCE_AND_CONTEXT_LAYER
+  data_quality_issues:
+    path: quality/data_quality_issues.csv
+    producer_agent: A06
+    consumer_agents: [A07, A08, A09, A10, A11, A12, A13]
+    required_by: EVIDENCE_AND_CONTEXT_LAYER
+  data_quality_gate_report:
+    path: quality/data_quality_gate_report.json
+    producer_agent: A06
+    consumer_agents: [A07, A08, A09, A10, A11, A12, A13]
+    required_by: EVIDENCE_AND_CONTEXT_LAYER
+  warning_ledger:
+    path: audit/warning_ledger.json
+    producer_agent: A02
+    consumer_agents: [A07, A08, A09, A10, A11, A12, A13]
+    required_by: EVIDENCE_AND_CONTEXT_LAYER
+  frozen_historical_evidence:
+    path: snapshots/frozen_evidence/historical_evidence_v1
+    producer_component: historical_demand_deterministic_pipeline_v1
+    consumer_agents: [A07]
+    required_by: HISTORICAL_DEMAND_AGENT
+  frozen_academic_context_evidence:
+    path: snapshots/frozen_evidence/academic_context_evidence_v1
+    producer_component: academic_calendar_deterministic_pipeline_v1
+    consumer_agents: [A08]
+    required_by: ACADEMIC_CONTEXT_AGENT
+  support_school_universe:
+    path: artifacts/support_school_universe.json
+    producer_agent: A05
+    consumer_agents: [A08]
+    required_by: ACADEMIC_CONTEXT_AGENT

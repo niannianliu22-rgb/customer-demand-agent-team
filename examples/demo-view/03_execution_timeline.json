@@ -1,0 +1,1 @@
+{"events":[{"type":"run_event","event_type":"RUN_CREATED","agent_id":"A01","timestamp":"2026-09-01T09:00:00Z"},{"type":"run_event","event_type":"PARALLEL_STAGE_COMPLETED","agent_id":"A07+A08","timestamp":"2026-09-01T09:03:00Z"},{"type":"run_event","event_type":"RUN_COMPLETED","agent_id":"A01","timestamp":"2026-09-01T09:08:00Z"}],"synthetic":true}

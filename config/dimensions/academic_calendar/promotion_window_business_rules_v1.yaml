@@ -1,0 +1,56 @@
+rule_set: promotion_window_business_rules_v1
+version: '1.1'
+status: FROZEN
+source: manual_business_confirmation
+scope: Calendar promotion-window derivation only; it does not execute Monthly Opportunity Merge or opportunity generation.
+inputs:
+  historical_time_layer: runs/RUN-202608-DEMAND-001/artifacts/historical_time_pattern_v1/task_type_lead_time_three_year.csv
+  calendar: runs/RUN-202608-DEMAND-001/artifacts/academic_calendar_event_type_confirmation_v1/academic_calendar_standardized_v1_1.csv
+  calendar_mapping: runs/RUN-202608-DEMAND-001/artifacts/calendar_demand_mapping_v1/calendar_demand_mapping_v1.csv
+principles:
+  - Do not use a universal fixed 7/14/30-day preheat window.
+  - Prefer the historical task-type median and P25-P75 lead-time range when a direct or sequenced exam anchor exists.
+  - Keep unresolved event types PENDING_BUSINESS_RULE instead of inferring a duration.
+rules:
+  EXAM:
+    business_anchor_date: exam start_date
+    historical_task_type: 考试
+    window_rule_type: HISTORICAL_LEAD_TIME
+    expected_consultation_window: exam_start minus historical P75 through exam_start minus historical P25
+    promotion_window: expected consultation window through exam start_date; no fixed additional preheat offset
+  RESIT:
+    business_anchor_date: resit start_date
+    historical_task_type: 补考
+    fallback_task_type: 考试
+    fallback_condition: Use only if 补考 has no usable historical lead-time record.
+    window_rule_type: HISTORICAL_LEAD_TIME or FALLBACK_RULE
+  TEACHING:
+    business_anchor_type: TEACHING_START
+    business_anchor_date: teaching start_date
+    window_rule_type: ANCHOR_BASED
+    promotion_window: Teaching event start through event end; do not apply DDL lead time or invent an offset.
+    purpose_task_types: [essay, assignment, 作业, 小组作业, project]
+  REVISION_READING:
+    next_exam: Prefer the same school's next EXAM start_date.
+    with_next_exam: Use 考试 historical lead time with CALENDAR_SEQUENCE status.
+    without_next_exam: Use current event start_date as a CONTEXT_ONLY anchor; do not infer an end date.
+  RESULTS:
+    rule: Start promotion at Results Release. Never calculate results_date minus resit lead time.
+    next_resit: If the same school has a later RESIT, set demand window from Results Release through Resit Period using CALENDAR_SEQUENCE.
+    without_next_resit: CONTEXT_ONLY.
+  BREAK_VACATION_ORIENTATION:
+    next_teaching_start: Prefer the same school's next TEACHING start_date.
+    with_next_teaching_start: Promotion window runs from the contextual event start through the next Teaching Start using CALENDAR_SEQUENCE.
+    without_next_teaching_start: CONTEXT_ONLY with no invented end date.
+  ASSESSMENT:
+    business_anchor_type: ASSESSMENT_PERIOD
+    business_anchor_date: assessment start_date
+    window_rule_type: ANCHOR_BASED
+    promotion_window: Assessment event start_date through end_date.
+    demand_window: Assessment event start_date through end_date with demand_window_confidence=CONTEXTUAL.
+    meaning: Calendar evidence of a concentrated assessment stage; it is not evidence that a particular task type or DDL has occurred.
+boundaries:
+  calendar_merge: NOT_EXECUTED
+  final_opportunity_generation: NOT_EXECUTED
+  historical_time_layer_modified: false
+  calendar_mapping_modified: false

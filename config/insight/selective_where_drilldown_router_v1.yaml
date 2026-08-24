@@ -1,0 +1,30 @@
+framework_name: Selective WHERE Drill-down Router
+framework_version: '1.0'
+status: FROZEN
+scope: Routing only; no Level 3 query or high-dimensional cross-analysis is executed
+entry_point: Task Type first
+eligible_priority_classes: [P1_CORE_DEMAND, P2_GROWTH_DEMAND, P3_HIGH_VALUE_NICHE]
+excluded_default_priority_class: P4_WATCHLIST
+routes:
+  STABLE_MARKET_ROUTE:
+    evidence_levels: [STRONG_EVIDENCE, MODERATE_EVIDENCE]
+    purpose: Identify a stable core market.
+  GROWTH_SOURCE_ROUTE:
+    evidence_levels: [EMERGING_SIGNAL]
+    purpose: Locate the source of demonstrated growth across 2023/2024/2025 August cohorts.
+  HIGH_VALUE_MARKET_ROUTE:
+    evidence_levels: [LIMITED_HIGH_VALUE_EVIDENCE]
+    purpose: Locate directional high-revenue market opportunity; never label it a stable mass market.
+  STOP_ROUTE:
+    evidence_levels: [WEAK_EVIDENCE, INSUFFICIENT_EVIDENCE]
+    purpose: Retain historical demand fact and do not add a dimension.
+dimension_roles:
+  country: Macro Market Location
+  school: Specific Market Location
+  degree_level: Customer Academic Stage / Demand Population
+default_parent_child_order: Task Type -> Country -> School; Degree is a Population Lens and may route to Country or School when its evidence is stronger.
+child_rule: A plan may add only one child dimension. School is a terminal specific-market observation unless separately re-approved.
+budget_per_task_per_route: 3
+backlog: Candidates not selected within the budget are retained as EVIDENCE_BACKLOG, not deleted.
+excluded_context_dimensions: [channel, customer_group, ddl]
+forbidden: [actual drill-down execution, academic calendar, context analysis, multi-child cross, unified_dataset modification]

@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Agent Model Output Envelope V1",
+  "type": "object",
+  "required": ["agent_id", "model_tier", "status", "confidence", "evidence_refs", "warnings", "contract_payload"],
+  "properties": {
+    "agent_id": {"type": "string", "pattern": "^A(0[1-9]|1[0-3])$"},
+    "model_tier": {"enum": ["TIER_1_MEDIUM", "TIER_2_STRONG_REASONING", "TIER_3_CRITICAL_REASONING"]},
+    "status": {"type": "string"},
+    "confidence": {"type": ["string", "null"]},
+    "evidence_refs": {"type": "array", "items": {"type": "string"}},
+    "warnings": {"type": "array", "items": {"type": "string"}},
+    "contract_payload": {
+      "type": "object",
+      "required": ["summary", "findings", "recommendations", "return_to_agent"],
+      "properties": {
+        "summary": {"type": "string"},
+        "findings": {"type": "array", "items": {"type": "string"}},
+        "recommendations": {"type": "array", "items": {"type": "string"}},
+        "return_to_agent": {"type": ["string", "null"]}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,189 @@
+version: '1.0'
+status: FROZEN
+model_registry: config/models/model_registry_v1.yaml
+operating_principle: RULE_FIRST_THEN_CODE_THEN_LLM_WHEN_REQUIRED_THEN_HUMAN_REVIEW_WHEN_UNCERTAIN
+global_policy:
+  gates_decided_by: DETERMINISTIC_STRUCTURED_ARTIFACTS_ONLY
+  frozen_rules_modifiable_by_llm: false
+  llm_output_must_be_structured: true
+  model_output_envelope: schemas/agent_model_output_envelope_v1.json
+  no_unregistered_artifact_access: true
+  dry_run_llm_calls: 0
+  prompt_logging: FORBIDDEN
+  fallback_policy: SAME_OR_HIGHER_CAPABILITY_REQUIRED
+  insufficient_model_policy: AGENT_BLOCKED
+model_call_audit:
+  producer_agent: A02
+  artifact_path_pattern: 'runs/{run_id}/audit/model_call_audit.jsonl'
+  required_fields: [run_id, agent_id, model_tier, model_name, reasoning_level, fallback_used, input_artifact_checksum, output_artifact_checksum, started_at, completed_at, status]
+  optional_fields: [input_tokens, output_tokens, estimated_cost]
+  forbidden_fields: [prompt, system_prompt, user_prompt, raw_sensitive_content]
+routes:
+  A01:
+    execution_mode: DETERMINISTIC_WITH_OPTIONAL_EXCEPTION_EXPLANATION
+    model_tier: TIER_0_DETERMINISTIC
+    llm_enabled: false
+    llm_trigger: operator_requested_exception_explanation_only
+    primary_model: NONE
+    fallback_model: NONE
+    reasoning_level: NONE
+    structured_output_schema: schemas/agent_model_output_envelope_v1.json
+    deterministic_must_handle: [workflow_dependency, gate_decision, return_path, artifact_validity, state_machine]
+    optional_llm_constraints: [explanation_only, cannot_change_status_or_gate]
+    evidence_boundary:
+      allowed_input_artifacts: [config/agents/agent_registry_v2.yaml, config/orchestration/workflow_v2.yaml, config/orchestration/dependency_graph_v2.yaml, quality/*_gate_report.json, 'runs/{run_id}/state/runtime_state.json']
+      forbidden_sources: [raw_business_data, unregistered_artifacts, frozen_rule_mutation]
+  A02:
+    execution_mode: DETERMINISTIC
+    model_tier: TIER_0_DETERMINISTIC
+    llm_enabled: false
+    llm_trigger: NEVER
+    primary_model: NONE
+    fallback_model: NONE
+    reasoning_level: NONE
+    structured_output_schema: schemas/agent_model_output_envelope_v1.json
+    deterministic_must_handle: [registry, run_log, version, checksum, artifact_metadata, state, model_call_audit]
+    evidence_boundary:
+      allowed_input_artifacts: [knowledge/frozen_registry_v2.json, 'runs/{run_id}/run_manifest.json', 'runs/{run_id}/run_log.jsonl', config/models/model_routing_v1.yaml]
+      forbidden_sources: [raw_business_data, unregistered_artifacts, frozen_rule_mutation]
+  A03:
+    execution_mode: DETERMINISTIC
+    model_tier: TIER_0_DETERMINISTIC
+    llm_enabled: false
+    llm_trigger: NEVER
+    primary_model: NONE
+    fallback_model: NONE
+    reasoning_level: NONE
+    structured_output_schema: schemas/agent_model_output_envelope_v1.json
+    deterministic_must_handle: [file_identification, source_manifest, source_profile]
+    evidence_boundary:
+      allowed_input_artifacts: [data/raw/*, schemas/canonical_schema.json, config/data/standardization_rules.yaml]
+      forbidden_sources: [business_inference, unregistered_artifacts, frozen_rule_mutation]
+  A04:
+    execution_mode: DETERMINISTIC_WITH_EXCEPTION_CANDIDATE
+    model_tier: TIER_0_DETERMINISTIC
+    llm_enabled: conditional
+    llm_trigger: unknown_column_or_ambiguous_header_without_frozen_mapping
+    primary_model: medium_codex
+    fallback_model: NONE
+    reasoning_level: LOW
+    structured_output_schema: schemas/agent_model_output_envelope_v1.json
+    llm_output_constraints: [candidate_only, confidence_required, reason_required, cannot_modify_frozen_schema, low_confidence_to_human_review]
+    evidence_boundary:
+      allowed_input_artifacts: [source_manifest.json, source_profiles, schemas/canonical_schema.json, existing_schema_mapping.json]
+      forbidden_sources: [unregistered_artifacts, frozen_schema_mutation, business_conclusion]
+  A05:
+    execution_mode: DETERMINISTIC_WITH_EXCEPTION_CANDIDATE
+    model_tier: TIER_0_DETERMINISTIC
+    llm_enabled: conditional
+    llm_trigger: unresolved_ambiguous_or_review_required_after_frozen_rules
+    primary_model: medium_codex
+    fallback_model: NONE
+    reasoning_level: LOW
+    structured_output_schema: schemas/agent_model_output_envelope_v1.json
+    llm_output_constraints: [candidate_only, confidence_required, reason_required, cannot_modify_frozen_mapping, low_confidence_to_human_review]
+    evidence_boundary:
+      allowed_input_artifacts: [unified_dataset.csv, config/data/school_aliases.yaml, config/dimensions/task_type/task_type_rules_frozen_v17.yaml, config/dimensions/channel/channel_rules_frozen_v1.yaml, config/data/date_standardization_rules_v1_1.yaml, standardization_review_artifacts]
+      forbidden_sources: [unregistered_artifacts, frozen_rule_mutation, business_conclusion]
+  A06:
+    execution_mode: DETERMINISTIC
+    model_tier: TIER_0_DETERMINISTIC
+    llm_enabled: false
+    llm_trigger: NEVER
+    primary_model: NONE
+    fallback_model: NONE
+    reasoning_level: NONE
+    structured_output_schema: schemas/agent_model_output_envelope_v1.json
+    deterministic_must_handle: [missingness, conflict, coverage, date_validation, amount_validation, schema_compliance, data_quality_gate]
+    evidence_boundary:
+      allowed_input_artifacts: [unified_dataset.csv, schemas/canonical_schema.json, quality/standardization_gate_report.json, frozen_standardization_rules]
+      forbidden_sources: [unregistered_artifacts, frozen_rule_mutation, llm_gate_decision]
+  A07:
+    execution_mode: DETERMINISTIC_METRICS_PLUS_LLM_INTERPRETATION
+    model_tier: TIER_2_STRONG_REASONING
+    llm_enabled: true
+    llm_trigger: interpretation_of_precomputed_historical_evidence
+    primary_model: strong_codex
+    fallback_model: NONE
+    reasoning_level: HIGH
+    structured_output_schema: schemas/agent_model_output_envelope_v1.json
+    deterministic_must_handle: [all_numeric_statistics, consultation_date_month_assignment, lead_time_calculation]
+    evidence_boundary:
+      allowed_input_artifacts: [quality/quality_report.json, frozen_historical_aggregates, historical_time_pattern_v1, historical_demand_inventory, demand_pattern, operational_value_framework]
+      forbidden_sources: [raw_unaggregated_data_for_llm, academic_calendar_artifacts, unregistered_artifacts, statistic_recalculation]
+  A08:
+    execution_mode: HYBRID_DETERMINISTIC_PLUS_CONTEXT_INTERPRETATION
+    model_tier: TIER_1_MEDIUM
+    llm_enabled: conditional
+    llm_trigger: complex_calendar_event_to_business_context_interpretation
+    primary_model: medium_claude_sonnet
+    fallback_model: NONE
+    reasoning_level: HIGH
+    structured_output_schema: schemas/agent_model_output_envelope_v1.json
+    deterministic_must_handle: [calendar_collection, calendar_normalization, taxonomy_mapping, official_date_preservation]
+    evidence_boundary:
+      allowed_input_artifacts: [frozen_academic_calendar, calendar_standardization, calendar_taxonomy, calendar_business_mapping, promotion_window_rules, quality/quality_report.json]
+      forbidden_sources: [historical_demand_artifacts, raw_web_invention, unregistered_artifacts, calendar_date_mutation]
+  A09:
+    execution_mode: EVIDENCE_BOUND_LLM
+    model_tier: TIER_2_STRONG_REASONING
+    llm_enabled: true
+    llm_trigger: historical_and_calendar_evidence_alignment
+    primary_model: strong_codex
+    fallback_model: NONE
+    reasoning_level: HIGH
+    structured_output_schema: schemas/agent_model_output_envelope_v1.json
+    evidence_boundary:
+      allowed_input_artifacts: [artifacts/historical_demand_v2/historical_demand_report.json, artifacts/academic_context_v2/academic_context_report.json, quality/quality_report.json, frozen_business_mapping, promotion_window_rules]
+      forbidden_sources: [raw_source_data, unregistered_artifacts, new_historical_pattern, new_calendar_event]
+  A10:
+    execution_mode: EVIDENCE_BOUND_LLM
+    model_tier: TIER_3_CRITICAL_REASONING
+    llm_enabled: true
+    llm_trigger: monthly_opportunity_synthesis_from_a07_a08_a09
+    primary_model: critical_maker_codex
+    fallback_model: NONE
+    reasoning_level: CRITICAL
+    structured_output_schema: schemas/agent_model_output_envelope_v1.json
+    fallback_constraints: [provider_isolation_required, no_fallback_allowed, unavailable_provider_blocks_agent]
+    evidence_boundary:
+      allowed_input_artifacts: [artifacts/historical_demand_v2/historical_demand_report.json, artifacts/academic_context_v2/academic_context_report.json, artifacts/current_context_validation_v2/validation_report.json, quality/quality_report.json, frozen_business_mapping, frozen_task_type_taxonomy]
+      forbidden_sources: [raw_source_data, unregistered_artifacts, new_task_type, new_business_direction]
+  A11:
+    execution_mode: INDEPENDENT_EVIDENCE_BOUND_LLM
+    model_tier: TIER_3_CRITICAL_REASONING
+    llm_enabled: true
+    llm_trigger: independent_a10_evidence_and_overclaim_audit
+    primary_model: critical_checker_claude_opus
+    fallback_model: NONE
+    reasoning_level: CRITICAL
+    structured_output_schema: schemas/agent_model_output_envelope_v1.json
+    independence_constraint: primary_model_must_differ_from_a10_primary_model
+    fallback_constraints: [provider_isolation_required, no_fallback_allowed, unavailable_provider_blocks_agent]
+    evidence_boundary:
+      allowed_input_artifacts: [artifacts/demand_opportunity_v2/insight_report.json, artifacts/historical_demand_v2/historical_demand_report.json, artifacts/academic_context_v2/academic_context_report.json, artifacts/current_context_validation_v2/validation_report.json, quality/quality_report.json]
+      forbidden_sources: [raw_source_data, unregistered_artifacts, a10_artifact_mutation, new_business_direction]
+  A12:
+    execution_mode: EVIDENCE_BOUND_LLM
+    model_tier: TIER_2_STRONG_REASONING
+    llm_enabled: true
+    llm_trigger: critic_constrained_horizon_opportunity_forecast
+    primary_model: strong_codex
+    fallback_model: NONE
+    reasoning_level: HIGH
+    structured_output_schema: schemas/agent_model_output_envelope_v1.json
+    evidence_boundary:
+      allowed_input_artifacts: [artifacts/demand_opportunity_v2/insight_report.json, artifacts/critic_v2/critic_report.json, artifacts/critic_v2/critic_findings.csv, artifacts/historical_demand_v2/historical_demand_report.json, artifacts/academic_context_v2/academic_context_report.json, artifacts/current_context_validation_v2/validation_report.json]
+      forbidden_sources: [raw_source_data, unregistered_artifacts, new_task_type, new_business_direction, order_or_revenue_prediction]
+  A13:
+    execution_mode: FORECAST_BOUND_LLM
+    model_tier: TIER_1_MEDIUM
+    llm_enabled: true
+    llm_trigger: eligible_forecast_to_action_translation
+    primary_model: medium_claude_sonnet_medium
+    fallback_model: NONE
+    reasoning_level: MEDIUM
+    structured_output_schema: schemas/agent_model_output_envelope_v1.json
+    evidence_boundary:
+      allowed_input_artifacts: [artifacts/forecast_v2/forecast_report.json, artifacts/forecast_v2/forecast_opportunities.csv, artifacts/critic_v2/critic_report.json, artifacts/demand_opportunity_v2/insight_report.json]
+      forbidden_sources: [raw_source_data, unregistered_artifacts, forecast_mutation, new_school, new_task_type, new_business_direction]

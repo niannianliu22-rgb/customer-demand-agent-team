@@ -1,0 +1,1 @@
+{"artifact_validity":{"artifacts/demo_input_manifest.json":{"status":"VALID","produced_by":"A03"},"artifacts/demo_forecast.json":{"status":"VALID","produced_by":"A12"},"artifacts/demo_action.json":{"status":"VALID","produced_by":"A13"}},"synthetic":true}

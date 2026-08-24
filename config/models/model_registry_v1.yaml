@@ -1,0 +1,19 @@
+version: '1.1'
+status: FROZEN
+purpose: Provider-aware concrete capability registry for the CLI runtime.
+tiers:
+  TIER_0_DETERMINISTIC: {llm_allowed: false, use_for: [python, frozen_rules, schema, gates, checksums, state_machine, deterministic_transformation]}
+  TIER_1_MEDIUM: {llm_allowed: true, use_for: [low_risk_semantic_judgement, explanation, structured_transformation]}
+  TIER_2_STRONG_REASONING: {llm_allowed: true, use_for: [cross_evidence_analysis, historical_interpretation, context_validation, opportunity_forecast]}
+  TIER_3_CRITICAL_REASONING: {llm_allowed: true, use_for: [core_opportunity_synthesis, independent_critic_audit]}
+models:
+  medium_codex: {provider: codex_cli, capability_tier: TIER_1_MEDIUM, concrete_model: gpt-5.6-terra, reasoning_effort: medium, invocation_mode: codex_exec_explicit}
+  medium_claude_sonnet: {provider: claude_cli, capability_tier: TIER_1_MEDIUM, concrete_model: claude-sonnet-5, invocation_model: sonnet, reasoning_effort: high, invocation_mode: claude_print_explicit}
+  medium_claude_sonnet_medium: {provider: claude_cli, capability_tier: TIER_1_MEDIUM, concrete_model: claude-sonnet-5, invocation_model: sonnet, reasoning_effort: medium, invocation_mode: claude_print_explicit}
+  strong_codex: {provider: codex_cli, capability_tier: TIER_2_STRONG_REASONING, concrete_model: gpt-5.6-terra, reasoning_effort: high, invocation_mode: codex_exec_explicit}
+  critical_maker_codex: {provider: codex_cli, capability_tier: TIER_3_CRITICAL_REASONING, profile: opportunity_synthesis, concrete_model: gpt-5.6-terra, reasoning_effort: xhigh, invocation_mode: codex_exec_explicit}
+  critical_checker_claude_opus: {provider: claude_cli, capability_tier: TIER_3_CRITICAL_REASONING, profile: independent_critic_audit, concrete_model: claude-opus-5, invocation_model: opus, reasoning_effort: max, invocation_mode: claude_print_explicit}
+constraints:
+  a10_a11_provider_isolation_required: true
+  critical_provider_fallback_allowed: false
+  no_qualified_model: AGENT_BLOCKED
