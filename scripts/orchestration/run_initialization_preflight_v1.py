@@ -33,7 +33,7 @@ def main() -> None:
     schema = json.loads(schema_snapshot.read_text(encoding='utf-8')) if schema_snapshot.exists() else {}
     required_dirs = ['input', 'artifacts', 'gates', 'quality', 'audit', 'logs', 'snapshots']
     required_manifest_fields = {'run_id', 'created_at', 'target_month', 'workflow_version', 'schema_version', 'model_runtime_binding_version', 'model_routing_version', 'governance_version', 'frozen_registry_version', 'input_manifest', 'run_status'}
-    snapshots = ['frozen_registry.json', 'model_registry.yaml', 'model_routing.yaml', 'model_runtime_binding.yaml', 'agent_governance.yaml', 'canonical_schema.json', 'business_rules.md', 'standardization_rules.yaml', 'workflow.yaml', 'dependency_graph.yaml', 'agent_dispatch_registry.yaml', 'gate_runtime_v1.py', 'gate_model_v2.md']
+    snapshots = ['frozen_registry.json', 'model_registry.yaml', 'model_routing.yaml', 'model_runtime_binding.yaml', 'agent_governance.yaml', 'canonical_schema.json', 'business_rules.md', 'standardization_rules.yaml', 'workflow.yaml', 'dependency_graph.yaml', 'agent_dispatch_registry.yaml', 'frozen_evidence_registry.yaml', 'gate_runtime_v1.py', 'gate_model_v2.md']
     sources = input_manifest.get('sources', [])
     live_binding = ROOT / 'config/models/model_runtime_binding_v1.yaml'
     binding_snapshot = run / 'snapshots/model_runtime_binding.yaml'

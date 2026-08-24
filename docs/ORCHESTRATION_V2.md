@@ -5,11 +5,12 @@
 1. A01 Supervisor initializes state; A02 Knowledge begins the ledger.
 2. A03 Data Intake → SOURCE_GATE → A04 Schema Mapping → SCHEMA_GATE.
 3. A05 Data Standardization → STANDARDIZATION_GATE → A06 Data Quality → DATA_QUALITY_GATE.
-4. After Data Quality Gate PASS/allowed CONDITIONAL, A07 Historical Demand Analysis and A08 Academic Context Analysis run in parallel.
-5. A09 aligns the two independent evidence streams → CONTEXT_GATE.
-6. A10 creates the monthly opportunity contract → INSIGHT_GATE.
-7. A11 reviews A10 → CRITIC_GATE. `RETURN_FOR_REVISION` routes to `return_to_agent`, ordinarily A10; the Supervisor records the reason and re-runs only the required downstream chain.
-8. Only Critic PASS or PASS_WITH_WARNINGS plus CRITIC_GATE pass unlocks A12 Forecast → FORECAST_GATE → A13 Action → ACTION_GATE.
+4. After Data Quality Gate PASS/allowed CONDITIONAL, A01 materializes the run-bound A07/A08 prerequisites: immutable frozen historical/calendar evidence snapshots and A05's support-school universe. It records `audit/a07_a08_prerequisite_materialization.json` and never changes upstream artifacts.
+5. Only after that materialization passes do A07 Historical Demand Analysis and A08 Academic Context Analysis run in parallel.
+6. A09 aligns the two independent evidence streams → CONTEXT_GATE.
+7. A10 creates the monthly opportunity contract → INSIGHT_GATE.
+8. A11 reviews A10 → CRITIC_GATE. `RETURN_FOR_REVISION` routes to `return_to_agent`, ordinarily A10; the Supervisor records the reason and re-runs only the required downstream chain.
+9. Only Critic PASS or PASS_WITH_WARNINGS plus CRITIC_GATE pass unlocks A12 Forecast → FORECAST_GATE → A13 Action → ACTION_GATE.
 
 ## V2 return rules
 

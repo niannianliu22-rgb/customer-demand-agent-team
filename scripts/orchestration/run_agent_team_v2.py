@@ -6,7 +6,7 @@ simulation-only: it never invokes any business Agent or changes their artifacts.
 """
 from __future__ import annotations
 
-import argparse, hashlib, json, shutil, sys
+import argparse, hashlib, json, shutil, subprocess, sys
 import concurrent.futures
 from collections import defaultdict, deque
 from datetime import datetime, timezone
@@ -76,7 +76,7 @@ def _materialize_inputs(path, source_input_dir):
     write_json(path/'input_manifest.json',manifest); return manifest
 def _snapshot_run(path, frozen):
     _copy_snapshot(path,FROZEN_OUT,'frozen_registry.json')
-    named={'model_registry.yaml':ROOT/'config/models/model_registry_v1.yaml','model_routing.yaml':ROOT/'config/models/model_routing_v1.yaml','model_runtime_binding.yaml':ROOT/'config/models/model_runtime_binding_v1.yaml','agent_governance.yaml':ROOT/'config/agents/agent_governance_v1.yaml','canonical_schema.json':ROOT/'schemas/canonical_schema.json','business_rules.md':ROOT/'policies/business_rules.md','standardization_rules.yaml':ROOT/'config/data/standardization_rules.yaml','workflow.yaml':WORKFLOW,'dependency_graph.yaml':GRAPH,'agent_dispatch_registry.yaml':ROOT/'config/orchestration/agent_dispatch_registry_v1.yaml','gate_runtime_v1.py':ROOT/'scripts/orchestration/gate_runtime_v1.py','gate_model_v2.md':ROOT/'docs/GATE_MODEL_V2.md'}
+    named={'model_registry.yaml':ROOT/'config/models/model_registry_v1.yaml','model_routing.yaml':ROOT/'config/models/model_routing_v1.yaml','model_runtime_binding.yaml':ROOT/'config/models/model_runtime_binding_v1.yaml','agent_governance.yaml':ROOT/'config/agents/agent_governance_v1.yaml','canonical_schema.json':ROOT/'schemas/canonical_schema.json','business_rules.md':ROOT/'policies/business_rules.md','standardization_rules.yaml':ROOT/'config/data/standardization_rules.yaml','workflow.yaml':WORKFLOW,'dependency_graph.yaml':GRAPH,'agent_dispatch_registry.yaml':ROOT/'config/orchestration/agent_dispatch_registry_v1.yaml','frozen_evidence_registry.yaml':ROOT/'config/orchestration/frozen_evidence_registry_v1.yaml','gate_runtime_v1.py':ROOT/'scripts/orchestration/gate_runtime_v1.py','gate_model_v2.md':ROOT/'docs/GATE_MODEL_V2.md'}
     return {name:_copy_snapshot(path,source,name) for name,source in named.items()}
 def manifest(run_id,target,registry,workflow,frozen,input_manifest,snapshots):
     schema_version=next(x['version'] for x in frozen['entries'] if x['rule_name']=='canonical_schema')
@@ -234,9 +234,10 @@ def stage_parallel_retry(run_id):
     if not state_path.exists(): raise SystemExit(f'Run not found: {run_id}')
     state=json.loads(state_path.read_text())
     if state['gates'].get('DATA_QUALITY_GATE',{}).get('decision') not in {'PASS','PASS_WITH_WARNINGS'}: raise SystemExit('Parallel retry requires a passing Data Quality Gate')
+    materialize_a07_a08_prerequisites(run_id)
     required=['artifacts/unified_dataset.csv','quality/quality_report.json','quality/data_quality_issues.csv','quality/data_quality_gate_report.json','audit/warning_ledger.json','snapshots/frozen_evidence/historical_evidence_v1','snapshots/frozen_evidence/academic_context_evidence_v1','artifacts/support_school_universe.json']
     missing=[rel for rel in required if not (path/rel).exists()]
-    if missing: raise SystemExit(f'Parallel retry input contract missing: {missing}')
+    if missing: raise SystemExit(f'Parallel retry input contract missing after materialization: {missing}')
     for aid in ['A07','A08']:
         state['agents'][aid]['status']='READY_FOR_RETRY'; state['agents'][aid]['retry_reason']='PRE_MODEL_INPUT_VALIDATION_FAILURE_RESOLVED'
     state['current_agent']='PARALLEL(A07,A08)'; state['run_status']='READY'; write_json(state_path,state)
@@ -244,6 +245,18 @@ def stage_parallel_retry(run_id):
     write_json(path/'audit/parallel_stage_retry_audit.json',audit)
     with (path/'run_log.jsonl').open('a',encoding='utf-8') as h:h.write(json.dumps({'event_id':'PARALLEL_RETRY_STAGED','timestamp':now(),'event_type':'PARALLEL_RETRY_STAGED','agent_id':'A01','gate_name':'','status_before':'BLOCKED','status_after':'READY','message':'A07/A08 parallel retry staged after run-bound input contract repair; no Agent invoked.','artifact_refs':required},ensure_ascii=False)+'\n')
     return audit
+def materialize_a07_a08_prerequisites(run_id):
+    """Run A01's deterministic bridge between A06 and the A07/A08 parallel node."""
+    entry=ROOT/'scripts/orchestration/materialize_a07_a08_prerequisites_v1.py'
+    proc=subprocess.run([sys.executable,str(entry),run_id],cwd=ROOT,text=True,capture_output=True)
+    if proc.returncode:
+        raise SystemExit(f'A07/A08 prerequisite materialization failed: {proc.stderr.strip() or proc.stdout.strip()}')
+    path=ROOT/'runs'/run_id
+    report_path=path/'audit/a07_a08_prerequisite_materialization.json'
+    if not report_path.exists(): raise SystemExit('A07/A08 prerequisite materialization produced no audit report')
+    report=json.loads(report_path.read_text(encoding='utf-8'))
+    if report.get('result')!='PASS': raise SystemExit('A07/A08 prerequisite materialization did not pass validation')
+    return report
 def execute_parallel_stage(run_id):
     """A01 executes only the governed A07/A08 parallel workflow node."""
     path=ROOT/'runs'/run_id; state_path=path/'state/runtime_state.json'; log=path/'run_log.jsonl'
@@ -327,6 +340,8 @@ def execute_run(run_id, resume_from_agent=None, resume_prepared=False, stop_afte
             state['run_status']='READY'; state['current_agent']='A06' if aid == 'A05' else aid
             event(events,'SUPERVISOR_STOP_AFTER_GATE',aid,gate,'RUNNING','READY',f'Supervisor stopped at requested recovery boundary after {gate}; downstream Agent was not started.')
             persist(); return state
+    prerequisite=materialize_a07_a08_prerequisites(run_id)
+    event(events,'PREREQUISITE_MATERIALIZATION_COMPLETED','A01','DATA_QUALITY_GATE','PASS','READY',f'A06→A07/A08 prerequisite stage {prerequisite["mode"]}.',prerequisite['outputs']); persist()
     # A07/A08 execute concurrently, but only Supervisor mutates run state/logs.
     for aid in ['A07','A08']:
         event(events,'AGENT_STARTED',aid,'','READY','RUNNING','Supervisor started parallel group PG-A07-A08.'); state['agents'][aid]['status']='RUNNING'
