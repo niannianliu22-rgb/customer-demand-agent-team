@@ -1,0 +1,159 @@
+---
+title: 客户需求分析 Agent Team
+~transition: slide-left
+---
+layout: cover
+chrome: none
+---
+:: title ::
+客户需求分析 Agent Team
+
+:: subtitle ::
+从历史业务数据，到 Forecast 与可执行 Action
+
+[13 Agents · 9 Gates · 153 Forecast · 30 Action]{.teal}
+
+---
+layout: title-content
+---
+## 数据很多，决策却缺少下一步
+
+```mermaid
+flowchart LR
+  A[历史咨询数据\n多年份 · 多口径] --> B[标准化数据]
+  B --> C[需求机会识别]
+  C --> D[Forecast]
+  D --> E[运营 Action]
+  style A fill:#E8F3FF,stroke:#2F80ED,color:#17365D
+  style B fill:#E7FBF5,stroke:#22B79A,color:#17365D
+  style C fill:#F3EDFF,stroke:#8B5CF6,color:#3C236F
+  style D fill:#E8F3FF,stroke:#2F80ED,color:#17365D
+  style E fill:#E7FBF5,stroke:#22B79A,color:#17365D
+```
+
+**业务问题**　[谁]{.teal} · [何时]{.teal} · [需要什么]{.teal} · [做什么]{.teal}
+
+---
+layout: title-content
+---
+## 这不是一个 Prompt 可以完成的任务
+
+| Single Agent × | Agent Team ✓ |
+| --- | --- |
+| 数据、判断、预测混在一起 | 职责明确、产物接力 |
+| 容易跳过校验 | Gate 阻断不合格输入 |
+| 结论难回溯 | 全程可追踪、可恢复 |
+
+**核心转变**　从“一次回答”到“可重复运行的业务 Workflow”
+
+---
+layout: title-content
+---
+## 13 个 Agent，一眼看懂团队分工
+
+```mermaid
+flowchart TB
+  subgraph G[治理层]
+    A01[A01 · Supervisor\n编排与回退] --- A02[A02 · Knowledge\n规则与留痕]
+  end
+  subgraph D[数据治理层]
+    A03[A03 · Data Intake\n登记数据源] --> A04[A04 · Schema Mapping\n映射统一字段] --> A05[A05 · Standardization\n标准化数据集] --> A06[A06 · Data Quality\n质量检查告警]
+  end
+  subgraph A[分析层]
+    A07[A07 · Historical Demand\n提炼历史规律] --> A09[A09 · Current Validation\n校验两类证据]
+    A08[A08 · Academic Context\n解读学业节点] --> A09
+    A09 --> A10[A10 · Demand Opportunity\n形成需求机会]
+  end
+  subgraph C[决策层]
+    A11[A11 · Critic\n独立审查] --> A12[A12 · Forecast\n生成时间预测] --> A13[A13 · Action\n转运营行动]
+  end
+  A01 --> A03
+  A02 -.规则 / 记忆 / 审计.-> A03
+  A02 -.-> A10
+  A06 --> A07
+  A06 --> A08
+  A10 --> A11
+  style G fill:#F3EDFF,stroke:#8B5CF6,color:#3C236F
+  style D fill:#E8F3FF,stroke:#2F80ED,color:#17365D
+  style A fill:#E7FBF5,stroke:#22B79A,color:#17365D
+  style C fill:#F3EDFF,stroke:#8B5CF6,color:#3C236F
+```
+
+---
+layout: title-content
+---
+## 从 Input 到 Action：一条被 Gate 守住的主链
+
+```mermaid
+flowchart LR
+  I([Input]) --> A03[A03\nData Intake] --> A04[A04\nSchema Mapping] --> A05[A05\nStandardization] --> A06[A06\nData Quality]
+  A06 --> G1{DATA QUALITY\nGATE}
+  G1 --> A07[A07\nHistorical Demand]
+  G1 --> A08[A08\nAcademic Context]
+  A07 --> A09[A09\nCurrent Validation]
+  A08 --> A09
+  A09 --> G2{CONTEXT\nGATE} --> A10[A10\nDemand Opportunity] --> G3{INSIGHT\nGATE} --> A11[A11\nCritic] --> G4{CRITIC\nGATE} --> A12[A12\nForecast] --> G5{FORECAST\nGATE} --> A13[A13\nAction] --> G6{ACTION\nGATE} --> O([Output])
+  K[A02 Knowledge\n规则 · 记忆 · 留痕] -.贯穿全流程.-> A05
+  K -.-> A10
+  K -.-> A13
+  S[A01 Supervisor] -.编排 / 回退.-> A03
+  S -.-> A11
+  classDef agent fill:#E8F3FF,stroke:#2F80ED,color:#17365D;
+  classDef gate fill:#F3EDFF,stroke:#8B5CF6,color:#3C236F;
+  classDef support fill:#E7FBF5,stroke:#22B79A,color:#17365D;
+  class A03,A04,A05,A06,A07,A08,A09,A10,A11,A12,A13 agent;
+  class G1,G2,G3,G4,G5,G6 gate;
+  class K,S support;
+```
+
+**Input** 历史咨询数据　→　**Output** Forecast + Action Plan
+
+---
+layout: title-content
+---
+## 六个机制，让 Agent Team 成为可运行系统
+
+```mermaid
+flowchart TB
+  R[Registry\n职责与边界] --- C[Dependency\n依赖与编排]
+  M[Model Routing\n按复杂度路由] --- T[Agent Team Runtime] --- G[Gate\n结构化校验]
+  A[Artifact\n产物可追溯] --- S[Resume\n从节点恢复]
+  R --- T
+  C --- T
+  M --- T
+  G --- T
+  A --- T
+  S --- T
+  style T fill:#2F80ED,stroke:#2F80ED,color:#FFFFFF
+  style R fill:#F3EDFF,stroke:#8B5CF6,color:#3C236F
+  style C fill:#E8F3FF,stroke:#2F80ED,color:#17365D
+  style M fill:#E7FBF5,stroke:#22B79A,color:#17365D
+  style G fill:#F3EDFF,stroke:#8B5CF6,color:#3C236F
+  style A fill:#E8F3FF,stroke:#2F80ED,color:#17365D
+  style S fill:#E7FBF5,stroke:#22B79A,color:#17365D
+```
+
+---
+layout: title-content
+---
+## 结果不止是数据，而是下一步行动
+
+| **153** Forecast | → | [30]{.teal} Action Plan |
+| --- | :---: | --- |
+| 国家 · 学校 | 需求机会转运营动作 | 优先级 · 时间窗口 |
+| 任务类型 · 时间窗口 |  | 学校 · 具体需求 |
+
+**9 / 9 Gates Passed**　　数据质量 Gate：PASS_WITH_WARNINGS，40 条告警已留痕并向下游传递
+
+---
+layout: title-content
+---
+## 从 AI 回答问题，到 Agent Team 完成业务流程
+
+| Before | → | After |
+| --- | :---: | --- |
+| 人工一次性分析 | → | **可重复运行 Workflow** |
+| 单 Agent | → | **13-Agent Team** |
+| 数据结果 | → | **Forecast + Action** |
+
+> Agent Team 的价值：把复杂业务拆成可分工、可校验、可追踪、可恢复的执行系统。
